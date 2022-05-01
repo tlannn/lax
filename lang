@@ -1,0 +1,3 @@
+if (true)
+    if (false)
+        print (1+19)*5;
