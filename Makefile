@@ -13,9 +13,12 @@ all: $(BUILD)/$(PROG)
 run: $(BUILD)/$(PROG)
 	./$(BUILD)/$(PROG) $(file)
 
+clean:
+	rm -rf $(BUILD)
 
 $(BUILD)/$(PROG): $(OBJS)
 	$(CC) -o $(BUILD)/$(PROG) $^
 
 $(OBJS): $(BUILD)/%.o: $(SRC)/%.cpp
+	@mkdir -p $(@D)
 	$(CC) -c $< -o $@
