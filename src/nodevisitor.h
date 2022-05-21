@@ -9,6 +9,8 @@
 class Expr;
 class BinOpNode;
 class ConstantNode;
+class LogicalNode;
+class RelationalNode;
 class Stmt;
 class StmtExpression;
 class StmtPrint;
@@ -42,6 +44,22 @@ class ExprVisitor {
          * @return the constant value
          */
         virtual int visit(ConstantNode *node) = 0;
+
+        /**
+         * Visit a LogicalNode and compute the boolean value of the node expression
+         *
+         * @param node the node to visit
+         * @return the boolean value
+         */
+        virtual int visit(LogicalNode *node) = 0;
+
+        /**
+         * Visit a RelationalNode and compute the boolean value of the equality (or inequality) expression
+         *
+         * @param node the node to visit
+         * @return the boolean value
+         */
+        virtual int visit(RelationalNode *node) = 0;
 };
 
 /**

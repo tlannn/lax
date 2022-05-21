@@ -26,7 +26,49 @@ bool Parser::check(int tokenType) {
 /// expected, read the next token
 void Parser::match(int tokenType) {
     if (_look->getType() == tokenType) move();
-    else throw std::runtime_error("unexpected character " + to_string(_look->getType()));
+    else throw std::runtime_error("unexpected character " + to_string(_look->getType()) + ", got " +
+                _look->toString() + " but expected " + std::to_string(tokenType) + " on line " +
+                std::to_string(Lexer::line) + ":" + std::to_string(Lexer::col));
+}
+
+/// Build a node representing a logical OR expression
+Expr* Parser::logic() {
+    Expr *expr = join();
+
+    while (_look->toString() == "||") {
+        Token op = *_look;
+        move();
+        expr = new LogicalNode(expr, op, join());
+    }
+
+    return expr;
+}
+
+/// Build a node representing a logical AND expression
+Expr* Parser::join() {
+    Expr *expr = rel();
+
+    while (_look->toString() == "&&") {
+        Token op = *_look;
+        move();
+        expr = new LogicalNode(expr, op, rel());
+    }
+
+    return expr;
+}
+
+/// Build a node representing an equality or inequality expression
+Expr* Parser::rel() {
+    Expr *e = expr();
+
+    while (_look->toString() == "==" || _look->toString() == "!=" || _look->toString() == "<" ||
+            _look->toString() == "<=" || _look->toString() == ">" || _look->toString() == ">=") {
+        Token op = *_look;
+        move();
+        e = new RelationalNode(e, op, expr());
+    }
+
+    return e;
 }
 
 /// Build a node representing an expression
@@ -62,7 +104,7 @@ Expr* Parser::factor() {
     switch (_look->getType()) {
         case TokenType::LPAREN: {
             move();
-            expr = Parser::expr();
+            expr = Parser::logic();
             match(TokenType::RPAREN);
             break;
         }
@@ -116,7 +158,7 @@ Stmt* Parser::printStmt() {
 /// Build a node representing an if statement
 Stmt* Parser::ifStmt() {
     match(TokenType::LPAREN);
-    Expr *condition = Parser::expr();
+    Expr *condition = Parser::logic();
     match(TokenType::RPAREN);
 
     Stmt *then = Parser::stmt();

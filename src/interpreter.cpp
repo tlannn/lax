@@ -39,6 +39,45 @@ int Interpreter::visit(ConstantNode *node) {
     return node->getValue();
 }
 
+/// Visit a LogicalNode and return the boolean value represented by the boolean expression
+int Interpreter::visit(LogicalNode *node) {
+    int left = evaluate(node->getLeft());
+    Token op = node->getToken();
+
+    if (op.getType() == TokenType::OR) {
+        if (left) return left;
+    }
+    else if (op.getType() == TokenType::AND) {
+        if (!left) return left;
+    }
+
+    return evaluate(node->getRight());
+}
+
+/// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+int Interpreter::visit(RelationalNode *node) {
+    int left = evaluate(node->getLeft());
+    int right = evaluate(node->getRight());
+    Token op = node->getToken();
+
+    switch (op.getType()) {
+        case TokenType::EQ:
+            return left == right;
+        case TokenType::NEQ:
+            return left != right;
+        case TokenType::SL:
+            return left < right;
+        case TokenType::LE:
+            return left <= right;
+        case TokenType::SG:
+            return left > right;
+        case TokenType::GE:
+            return left >= right;
+    }
+
+    return 0;
+}
+
 /// Execute a statement node
 void Interpreter::execute(Stmt *node) {
     node->accept(this);

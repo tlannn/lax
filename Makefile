@@ -17,8 +17,8 @@ clean:
 	rm -rf $(BUILD)
 
 $(BUILD)/$(PROG): $(OBJS)
-	$(CC) -o $(BUILD)/$(PROG) $^
+	$(CC) -g -o $(BUILD)/$(PROG) $^
 
 $(OBJS): $(BUILD)/%.o: $(SRC)/%.cpp
 	@mkdir -p $(@D)
-	$(CC) -c $< -o $@
+	$(CC) -g -c $< -o $@

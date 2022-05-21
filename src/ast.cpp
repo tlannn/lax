@@ -66,6 +66,56 @@ int ConstantNode::accept(ExprVisitor *visitor) {
     return visitor->visit(this);
 }
 
+/**
+ * LogicalNode class definition
+ */
+
+/// LogicalNode constructor
+LogicalNode::LogicalNode(Expr *left, Token op, Expr *right) : Expr(op, check(left->getType(), right->getType())), _left(left), _right(right) {}
+
+/// Getter for the left expression of the boolean operation
+Expr* LogicalNode::getLeft() {
+    return _left;
+}
+
+/// Getter for the right expression of the boolean operation
+Expr* LogicalNode::getRight() {
+    return _right;
+}
+
+/// Accept method for the visitor pattern
+int LogicalNode::accept(ExprVisitor *visitor) {
+    return visitor->visit(this);
+}
+
+/// Check if the expression can result in a boolean expression
+Type LogicalNode::check(Type t1, Type t2) {
+    if (t1 != Type::BOOL) return t1;
+    else if (t2 != Type::BOOL) return t2;
+    else return Type::BOOL;
+}
+
+/**
+ * EqualityNode class definition
+ */
+
+/// EqualityNode constructor
+RelationalNode::RelationalNode(Expr *left, Token op, Expr *right) : LogicalNode(left, op, right) {
+    // Override logical node type check logic
+    _type = check(left->getType(), right->getType());
+}
+
+/// Accept method for the visitor pattern
+int RelationalNode::accept(ExprVisitor *visitor) {
+    return visitor->visit(this);
+}
+
+/// Check if the expression can result in a boolean expression
+Type RelationalNode::check(Type t1, Type t2) {
+    if (t1 == t2) return Type::BOOL;
+    else if (t1 != Type::BOOL) return t1;
+    else return t2;
+}
 
 /**
  * StmtExpression class definition

@@ -13,6 +13,7 @@
 class Lexer {
     public:
         static int line; // Counter for the number of lines analyzed in the source code
+        static int col; // Counter for the index of the character in the current line
 
         /**
          * Class constructor

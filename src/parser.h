@@ -56,6 +56,27 @@ class Parser {
         void match(int tokenType);
 
         /**
+         * Build a node representing a logical OR expression
+         *
+         * @return the node created
+         */
+        Expr* logic();
+
+        /**
+         * Build a node representing a logical AND expression
+         *
+         * @return the node created
+         */
+        Expr* join();
+
+        /**
+         * Build a node representing an equality or inequality expression
+         *
+         * @return the node created
+         */
+        Expr* rel();
+
+        /**
          * Build a node representing an expression
          *
          * @return the node created

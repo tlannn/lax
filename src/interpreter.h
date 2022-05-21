@@ -36,6 +36,12 @@ class Interpreter : public ExprVisitor, StmtVisitor {
         /// Visit a ConstantNode and return the constant value represented
         int visit(ConstantNode *node);
 
+        /// Visit a LogicalNode and return the boolean value represented by the boolean expression
+        int visit(LogicalNode *node);
+
+        /// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+        int visit(RelationalNode *node);
+
         /// Execute a statement node
         void execute(Stmt *node);
 

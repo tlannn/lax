@@ -140,6 +140,86 @@ class ConstantNode : public Expr {
 };
 
 /**
+ * Node for a logical expression
+ *
+ * The logical expression compares two expressions with an logical AND operator,
+ * or a logical OR operator
+ */
+class LogicalNode : public Expr {
+    public:
+        /**
+         * Class constructor
+         *
+         * @param left the expression to the left of the boolean operator
+         * @param op the token representing the boolean operator
+         * @param right the expression to the right of the boolean operator
+         */
+        LogicalNode(Expr *left, Token op, Expr *right);
+
+        /**
+         * Getter for the left expression of the operation
+         *
+         * @return the left expression
+         */
+        Expr* getLeft();
+
+        /**
+         * Getter for the right expression of the operation
+         *
+         * @return the right expression
+         */
+        Expr* getRight();
+
+        /**
+         * Accept method for the visitor pattern
+         */
+        int accept(ExprVisitor *visitor);
+
+    protected:
+        /**
+         * Check if the expression can result in a boolean expression
+         *
+         * @param t1 the type of the left expression
+         * @param t2 the type of the right expression
+         * @return the boolean type if the expression is correct, or the
+         * incompatible type otherwise
+         */
+        Type check(Type t1, Type t2);
+
+        Expr *_left;
+        Expr *_right;
+};
+
+/**
+ * Node for an equality or inequality expression
+ *
+ * The node compares two expressions with compares two expressions with an logical AND operator,
+ * or a logical OR operator
+ */
+class RelationalNode : public LogicalNode {
+    public:
+        /**
+         * Class constructor
+         *
+         * @param left the expression to the left of the boolean operator
+         * @param op the token representing the boolean operator
+         * @param right the expression to the right of the boolean operator
+         */
+        RelationalNode(Expr *left, Token op, Expr *right);
+
+        /**
+         * Accept method for the visitor pattern
+         */
+        int accept(ExprVisitor *visitor);
+
+    protected:
+        /**
+         * Check if the expression can result in a boolean expression
+         */
+        Type check(Type t1, Type t2);
+};
+
+/**
  * Node for statements in the program
  *
  * Statements express an action to execute. This can be an expression, an assignment, etc.

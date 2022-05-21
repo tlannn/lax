@@ -22,20 +22,22 @@ enum TokenType {
     RSBRACK = 269, // Right square bracket
     EQ = 270, // Equality sign
     NEQ = 271, // Not equal sign
-    LE = 272, // Less or equal sign
-    GE = 273, // Greater or equal sign
-    BANG = 274, // Exclamation mark, logical not operator
-    AND = 275, // Logical and operator
-    OR = 276, // Logical or operator
-    DO = 277, // Do keyword
-    BREAK = 278, // Break keyword
-    IF = 279, // If keyword
-    ELSE = 280, // Else keyword
-    WHILE = 281, // While keyword
-    FOR = 282, // For keyword
-    PRINT = 283, // Print keyword
-    SEMICOL = 284, // Semicolon
-    END = 285, // End of file
+    SL = 272, // Strictly less sign
+    LE = 273, // Less or equal sign
+    SG = 274, // Strictly greater sign
+    GE = 275, // Greater or equal sign
+    BANG = 276, // Exclamation mark, logical not operator
+    AND = 277, // Logical and operator
+    OR = 278, // Logical or operator
+    DO = 279, // Do keyword
+    BREAK = 280, // Break keyword
+    IF = 281, // If keyword
+    ELSE = 282, // Else keyword
+    WHILE = 283, // While keyword
+    FOR = 284, // For keyword
+    PRINT = 285, // Print keyword
+    SEMICOL = 286, // Semicolon
+    END = 287 // End of file
 };
 
 /**
@@ -134,7 +136,9 @@ class Word : public Token {
         static Word OR; // Logical operator or
         static Word EQ; // Equality operator
         static Word NEQ; // Not equal operator
+        static Word SL; // Strictly less operator
         static Word LE; // Less or equal operator
+        static Word SG; // Strictly greater operator
         static Word GE; // Greater or equal operator
         static Word IF; // Word 'if'
         static Word PRINT; // Word 'print'

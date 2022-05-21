@@ -1,6 +1,7 @@
 #include "lexer.h"
 
 int Lexer::line = 1;
+int Lexer::col = 1;
 
 /// Class constructor
 Lexer::Lexer(std::string source) : _source(source), _look(' '), _index(-1) {
@@ -9,6 +10,7 @@ Lexer::Lexer(std::string source) : _source(source), _look(' '), _index(-1) {
     reserve(&Word::AND); reserve(&Word::OR);
     reserve(&Word::EQ); reserve(&Word::NEQ);
     reserve(&Word::LE); reserve(&Word::GE);
+    reserve(&Word::SL); reserve(&Word::SG);
     reserve(&Word::IF); reserve(&Word::PRINT);
 }
 
@@ -17,8 +19,30 @@ Token* Lexer::nextToken() {
     // Skip whitespaces, tabulations and newlines
     for (; ; readChar()) {
         if (_look == ' ' || _look == '\t') continue;
-        else if (_look == '\n') Lexer::line++;
+        else if (_look == '\n') { Lexer::line++; Lexer::col = 1; }
         else break;
+    }
+
+    // Recognize boolean and relational operators
+    switch (_look) {
+        case '&':
+            if (readChar('&')) return &Word::AND;
+            break;
+        case '|':
+            if (readChar('|')) return &Word::OR;
+            break;
+        case '=':
+            if (readChar('=')) return &Word::EQ;
+            break;
+        case '!':
+            if (readChar('=')) return &Word::NEQ;
+            break;
+        case '<':
+            if (readChar('=')) return &Word::LE; else return &Word::SL;
+            break;
+        case '>':
+            if (readChar('=')) return &Word::GE; else return &Word::SG;
+            break;
     }
 
     // Recognize numbers
@@ -82,6 +106,7 @@ void Lexer::reserve(Word *word) {
 
 /// Read a character in the source code and update the current token
 void Lexer::readChar() {
+    Lexer::col++;
     _index++;
 
     if (_index < _source.length())
@@ -92,7 +117,7 @@ void Lexer::readChar() {
 /// Read a character in the source code and check if it is the expected one
 bool Lexer::readChar(char expected) {
     readChar();
-    if (_look == expected) return false;
+    if (_look != expected) return false;
     _look = ' ';
     return true;
 }
