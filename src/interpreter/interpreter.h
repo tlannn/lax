@@ -1,0 +1,69 @@
+#ifndef LAX_INTERPRETER_H
+#define LAX_INTERPRETER_H
+
+#include "exprvisitor.h"
+#include "stmtvisitor.h"
+#include "ast/exprnode.h"
+#include "ast/binopnode.h"
+#include "ast/constantnode.h"
+#include "ast/logicalnode.h"
+#include "ast/relationalnode.h"
+#include "ast/ifnode.h"
+#include "ast/stmtnode.h"
+#include "ast/stmtexpressionnode.h"
+#include "ast/stmtprintnode.h"
+#include "parser/parser.h"
+
+/**
+ * Interpreter for the Lax language
+ *
+ * Implements the ExprVisitor and StmtVisitor visitor interfaces.
+ * The role of the interpreter is to visit an Abstract Syntax Tree and simulate
+ * the execution of the program represented. It defines methods that describe how
+ * nodes of an AST must be handled.
+ */
+class Interpreter : public ExprVisitor, StmtVisitor {
+    public:
+        /**
+         * Class constructor
+         *
+         * @param parser
+         */
+        explicit Interpreter(Parser &parser);
+
+        /// Interpret the program parsed by the parser
+        void interpret();
+
+        /// Evaluate an expression node and return the value to which it has been reduced
+        int evaluate(ExprNode *node) override;
+
+        /// Visit a BinOpNode and compute the operation represented by the node
+        int visit(BinOpNode *node) override;
+
+        /// Visit a ConstantNode and return the constant value represented
+        int visit(ConstantNode *node) override;
+
+        /// Visit a LogicalNode and return the boolean value represented by the boolean expression
+        int visit(LogicalNode *node) override;
+
+        /// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+        int visit(RelationalNode *node) override;
+
+        /// Execute a statement node
+        void execute(StmtNode *node) override;
+
+        /// Visit a StmtExpressionNode node and compute the expression in the statement
+        void visit(StmtExpressionNode *node) override;
+
+        /// Visit a StmtPrintNode node and print the result of the expression in the statement
+        void visit(StmtPrintNode *node) override;
+
+        /// Visit an IfNode and execute the statement referenced if the condition
+        /// is evaluated to true
+        void visit(IfNode *node) override;
+
+    private:
+        Parser _parser;
+};
+
+#endif // LAX_INTERPRETER_H

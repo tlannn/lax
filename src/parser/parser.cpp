@@ -1,12 +1,11 @@
 #include "parser.h"
-using namespace std;
 
 /// Class constructor
-Parser::Parser(Lexer lex) : _lex(lex) {}
+Parser::Parser(Lexer &lex) : _lex(lex), _look(nullptr) {}
 
 /// Parse the following source code until a complete statement is read. The statement
 /// is represented by a node in the syntax tree
-Stmt* Parser::parse() {
+StmtNode* Parser::parse() {
     move();
     return stmt();
 }
@@ -26,14 +25,14 @@ bool Parser::check(int tokenType) {
 /// expected, read the next token
 void Parser::match(int tokenType) {
     if (_look->getType() == tokenType) move();
-    else throw std::runtime_error("unexpected character " + to_string(_look->getType()) + ", got " +
+    else throw std::runtime_error("unexpected character " + std::to_string(_look->getType()) + ", got " +
                 _look->toString() + " but expected " + std::to_string(tokenType) + " on line " +
                 std::to_string(Lexer::line) + ":" + std::to_string(Lexer::col));
 }
 
 /// Build a node representing a logical OR expression
-Expr* Parser::logic() {
-    Expr *expr = join();
+ExprNode* Parser::logic() {
+    ExprNode *expr = join();
 
     while (_look->toString() == "||") {
         Token op = *_look;
@@ -45,8 +44,8 @@ Expr* Parser::logic() {
 }
 
 /// Build a node representing a logical AND expression
-Expr* Parser::join() {
-    Expr *expr = rel();
+ExprNode* Parser::join() {
+    ExprNode *expr = rel();
 
     while (_look->toString() == "&&") {
         Token op = *_look;
@@ -58,8 +57,8 @@ Expr* Parser::join() {
 }
 
 /// Build a node representing an equality or inequality expression
-Expr* Parser::rel() {
-    Expr *e = expr();
+ExprNode* Parser::rel() {
+    ExprNode *e = expr();
 
     while (_look->toString() == "==" || _look->toString() == "!=" || _look->toString() == "<" ||
             _look->toString() == "<=" || _look->toString() == ">" || _look->toString() == ">=") {
@@ -72,8 +71,8 @@ Expr* Parser::rel() {
 }
 
 /// Build a node representing an expression
-Expr* Parser::expr() {
-    Expr *expr = term();
+ExprNode* Parser::expr() {
+    ExprNode *expr = term();
 
     while (_look->toString() == "+" || _look->toString() == "-") {
         Token op = *_look;
@@ -85,8 +84,8 @@ Expr* Parser::expr() {
 }
 
 /// Build a node representing a term
-Expr* Parser::term() {
-    Expr *expr = factor();
+ExprNode* Parser::term() {
+    ExprNode *expr = factor();
 
     while (_look->toString() == "*" || _look->toString() == "/") {
         Token op = *_look;
@@ -98,8 +97,8 @@ Expr* Parser::term() {
 }
 
 /// Build a node representing a factor
-Expr* Parser::factor() {
-    Expr *expr;
+ExprNode* Parser::factor() {
+    ExprNode *expr;
 
     switch (_look->getType()) {
         case TokenType::LPAREN: {
@@ -125,7 +124,7 @@ Expr* Parser::factor() {
 }
 
 /// Build a node representing a statement
-Stmt* Parser::stmt() {
+StmtNode* Parser::stmt() {
     if (check(TokenType::IF)) {
         move();
         return ifStmt();
@@ -140,28 +139,28 @@ Stmt* Parser::stmt() {
 }
 
 /// Build a node representing an expression statement
-Stmt* Parser::expressionStmt() {
-    Expr *expr = Parser::expr();
+StmtNode* Parser::expressionStmt() {
+    ExprNode *expr = Parser::expr();
     match(TokenType::SEMICOL);
 
-    return new StmtExpression(expr);
+    return new StmtExpressionNode(expr);
 }
 
 /// Build a node representing a print statement
-Stmt* Parser::printStmt() {
-    Expr *expr = Parser::expr();
+StmtNode* Parser::printStmt() {
+    ExprNode *expr = Parser::expr();
     match(TokenType::SEMICOL);
 
-    return new StmtPrint(expr);
+    return new StmtPrintNode(expr);
 }
 
 /// Build a node representing an if statement
-Stmt* Parser::ifStmt() {
+StmtNode* Parser::ifStmt() {
     match(TokenType::LPAREN);
-    Expr *condition = Parser::logic();
+    ExprNode *condition = Parser::logic();
     match(TokenType::RPAREN);
 
-    Stmt *then = Parser::stmt();
+    StmtNode *then = Parser::stmt();
 
     return new IfNode(condition, then);
 }

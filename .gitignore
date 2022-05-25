@@ -1,3 +1,6 @@
 # Compiled objects files
-build/
+*build*/
 *.o
+
+# Project configuration
+.idea/

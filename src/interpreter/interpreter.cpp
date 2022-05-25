@@ -1,17 +1,18 @@
 #include "interpreter.h"
 
 /// Class constructor
-Interpreter::Interpreter(Parser parser) : _parser(parser) {}
+Interpreter::Interpreter(Parser &parser) : _parser(parser) {}
 
 /// Interpret the program parsed by the parser
 void Interpreter::interpret() {
-    Stmt *tree = _parser.parse();
+    StmtNode *tree = _parser.parse();
     execute(tree);
 }
 
 /// Evaluate an expression node and return the value to which it has been reduced
-int Interpreter::evaluate(Expr *node) {
+int Interpreter::evaluate(ExprNode *node) {
     return node->accept(this);
+//    return visit(node);
 }
 
 /// Visit a BinOpNode and compute the operation represented by the node
@@ -79,17 +80,17 @@ int Interpreter::visit(RelationalNode *node) {
 }
 
 /// Execute a statement node
-void Interpreter::execute(Stmt *node) {
+void Interpreter::execute(StmtNode *node) {
     node->accept(this);
 }
 
-/// Visit a StmtExpression node and compute the expression in the statement
-void Interpreter::visit(StmtExpression *node) {
+/// Visit a StmtExpressionNode node and compute the expression in the statement
+void Interpreter::visit(StmtExpressionNode *node) {
     evaluate(node->getExpr());
 }
 
-/// Visit a StmtPrint node and print the result of the expression in the statement
-void Interpreter::visit(StmtPrint *node) {
+/// Visit a StmtPrintNode node and print the result of the expression in the statement
+void Interpreter::visit(StmtPrintNode *node) {
     int res = evaluate(node->getExpr());
     std::cout << "The result is : " << res << std::endl;
 }

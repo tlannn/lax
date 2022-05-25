@@ -18,12 +18,16 @@ expr -> term (("+" | "-") term)*
 term -> factor (("*" | "/") factor)*
 factor -> "(" logic ")" | NUM | "true" | "false"
 ```
-## Makefile commands
-To compile the sources :
-`$ make`
+## CMake commands
+To build with cmake into the directory build/ :
+```
+$ mkdir build && cd build
+$ cmake ..
+$ make # Compile then to create the executable
+```
 
 To run the interpreter on a specific file :
-`$ make run file=lang # replace 'lang' by any Lax file`
-
-To delete all generated assets :
-`$ make clean`
+```
+# In directory build/
+$ ./lax ../lang # replace 'lang' by any Lax file
+```

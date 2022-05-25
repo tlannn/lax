@@ -4,7 +4,7 @@ int Lexer::line = 1;
 int Lexer::col = 1;
 
 /// Class constructor
-Lexer::Lexer(std::string source) : _source(source), _look(' '), _index(-1) {
+Lexer::Lexer(std::string &source) : _source(source), _look(' '), _index(-1) {
     // Reserve words
     reserve(&Word::TRUE); reserve(&Word::FALSE);
     reserve(&Word::AND); reserve(&Word::OR);
@@ -57,7 +57,7 @@ Token* Lexer::nextToken() {
 
     // Recognize operators
     else if (isOperator(&_look)) {
-        Op *op = new Op(_look);
+        Op *op = new Op(std::string(1, _look));
         _look = ' ';
         return op;
     }
@@ -99,7 +99,7 @@ Token* Lexer::nextToken() {
     return new Token(TokenType::END);
 }
 
-/// Reserve a word, meaning it cannot be used as an identier
+/// Reserve a word, meaning it cannot be used as an identifier
 void Lexer::reserve(Word *word) {
     _words[word->toString()] = word;
 }
@@ -123,26 +123,26 @@ bool Lexer::readChar(char expected) {
 }
 
 /// Check if the character is a letter
-bool Lexer::isLetter(char *c) {
+bool Lexer::isLetter(const char *c) {
     return *c >= 'A' && *c <= 'Z' || *c >= 'a' && *c <= 'z';
 }
 
 /// Check if the character is a digit
-bool Lexer::isDigit(char *c) {
+bool Lexer::isDigit(const char *c) {
     return *c >= '0' && *c <= '9';
 }
 
 /// Check if the character is an operator
-bool Lexer::isOperator(char *c) {
+bool Lexer::isOperator(const char *c) {
     return *c == '+' || *c == '-' || *c == '*' || *c == '/';
 }
 
 /// Check if the character is an opening or closed parenthesis
-bool Lexer::isParenthesis(char *c) {
+bool Lexer::isParenthesis(const char *c) {
     return *c == '(' || *c == ')';
 }
 
 /// Check if the character is a semicolon
-bool Lexer::isSemicolon(char *c) {
+bool Lexer::isSemicolon(const char *c) {
     return *c == ';';
 }

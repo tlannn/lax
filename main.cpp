@@ -2,9 +2,9 @@
 #include <fstream>
 #include <string>
 
-#include "lexer.h"
-#include "parser.h"
-#include "interpreter.h"
+#include "lexer/lexer.h"
+#include "parser/parser.h"
+#include "interpreter/interpreter.h"
 
 using namespace std;
 
