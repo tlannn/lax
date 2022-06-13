@@ -11,7 +11,7 @@
 #include "ast/constantnode.h"
 #include "ast/logicalnode.h"
 #include "ast/relationalnode.h"
-#include "ast/ifnode.h"
+#include "ast/conditionalnode.h"
 #include "ast/stmtnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
@@ -127,11 +127,11 @@ private:
     StmtNode* printStmt();
 
     /**
-     * Build a node representing an if statement
+     * Build a node representing an if/else statement
      *
      * @return the node created
      */
-    StmtNode* ifStmt();
+    StmtNode* conditionalStmt();
 
     Lexer _lex; // The lexical analyzer
     Token *_look; // The lookahead token

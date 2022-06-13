@@ -1,2 +1,8 @@
-if (false || true  && 5 > 2)
+if (1 == 2 && 5 > 2)
     print 12;
+else if (false || 1 != (2 - 1))
+	print 13;
+else if (4 > 5)
+	print 14;
+else
+	print 15;

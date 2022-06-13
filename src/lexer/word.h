@@ -25,6 +25,7 @@ public:
     static Word SG; // Strictly greater operator
     static Word GE; // Greater or equal operator
     static Word IF; // Word indicating debut of conditional statement
+    static Word ELSE; // Word indicating debut of statement when conditional statement is evaluated to false
     static Word PRINT; // Word 'print'
 
     /**

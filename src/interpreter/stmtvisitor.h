@@ -7,7 +7,7 @@
 class StmtNode;
 class StmtExpressionNode;
 class StmtPrintNode;
-class IfNode;
+class ConditionalNode;
 
 /**
  * Visitor interface for statements
@@ -36,12 +36,12 @@ public:
     virtual void visit(StmtPrintNode *node) = 0;
 
     /**
-     * Visit an IfNode and execute the statement referenced if the condition
+     * Visit an ConditionalNode and execute the statement referenced if the condition
      * is evaluated to true
      *
      * @param node the node to visit
      */
-    virtual void visit(IfNode *node) = 0;
+    virtual void visit(ConditionalNode *node) = 0;
 };
 
 #endif // LAX_STMTVISITOR_H

@@ -1,5 +1,5 @@
-#ifndef LAX_IFNODE_H
-#define LAX_IFNODE_H
+#ifndef LAX_CONDITIONALNODE_H
+#define LAX_CONDITIONALNODE_H
 
 #include <iostream>
 
@@ -13,22 +13,24 @@
 //class StmtVisitor;
 
 /**
- * Node for if statements in the program
+ * Node for if/else statements in the program
  *
- * If statements first evaluate a condition (represented by a boolean expression),
+ * If/else statements first evaluate a condition (represented by a boolean expression),
  * and then execute the 'then' statement referenced by the node if the condition
- * is evaluated to true.
+ * is evaluated to true. Otherwise, the 'else' statement referenced is executed if
+ * there is one.
  */
-class IfNode : public StmtNode {
+class ConditionalNode : public StmtNode {
 public:
     /**
      * Class constructor
      *
      * @param expr the expression that conditions whether the 'then' statement
      * will be executed or not
-     * @param stmt the statement executed if the condition is evaluated to true
+     * @param thenSmt the statement executed if the condition is evaluated to true
+     * @param elseStmt the statement executed if the condition is evaluated to false
      */
-    IfNode(ExprNode *expr, StmtNode *stmt);
+    ConditionalNode(ExprNode *expr, StmtNode *thenStmt, StmtNode *elseStmt);
 
     /**
      * Getter for the condition expression
@@ -45,13 +47,21 @@ public:
     StmtNode* getThenStatement();
 
     /**
+     * Getter for the 'else' statement
+     *
+     * @return the 'else' statement
+     */
+    StmtNode* getElseStatement();
+
+    /**
      * Accept method for the visitor pattern
      */
     void accept(StmtVisitor *visitor) override;
 
 protected:
     ExprNode *_expr;
-    StmtNode *_stmt;
+    StmtNode *_thenStmt;
+    StmtNode *_elseStmt;
 };
 
-#endif // LAX_IFNODE_H
+#endif // LAX_CONDITIONALNODE_H

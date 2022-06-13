@@ -95,9 +95,12 @@ void Interpreter::visit(StmtPrintNode *node) {
     std::cout << "The result is : " << res << std::endl;
 }
 
-/// Visit an IfNode and execute the statement referenced if the condition
-/// is evaluated to true
-void Interpreter::visit(IfNode *node) {
+/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
+/// is evaluated to true, otherwise execute the 'else' statement if there is one
+void Interpreter::visit(ConditionalNode *node) {
     if (evaluate(node->getConditionExpression()))
         execute(node->getThenStatement());
+    else if (node->getElseStatement()) {
+        execute(node->getElseStatement());
+    }
 }

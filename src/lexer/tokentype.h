@@ -30,11 +30,11 @@ enum TokenType {
     BREAK = 280, // Break keyword
     IF = 281, // If keyword
     ELSE = 282, // Else keyword
-    WHILE = 283, // While keyword
-    FOR = 284, // For keyword
-    PRINT = 285, // Print keyword
-    SEMICOL = 286, // Semicolon
-    END = 287 // End of file
+    WHILE = 284, // While keyword
+    FOR = 285, // For keyword
+    PRINT = 286, // Print keyword
+    SEMICOL = 287, // Semicolon
+    END = 288 // End of file
 };
 
 #endif // LAX_TOKENTYPE_H

@@ -8,7 +8,7 @@
 #include "ast/constantnode.h"
 #include "ast/logicalnode.h"
 #include "ast/relationalnode.h"
-#include "ast/ifnode.h"
+#include "ast/conditionalnode.h"
 #include "ast/stmtnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
@@ -58,9 +58,9 @@ class Interpreter : public ExprVisitor, StmtVisitor {
         /// Visit a StmtPrintNode node and print the result of the expression in the statement
         void visit(StmtPrintNode *node) override;
 
-        /// Visit an IfNode and execute the statement referenced if the condition
-        /// is evaluated to true
-        void visit(IfNode *node) override;
+        /// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
+        /// is evaluated to true, otherwise execute the 'else' statement if there is one
+        void visit(ConditionalNode *node) override;
 
     private:
         Parser _parser;

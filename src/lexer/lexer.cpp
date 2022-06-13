@@ -11,7 +11,8 @@ Lexer::Lexer(std::string &source) : _source(source), _look(' '), _index(-1) {
     reserve(&Word::EQ); reserve(&Word::NEQ);
     reserve(&Word::LE); reserve(&Word::GE);
     reserve(&Word::SL); reserve(&Word::SG);
-    reserve(&Word::IF); reserve(&Word::PRINT);
+    reserve(&Word::IF); reserve(&Word::ELSE);
+    reserve(&Word::PRINT);
 }
 
 /// Continue the reading of the source code and return the next token analyzed

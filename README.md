@@ -7,8 +7,8 @@ Lax currently supports arithmetic operations computation, if statements (true/fa
 ## Grammar
 The source language is defined as following.
 ```
-stmt -> ifStmt | printStmt | expressionStmt
-ifStmt -> "if" "(" logic ")" stmt
+stmt -> conditionalStmt | printStmt | expressionStmt
+ifStmt -> "if" "(" logic ")" stmt (("else" conditionalStmt)* | "else" stmt)?
 printStmt -> "print" expressionStmt
 expressionStmt -> expr ";"
 logic -> join ("||" join)*

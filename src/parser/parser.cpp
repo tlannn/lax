@@ -127,7 +127,7 @@ ExprNode* Parser::factor() {
 StmtNode* Parser::stmt() {
     if (check(TokenType::IF)) {
         move();
-        return ifStmt();
+        return conditionalStmt();
     }
 
     else if (check(TokenType::PRINT)) {
@@ -154,13 +154,27 @@ StmtNode* Parser::printStmt() {
     return new StmtPrintNode(expr);
 }
 
-/// Build a node representing an if statement
-StmtNode* Parser::ifStmt() {
+/// Build a node representing an if/else statement
+StmtNode* Parser::conditionalStmt() {
     match(TokenType::LPAREN);
     ExprNode *condition = Parser::logic();
     match(TokenType::RPAREN);
 
-    StmtNode *then = Parser::stmt();
+    StmtNode *thenStmt = Parser::stmt();
 
-    return new IfNode(condition, then);
+    if (check(TokenType::ELSE)) {
+        move();
+        StmtNode *elseStmt;
+
+        if (check(TokenType::IF)) {
+            move();
+            elseStmt = Parser::conditionalStmt();
+        }
+        else elseStmt = Parser::stmt();
+
+        return new ConditionalNode(condition, thenStmt, elseStmt);
+    }
+
+    else
+        return new ConditionalNode(condition, thenStmt, nullptr);
 }
