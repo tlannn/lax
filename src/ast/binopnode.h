@@ -3,13 +3,8 @@
 
 #include "exprnode.h"
 #include "interpreter/exprvisitor.h"
-#include "lexer/token.h"
+#include "tokens/token.h"
 
-/*
- * Forward declarations for cyclic dependencies
- */
-//class ExprNode;
-//class ExprVisitor;
 
 /**
  * Node for arithmetic expressions in the program, such as basic computes

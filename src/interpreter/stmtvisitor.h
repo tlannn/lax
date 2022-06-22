@@ -8,6 +8,9 @@ class StmtNode;
 class StmtExpressionNode;
 class StmtPrintNode;
 class ConditionalNode;
+class DeclNode;
+class AssignNode;
+class BlockNode;
 
 /**
  * Visitor interface for statements
@@ -42,6 +45,27 @@ public:
      * @param node the node to visit
      */
     virtual void visit(ConditionalNode *node) = 0;
+
+	/**
+     * Visit a DeclNode and declare a variable
+     *
+     * @param node the node to visit
+     */
+    virtual void visit(DeclNode *node) = 0;
+
+	/**
+     * Visit an AssignNode and assign a new value to a variable
+     *
+     * @param node the node to visit
+     */
+    virtual void visit(AssignNode *node) = 0;
+
+	/**
+     * Visit a BlockNode and execute all the statements inside the block
+     *
+     * @param node the node to visit
+     */
+    virtual void visit(BlockNode *node) = 0;
 };
 
 #endif // LAX_STMTVISITOR_H

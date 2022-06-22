@@ -7,10 +7,32 @@ include_directories(src)
 
 # Add all .cpp files in src/ directory as source file
 set(SOURCE_FILES main.cpp
+        src/ast/assignnode.cpp
+        src/ast/binopnode.cpp
+        src/ast/blocknode.cpp
+        src/ast/conditionalnode.cpp
+        src/ast/constantnode.cpp
+        src/ast/declnode.cpp
+        src/ast/exprnode.cpp
+        src/ast/id.cpp
+        src/ast/logicalnode.cpp
+        src/ast/relationalnode.cpp
+        src/ast/stmtexpressionnode.cpp
+        src/ast/stmtprintnode.cpp
         src/interpreter/interpreter.cpp
         src/lexer/lexer.cpp
-        src/lexer/token.cpp
-        src/parser/parser.cpp src/ast/exprnode.cpp src/ast/exprnode.h src/ast/binopnode.cpp src/ast/binopnode.h src/ast/constantnode.cpp src/ast/constantnode.h src/ast/logicalnode.cpp src/ast/logicalnode.h src/ast/relationalnode.cpp src/ast/relationalnode.h src/ast/stmtnode.h src/ast/stmtexpressionnode.cpp src/ast/stmtexpressionnode.h src/ast/stmtprintnode.cpp src/ast/stmtprintnode.h src/ast/conditionalnode.cpp src/ast/conditionalnode.h src/interpreter/stmtvisitor.h src/interpreter/exprvisitor.h src/lexer/tokentype.h src/lexer/num.cpp src/lexer/num.h src/lexer/op.cpp src/lexer/op.h src/lexer/word.cpp src/lexer/word.h src/symbols/type.cpp src/symbols/type.h)
+        src/parser/parser.cpp
+        src/semantic/semanticanalyzer.cpp
+        src/symbols/env.cpp
+        src/symbols/symbol.cpp
+        src/symbols/symboltable.cpp
+        src/symbols/varsymbol.cpp
+        src/tokens/num.cpp
+        src/tokens/op.cpp
+        src/tokens/token.cpp
+        src/tokens/type.cpp
+        src/tokens/word.cpp
+)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})

@@ -3,19 +3,15 @@
 
 #include "exprnode.h"
 #include "interpreter/exprvisitor.h"
-#include "lexer/num.h"
-#include "lexer/token.h"
-#include "symbols/type.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-//class ExprVisitor;
+#include "tokens/num.h"
+#include "tokens/token.h"
+#include "tokens/type.h"
+#include "tokens/word.h"
 
 /**
  * Node for a constant value.
  *
- * Constants can be numbers, booleans,
+ * Constants can be numbers, booleans, or any atomic value.
  */
 class ConstantNode : public ExprNode {
 public:
@@ -41,10 +37,20 @@ public:
      */
     int getValue();
 
+	/**
+     * Getter for the type of the constant
+     *
+     * @return the type
+     */
+	Type getType();
+
     /**
      * Accept method for the visitor pattern
      */
     int accept(ExprVisitor *visitor) override;
+
+private:
+	Type _type;
 };
 
 #endif // LAX_CONSTANTNODE_H

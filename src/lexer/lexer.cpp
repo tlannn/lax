@@ -5,14 +5,19 @@ int Lexer::col = 1;
 
 /// Class constructor
 Lexer::Lexer(std::string &source) : _source(source), _look(' '), _index(-1) {
-    // Reserve words
+    // Reserve types
+    reserve(&Type::INT); reserve(&Type::BOOL);
+
+    // Reserve keywords
     reserve(&Word::TRUE); reserve(&Word::FALSE);
-    reserve(&Word::AND); reserve(&Word::OR);
-    reserve(&Word::EQ); reserve(&Word::NEQ);
-    reserve(&Word::LE); reserve(&Word::GE);
-    reserve(&Word::SL); reserve(&Word::SG);
-    reserve(&Word::IF); reserve(&Word::ELSE);
-    reserve(&Word::PRINT);
+	reserve(&Word::IF); reserve(&Word::ELSE);
+	reserve(&Word::VAR); reserve(&Word::PRINT);
+
+	// Reserve operators
+	reserve(&Word::AND); reserve(&Word::OR);
+	reserve(&Word::EQ); reserve(&Word::NEQ);
+	reserve(&Word::LE); reserve(&Word::GE);
+	reserve(&Word::SL); reserve(&Word::SG);
 }
 
 /// Continue the reading of the source code and return the next token analyzed
@@ -34,6 +39,11 @@ Token* Lexer::nextToken() {
             break;
         case '=':
             if (readChar('=')) return &Word::EQ;
+            else {
+                Token *tok = new Token(std::string(1, _look), TokenType::SIMEQ);
+                _look = ' ';
+                return tok;
+            }
             break;
         case '!':
             if (readChar('=')) return &Word::NEQ;
@@ -70,6 +80,13 @@ Token* Lexer::nextToken() {
         return tok;
     }
 
+    // Recognize braces
+    else if (isBraces(&_look)) {
+        Token *tok = new Token(std::string(1, _look), _look == '{' ? TokenType::LBRACK : TokenType::RBRACK);
+        _look = ' ';
+        return tok;
+    }
+
     // Recognize words
     else if (isLetter(&_look)) {
         // Read in a buffer all following letters
@@ -92,6 +109,13 @@ Token* Lexer::nextToken() {
     // Recognize semicolons
     else if (isSemicolon(&_look)) {
         Token *tok = new Token(std::string(1, _look), TokenType::SEMICOL);
+        _look = ' ';
+        return tok;
+    }
+
+    // Recognize semicolons
+    else if (isColon(&_look)) {
+        Token *tok = new Token(std::string(1, _look), TokenType::COLON);
         _look = ' ';
         return tok;
     }
@@ -138,9 +162,19 @@ bool Lexer::isOperator(const char *c) {
     return *c == '+' || *c == '-' || *c == '*' || *c == '/';
 }
 
-/// Check if the character is an opening or closed parenthesis
+/// Check if the character is an opening or closing parenthesis
 bool Lexer::isParenthesis(const char *c) {
     return *c == '(' || *c == ')';
+}
+
+/// Check if the character is an opening or closing brace
+bool Lexer::isBraces(const char *c) {
+    return *c == '{' || *c == '}';
+}
+
+/// Check if the character is a colon
+bool Lexer::isColon(const char *c) {
+    return *c == ':';
 }
 
 /// Check if the character is a semicolon

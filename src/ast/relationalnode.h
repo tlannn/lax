@@ -3,13 +3,8 @@
 
 #include "logicalnode.h"
 #include "interpreter/exprvisitor.h"
-#include "lexer/token.h"
-#include "symbols/type.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-//class ExprVisitor;
+#include "tokens/token.h"
+#include "tokens/type.h"
 
 /**
  * Node for an equality or inequality expression
@@ -32,12 +27,6 @@ public:
      * Accept method for the visitor pattern
      */
     int accept(ExprVisitor *visitor) override;
-
-protected:
-    /**
-     * Check if the expression can result in a boolean expression
-     */
-    static Type check(Type t1, Type t2);
 };
 
 #endif // LAX_RELATIONALNODE_H

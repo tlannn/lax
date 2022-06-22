@@ -3,7 +3,7 @@
 /// Class constructor
 Interpreter::Interpreter(Parser &parser) : _parser(parser) {}
 
-/// Interpret the program parsed by the parser
+/// Interpret the code parsed by the parser
 void Interpreter::interpret() {
     StmtNode *tree = _parser.parse();
     execute(tree);
@@ -12,7 +12,6 @@ void Interpreter::interpret() {
 /// Evaluate an expression node and return the value to which it has been reduced
 int Interpreter::evaluate(ExprNode *node) {
     return node->accept(this);
-//    return visit(node);
 }
 
 /// Visit a BinOpNode and compute the operation represented by the node
@@ -79,6 +78,11 @@ int Interpreter::visit(RelationalNode *node) {
     return 0;
 }
 
+/// Visit an Id (identifier) and return the value of the variable defined with this identifier
+int Interpreter::visit(Id *node) {
+	return _memory[node->getToken().toString()];
+}
+
 /// Execute a statement node
 void Interpreter::execute(StmtNode *node) {
     node->accept(this);
@@ -100,7 +104,29 @@ void Interpreter::visit(StmtPrintNode *node) {
 void Interpreter::visit(ConditionalNode *node) {
     if (evaluate(node->getConditionExpression()))
         execute(node->getThenStatement());
-    else if (node->getElseStatement()) {
+
+    else if (node->getElseStatement())
         execute(node->getElseStatement());
+}
+
+/// Visit a DeclNode and declare a variable
+void Interpreter::visit(DeclNode *node) {
+    if (node->getRValue() != nullptr) {
+        _memory[node->getName()] = evaluate(node->getRValue());
+    }
+}
+
+/// Visit an AssignNode and assign a new value to a variable
+void Interpreter::visit(AssignNode *node) {
+	int value = evaluate(node->getRValue());
+	_memory[node->getLValue()] = value;
+}
+
+/// Visit a BlockNode and execute all the statements inside the block
+void Interpreter::visit(BlockNode *node) {
+    std::vector<StmtNode*> stmts = node->getStatements();
+
+    for (int i = 0; i < stmts.size(); ++i) {
+        execute(stmts[i]);
     }
 }

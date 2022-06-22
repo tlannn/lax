@@ -26,15 +26,18 @@ enum TokenType {
     BANG = 276, // Exclamation mark, logical not operator
     AND = 277, // Logical and operator
     OR = 278, // Logical or operator
-    DO = 279, // Do keyword
-    BREAK = 280, // Break keyword
-    IF = 281, // If keyword
-    ELSE = 282, // Else keyword
+    VAR = 279, // Var keyword
+    DO = 280, // Do keyword
+    BREAK = 281, // Break keyword
+    IF = 282, // If keyword
+    ELSE = 283, // Else keyword
     WHILE = 284, // While keyword
     FOR = 285, // For keyword
     PRINT = 286, // Print keyword
-    SEMICOL = 287, // Semicolon
-    END = 288 // End of file
+    SIMEQ = 287, // Semicolon
+    SEMICOL = 288, // Semicolon
+    COLON = 289, // Semicolon
+    END = 290 // End of file
 };
 
 #endif // LAX_TOKENTYPE_H

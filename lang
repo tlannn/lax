@@ -1,8 +1,16 @@
-if (1 == 2 && 5 > 2)
-    print 12;
-else if (false || 1 != (2 - 1))
-	print 13;
-else if (4 > 5)
-	print 14;
+var age: int = 19;
+age = age + 1;
+print age + 2;
+
+var test: bool = false;
+
+if (test) {
+	print 1;
+	print 2;
+	print 3;
+}
+
+else if (age > 0 && age <= 18)
+    age = 0;
 else
-	print 15;
+	print age;

@@ -5,18 +5,25 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "ast/exprnode.h"
+#include "ast/assignnode.h"
 #include "ast/binopnode.h"
+#include "ast/blocknode.h"
 #include "ast/constantnode.h"
+#include "ast/declnode.h"
+#include "ast/id.h"
 #include "ast/logicalnode.h"
 #include "ast/relationalnode.h"
 #include "ast/conditionalnode.h"
 #include "ast/stmtnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
+#include "tokens/token.h"
 #include "lexer/lexer.h"
-#include "lexer/token.h"
+#include "symbols/varsymbol.h"
+#include "symbols/env.h"
 
 /**
  * Parser for the Lax language
@@ -63,6 +70,62 @@ private:
      */
     void match(int tokenType);
 
+	/**
+	 * Build a node representing the program
+	 *
+	 * @return the node created
+	 */
+	StmtNode* program();
+
+	/**
+     * Build a node representing a sequence of statements
+     *
+     * @return the node created
+     */
+	StmtNode* block();
+
+	/**
+	 * Build a node representing a statement
+	 *
+	 * @return the node created
+	 */
+	StmtNode* stmt();
+
+	/**
+     * Build a node representing a variable declaration statement
+     *
+     * @return the node created
+     */
+	StmtNode* varDeclStmt();
+
+	/**
+     * Build a node representing a variable assignment statement
+     *
+     * @return the node created
+     */
+	StmtNode* varAssignStmt();
+
+	/**
+	 * Build a node representing an if/else statement
+	 *
+	 * @return the node created
+	 */
+	StmtNode* conditionalStmt();
+
+	/**
+	 * Build a node representing a print statement
+	 *
+	 * @return the node created
+	 */
+	StmtNode* printStmt();
+
+	/**
+	 * Build a node representing an expression statement
+	 *
+	 * @return the node created
+	 */
+	StmtNode* expressionStmt();
+
     /**
      * Build a node representing a logical OR expression
      *
@@ -105,36 +168,16 @@ private:
      */
     ExprNode* factor();
 
-    /**
-     * Build a node representing a statement
+	/**
+     * Build a node representing an identifier
      *
      * @return the node created
      */
-    StmtNode* stmt();
-
-    /**
-     * Build a node representing an expression statement
-     *
-     * @return the node created
-     */
-    StmtNode* expressionStmt();
-
-    /**
-     * Build a node representing a print statement
-     *
-     * @return the node created
-     */
-    StmtNode* printStmt();
-
-    /**
-     * Build a node representing an if/else statement
-     *
-     * @return the node created
-     */
-    StmtNode* conditionalStmt();
+	ExprNode* id();
 
     Lexer _lex; // The lexical analyzer
     Token *_look; // The lookahead token
+    Env _env; // The environment
 };
 
 #endif

@@ -1,11 +1,8 @@
 #include "conditionalnode.h"
 
 /// ConditionalNode constructor
-ConditionalNode::ConditionalNode(ExprNode *expr, StmtNode *thenStmt, StmtNode *elseStmt) :
-_expr(expr), _thenStmt(thenStmt), _elseStmt(elseStmt) {
-    if (expr->getType() != Type::BOOL)
-        std::cout << "boolean required in if" << std::endl;
-}
+ConditionalNode::ConditionalNode(ExprNode *expr, StmtNode *thenStmt, StmtNode *elseStmt) : StmtNode(),
+	_expr(expr), _thenStmt(thenStmt), _elseStmt(elseStmt) {}
 
 /// Getter for the condition expression
 ExprNode* ConditionalNode::getConditionExpression() {

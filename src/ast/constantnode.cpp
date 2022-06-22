@@ -1,10 +1,10 @@
 #include "constantnode.h"
 
 /// ConstantNode constructor
-ConstantNode::ConstantNode(Token tok, Type type) : ExprNode(tok, type) {}
+ConstantNode::ConstantNode(Token tok, Type type) : ExprNode(tok), _type(type) {}
 
 /// ConstantNode constructor
-ConstantNode::ConstantNode(int i) : ExprNode(Num(i), Type::INT) {}
+ConstantNode::ConstantNode(int i) : ExprNode(Num(i)), _type(Type::INT) {}
 
 /// Getter for the value of the constant
 int ConstantNode::getValue() {
@@ -14,6 +14,11 @@ int ConstantNode::getValue() {
         return _tok.toString() == Word::TRUE.toString() ? 1 : 0;
 
     return -1;
+}
+
+/// Getter for the type of the constant
+Type ConstantNode::getType() {
+	return _type;
 }
 
 /// Accept method for the visitor pattern

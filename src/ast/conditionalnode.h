@@ -7,11 +7,6 @@
 #include "stmtnode.h"
 #include "interpreter/stmtvisitor.h"
 
-/*
- * Forward declarations for cyclic dependencies
- */
-//class StmtVisitor;
-
 /**
  * Node for if/else statements in the program
  *

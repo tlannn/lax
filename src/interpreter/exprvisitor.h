@@ -9,6 +9,7 @@ class BinOpNode;
 class ConstantNode;
 class LogicalNode;
 class RelationalNode;
+class Id;
 
 /**
  * Visitor interface for expressions
@@ -54,6 +55,14 @@ public:
      * @return the boolean value
      */
     virtual int visit(RelationalNode *node) = 0;
+
+	/**
+     * Visit an Id (identifier) and return the value of the variable defined with this identifier
+     *
+     * @param node the node to visit
+     * @return the value of the variable
+     */
+    virtual int visit(Id *node) = 0;
 };
 
 #endif // LAX_EXPRVISITOR_H

@@ -3,13 +3,8 @@
 
 #include "exprnode.h"
 #include "interpreter/exprvisitor.h"
-#include "lexer/token.h"
-#include "symbols/type.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-//class ExprVisitor;
+#include "tokens/token.h"
+#include "tokens/type.h"
 
 /**
  * Node for a logical expression
@@ -48,16 +43,6 @@ public:
     int accept(ExprVisitor *visitor) override;
 
 protected:
-    /**
-     * Check if the expression can result in a boolean expression
-     *
-     * @param t1 the type of the left expression
-     * @param t2 the type of the right expression
-     * @return the boolean type if the expression is correct, or the
-     * incompatible type otherwise
-     */
-    static Type check(Type t1, Type t2);
-
     ExprNode *_left;
     ExprNode *_right;
 };

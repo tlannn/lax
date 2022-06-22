@@ -3,8 +3,8 @@
 
 #include "astnode.h"
 #include "interpreter/exprvisitor.h"
-#include "lexer/token.h"
-#include "symbols/type.h"
+#include "tokens/token.h"
+#include "tokens/type.h"
 
 /*
  * Forward declarations for cyclic dependencies
@@ -24,7 +24,7 @@ public:
      * @param tok the token in the expression
      * @param type the type of the expression
      */
-    ExprNode(Token tok, Type type);
+    ExprNode(Token tok);
 
     /**
      * Getter for the token
@@ -32,13 +32,6 @@ public:
      * @return the token
      */
     Token getToken();
-
-    /**
-     * Getter for the type of the expression
-     *
-     * @return the type of the expression
-     */
-    Type getType();
 
     /**
      * Abstract accept method for the visitor pattern
@@ -53,7 +46,6 @@ public:
 
 protected:
     Token _tok;
-    Type _type;
 };
 
 #endif // LAX_EXPRNODE_H

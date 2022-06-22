@@ -7,7 +7,7 @@ Parser::Parser(Lexer &lex) : _lex(lex), _look(nullptr) {}
 /// is represented by a node in the syntax tree
 StmtNode* Parser::parse() {
     move();
-    return stmt();
+    return program();
 }
 
 /// Read the next token in the source code
@@ -30,102 +30,42 @@ void Parser::match(int tokenType) {
                 std::to_string(Lexer::line) + ":" + std::to_string(Lexer::col));
 }
 
-/// Build a node representing a logical OR expression
-ExprNode* Parser::logic() {
-    ExprNode *expr = join();
+/// Build a node representing the program
+StmtNode* Parser::program() {
+	std::vector<StmtNode*> stmts;
 
-    while (_look->toString() == "||") {
-        Token op = *_look;
-        move();
-        expr = new LogicalNode(expr, op, join());
-    }
+	while (!check(TokenType::END)) {
+		stmts.push_back(stmt());
+	}
 
-    return expr;
+	return new BlockNode(stmts);
 }
 
-/// Build a node representing a logical AND expression
-ExprNode* Parser::join() {
-    ExprNode *expr = rel();
+/// Build a node representing a sequence of statements
+StmtNode* Parser::block() {
+	match(TokenType::LBRACK);
+	std::vector<StmtNode*> stmts;
 
-    while (_look->toString() == "&&") {
-        Token op = *_look;
-        move();
-        expr = new LogicalNode(expr, op, rel());
-    }
+	while (!check(TokenType::RBRACK))
+		stmts.push_back(stmt());
 
-    return expr;
-}
+	match(TokenType::RBRACK);
 
-/// Build a node representing an equality or inequality expression
-ExprNode* Parser::rel() {
-    ExprNode *e = expr();
-
-    while (_look->toString() == "==" || _look->toString() == "!=" || _look->toString() == "<" ||
-            _look->toString() == "<=" || _look->toString() == ">" || _look->toString() == ">=") {
-        Token op = *_look;
-        move();
-        e = new RelationalNode(e, op, expr());
-    }
-
-    return e;
-}
-
-/// Build a node representing an expression
-ExprNode* Parser::expr() {
-    ExprNode *expr = term();
-
-    while (_look->toString() == "+" || _look->toString() == "-") {
-        Token op = *_look;
-        move();
-        expr = new BinOpNode(expr, op, term());
-    }
-
-    return expr;
-}
-
-/// Build a node representing a term
-ExprNode* Parser::term() {
-    ExprNode *expr = factor();
-
-    while (_look->toString() == "*" || _look->toString() == "/") {
-        Token op = *_look;
-        move();
-        expr = new BinOpNode(expr, op, factor());
-    }
-
-    return expr;
-}
-
-/// Build a node representing a factor
-ExprNode* Parser::factor() {
-    ExprNode *expr;
-
-    switch (_look->getType()) {
-        case TokenType::LPAREN: {
-            move();
-            expr = Parser::logic();
-            match(TokenType::RPAREN);
-            break;
-        }
-        case TokenType::NUM: {
-            expr = new ConstantNode(*_look, Type::INT);
-            move();
-            break;
-        }
-        case TokenType::TRUE:
-        case TokenType::FALSE: {
-            expr = new ConstantNode(*_look, Type::BOOL);
-            move();
-            break;
-        }
-    }
-
-    return expr;
+	return new BlockNode(stmts);
 }
 
 /// Build a node representing a statement
 StmtNode* Parser::stmt() {
-    if (check(TokenType::IF)) {
+    if (check(TokenType::VAR)) {
+        move();
+        return varDeclStmt();
+    }
+
+    else if (check(TokenType::ID)) {
+        return varAssignStmt();
+    }
+
+    else if (check(TokenType::IF)) {
         move();
         return conditionalStmt();
     }
@@ -138,20 +78,51 @@ StmtNode* Parser::stmt() {
     return expressionStmt();
 }
 
-/// Build a node representing an expression statement
-StmtNode* Parser::expressionStmt() {
-    ExprNode *expr = Parser::expr();
-    match(TokenType::SEMICOL);
+/// Build a node representing a variable declaration statement
+StmtNode* Parser::varDeclStmt() {
+	std::string varName = _look->toString();
+	move();
+	match(TokenType::COLON);
 
-    return new StmtExpressionNode(expr);
+	Token *type = _look;
+	match(TokenType::TYPE);
+
+	DeclNode *node;
+	ExprNode *assignment = nullptr;
+
+	if (check(TokenType::SIMEQ)) {
+		move();
+		assignment = logic();
+	}
+
+	if (type->toString() == Type::INT.toString()) {
+		node = new DeclNode(varName, Type::INT, assignment);
+		_env.put(new VarSymbol(varName, Type::INT));
+	}
+
+	else if (type->toString() == Type::BOOL.toString()) {
+		node = new DeclNode(varName, Type::BOOL, assignment);
+		_env.put(new VarSymbol(varName, Type::BOOL));
+	}
+
+	else throw std::runtime_error("Unknown type '" + type->toString() + "'.");
+
+	match(TokenType::SEMICOL);
+
+	return node;
 }
 
-/// Build a node representing a print statement
-StmtNode* Parser::printStmt() {
-    ExprNode *expr = Parser::expr();
-    match(TokenType::SEMICOL);
+/// Build a node representing a variable assignment statement
+StmtNode* Parser::varAssignStmt() {
+	std::string varName = _look->toString();
 
-    return new StmtPrintNode(expr);
+	move();
+	match(TokenType::SIMEQ);
+
+	AssignNode *node = new AssignNode(varName, logic());
+
+	match(TokenType::SEMICOL);
+	return node;
 }
 
 /// Build a node representing an if/else statement
@@ -160,7 +131,7 @@ StmtNode* Parser::conditionalStmt() {
     ExprNode *condition = Parser::logic();
     match(TokenType::RPAREN);
 
-    StmtNode *thenStmt = Parser::stmt();
+    StmtNode *thenStmt = check(TokenType::LBRACK) ? block() : stmt();
 
     if (check(TokenType::ELSE)) {
         move();
@@ -170,11 +141,132 @@ StmtNode* Parser::conditionalStmt() {
             move();
             elseStmt = Parser::conditionalStmt();
         }
-        else elseStmt = Parser::stmt();
+        else elseStmt = check(TokenType::LBRACK) ? block() : stmt();
 
         return new ConditionalNode(condition, thenStmt, elseStmt);
     }
 
     else
         return new ConditionalNode(condition, thenStmt, nullptr);
+}
+
+/// Build a node representing a print statement
+StmtNode* Parser::printStmt() {
+	ExprNode *expr = Parser::expr();
+	match(TokenType::SEMICOL);
+
+	return new StmtPrintNode(expr);
+}
+
+/// Build a node representing an expression statement
+StmtNode* Parser::expressionStmt() {
+	ExprNode *expr = Parser::expr();
+	match(TokenType::SEMICOL);
+
+	return new StmtExpressionNode(expr);
+}
+
+/// Build a node representing a logical OR expression
+ExprNode* Parser::logic() {
+	ExprNode *expr = join();
+
+	while (_look->toString() == "||") {
+		Token op = *_look;
+		move();
+		expr = new LogicalNode(expr, op, join());
+	}
+
+	return expr;
+}
+
+/// Build a node representing a logical AND expression
+ExprNode* Parser::join() {
+	ExprNode *expr = rel();
+
+	while (_look->toString() == "&&") {
+		Token op = *_look;
+		move();
+		expr = new LogicalNode(expr, op, rel());
+	}
+
+	return expr;
+}
+
+/// Build a node representing an equality or inequality expression
+ExprNode* Parser::rel() {
+	ExprNode *e = expr();
+
+	while (_look->toString() == "==" || _look->toString() == "!=" || _look->toString() == "<" ||
+		   _look->toString() == "<=" || _look->toString() == ">" || _look->toString() == ">=") {
+		Token op = *_look;
+		move();
+		e = new RelationalNode(e, op, expr());
+	}
+
+	return e;
+}
+
+/// Build a node representing an expression
+ExprNode* Parser::expr() {
+	ExprNode *expr = term();
+
+	while (_look->toString() == "+" || _look->toString() == "-") {
+		Token op = *_look;
+		move();
+		expr = new BinOpNode(expr, op, term());
+	}
+
+	return expr;
+}
+
+/// Build a node representing a term
+ExprNode* Parser::term() {
+	ExprNode *expr = factor();
+
+	while (_look->toString() == "*" || _look->toString() == "/") {
+		Token op = *_look;
+		move();
+		expr = new BinOpNode(expr, op, factor());
+	}
+
+	return expr;
+}
+
+/// Build a node representing a factor
+ExprNode* Parser::factor() {
+	ExprNode *expr;
+
+	switch (_look->getType()) {
+		case TokenType::LPAREN: {
+			move();
+			expr = Parser::logic();
+			match(TokenType::RPAREN);
+			break;
+		}
+		case TokenType::NUM: {
+			expr = new ConstantNode(*_look, Type::INT);
+			move();
+			break;
+		}
+		case TokenType::TRUE:
+		case TokenType::FALSE: {
+			expr = new ConstantNode(*_look, Type::BOOL);
+			move();
+			break;
+		}
+		case TokenType::ID: {
+			expr = id();
+			break;
+		}
+	}
+
+	return expr;
+}
+
+/// Build a node representing an identifier
+ExprNode* Parser::id() {
+	Word *varName = dynamic_cast<Word*>(_look);
+	move();
+
+	return new Id(*varName);
 }

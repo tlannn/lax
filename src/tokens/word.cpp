@@ -21,4 +21,5 @@ Word Word::SG = Word(">", TokenType::SG);
 Word Word::GE = Word(">=", TokenType::GE);
 Word Word::IF = Word("if", TokenType::IF);
 Word Word::ELSE = Word("else", TokenType::ELSE);
+Word Word::VAR = Word("var", TokenType::VAR);
 Word Word::PRINT = Word("print", TokenType::PRINT);

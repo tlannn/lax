@@ -5,11 +5,6 @@
 #include "stmtnode.h"
 #include "interpreter/stmtvisitor.h"
 
-/*
- * Forward declarations for cyclic dependencies
- */
-//class StmtVisitor;
-
 /**
  * Node for expression statements in the program
  *

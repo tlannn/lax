@@ -3,7 +3,7 @@
 
 #include "astnode.h"
 #include "interpreter/stmtvisitor.h"
-#include "lexer/token.h"
+#include "tokens/token.h"
 
 /*
  * Forward declarations for cyclic dependencies

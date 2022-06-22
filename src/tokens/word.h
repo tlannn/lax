@@ -16,17 +16,18 @@ class Word : public Token {
 public:
     static Word TRUE; // Word meaning truthfulness
     static Word FALSE; // Word meaning falseness
-    static Word AND; // Logical operator and
-    static Word OR; // Logical operator or
-    static Word EQ; // Equality operator
-    static Word NEQ; // Not equal operator
-    static Word SL; // Strictly less operator
-    static Word LE; // Less or equal operator
-    static Word SG; // Strictly greater operator
-    static Word GE; // Greater or equal operator
-    static Word IF; // Word indicating debut of conditional statement
-    static Word ELSE; // Word indicating debut of statement when conditional statement is evaluated to false
-    static Word PRINT; // Word 'print'
+	static Word AND; // Logical operator and
+	static Word OR; // Logical operator or
+	static Word EQ; // Equality operator
+	static Word NEQ; // Not equal operator
+	static Word SL; // Strictly less operator
+	static Word LE; // Less or equal operator
+	static Word SG; // Strictly greater operator
+	static Word GE; // Greater or equal operator
+	static Word IF; // Word indicating debut of conditional statement
+	static Word ELSE; // Word indicating debut of statement when conditional statement is evaluated to false
+	static Word VAR; // Word indicating a declaration of variable
+	static Word PRINT; // Word 'print'
 
     /**
      * Class constructor

@@ -5,6 +5,7 @@
 #include "lexer/lexer.h"
 #include "parser/parser.h"
 #include "interpreter/interpreter.h"
+#include "semantic/semanticanalyzer.h"
 
 using namespace std;
 
@@ -37,6 +38,8 @@ int main(int argc, char *argv[]) {
     // Start interpreter
     Lexer lexer(source);
     Parser parser(lexer);
+    SemanticAnalyzer analyzer(parser);
+    analyzer.analyze();
     Interpreter interpreter(parser);
     interpreter.interpret();
 

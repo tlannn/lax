@@ -4,10 +4,11 @@
 #include <string>
 #include <unordered_map>
 
-#include "lexer/token.h"
-#include "lexer/num.h"
-#include "lexer/op.h"
-#include "lexer/word.h"
+#include "tokens/token.h"
+#include "tokens/num.h"
+#include "tokens/op.h"
+#include "tokens/word.h"
+#include "tokens/type.h"
 
 /**
  * Lexical analyzer for the Lax language
@@ -33,7 +34,7 @@ public:
 
 private:
     /**
-     * Reserve a word, meaning it cannot be used as an identier (for variables,
+     * Reserve a word, meaning it cannot be used as an identifier (for variables,
      * functions, classes, etc.)
      *
      * @param word the word to reserve
@@ -78,12 +79,28 @@ private:
     static bool isOperator(const char *c);
 
     /**
-     * Check if the character is an opening or closed parenthesis
+     * Check if the character is an opening or closing parenthesis
      *
      * @param c the character to check
      * @return true if the character is a parenthesis
      */
     static bool isParenthesis(const char *c);
+
+	/**
+     * Check if the character is an opening or closing brace
+     *
+     * @param c the character to check
+     * @return true if the character is a brace
+     */
+    static bool isBraces(const char *c);
+
+    /**
+     * Check if the character is a colon
+     *
+     * @param c the character to check
+     * @return true if the character is a colon
+     */
+    static bool isColon(const char *c);
 
     /**
      * Check if the character is a semicolon
