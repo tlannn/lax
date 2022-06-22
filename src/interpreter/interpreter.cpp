@@ -96,7 +96,7 @@ void Interpreter::visit(StmtExpressionNode *node) {
 /// Visit a StmtPrintNode node and print the result of the expression in the statement
 void Interpreter::visit(StmtPrintNode *node) {
     int res = evaluate(node->getExpr());
-    std::cout << "The result is : " << res << std::endl;
+    std::cout << res << std::endl;
 }
 
 /// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
