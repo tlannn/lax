@@ -8,7 +8,7 @@
 #include "ast/exprnode.h"
 #include "ast/assignnode.h"
 #include "ast/binopnode.h"
-#include "ast/constantnode.h"
+#include "ast/literalnode.h"
 #include "ast/declnode.h"
 #include "ast/logicalnode.h"
 #include "ast/relationalnode.h"
@@ -46,8 +46,8 @@ public:
 	/// Visit a BinOpNode and compute the operation represented by the node
 	int visit(BinOpNode *node) override;
 
-	/// Visit a ConstantNode and return the constant value represented
-	int visit(ConstantNode *node) override;
+	/// Visit a LiteralNode and return the literal value represented
+	int visit(LiteralNode *node) override;
 
 	/// Visit a LogicalNode and return the boolean value represented by the boolean expression
 	int visit(LogicalNode *node) override;

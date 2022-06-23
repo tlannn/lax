@@ -24,7 +24,7 @@ public:
     int visit(BinOpNode *node) override;
 
     /// Visit a ConstantNode and return the constant value represented
-    int visit(ConstantNode *node) override;
+    int visit(LiteralNode *node) override;
 
     /// Visit a LogicalNode and return the boolean value represented by the boolean expression
     int visit(LogicalNode *node) override;

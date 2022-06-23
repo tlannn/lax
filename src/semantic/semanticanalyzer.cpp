@@ -30,7 +30,7 @@ int SemanticAnalyzer::visit(BinOpNode *node) {
 }
 
 /// Visit a ConstantNode and return the constant value represented
-int SemanticAnalyzer::visit(ConstantNode *node) {
+int SemanticAnalyzer::visit(LiteralNode *node) {
 	_resultType = node->getType();
 
     return 0;

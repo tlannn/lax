@@ -6,7 +6,7 @@
  */
 class ExprNode;
 class BinOpNode;
-class ConstantNode;
+class LiteralNode;
 class LogicalNode;
 class RelationalNode;
 class Id;
@@ -33,12 +33,12 @@ public:
     virtual int visit(BinOpNode *node) = 0;
 
     /**
-     * Visit a ConstantNode and return the constant value represented
+     * Visit a LiteralNode and return the literal value represented
      *
      * @param node the node to visit
-     * @return the constant value
+     * @return the literal value
      */
-    virtual int visit(ConstantNode *node) = 0;
+    virtual int visit(LiteralNode *node) = 0;
 
     /**
      * Visit a LogicalNode and compute the boolean value of the node expression

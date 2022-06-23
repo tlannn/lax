@@ -34,8 +34,8 @@ int Interpreter::visit(BinOpNode *node) {
     return 0;
 }
 
-/// Visit a ConstantNode and return the constant value represented
-int Interpreter::visit(ConstantNode *node) {
+/// Visit a LiteralNode and return the literal value represented
+int Interpreter::visit(LiteralNode *node) {
     return node->getValue();
 }
 

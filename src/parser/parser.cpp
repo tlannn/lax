@@ -244,13 +244,13 @@ ExprNode* Parser::factor() {
 			break;
 		}
 		case TokenType::NUM: {
-			expr = new ConstantNode(*_look, Type::INT);
+			expr = new LiteralNode(*_look, Type::INT);
 			move();
 			break;
 		}
 		case TokenType::TRUE:
 		case TokenType::FALSE: {
-			expr = new ConstantNode(*_look, Type::BOOL);
+			expr = new LiteralNode(*_look, Type::BOOL);
 			move();
 			break;
 		}

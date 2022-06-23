@@ -11,7 +11,7 @@
 #include "ast/assignnode.h"
 #include "ast/binopnode.h"
 #include "ast/blocknode.h"
-#include "ast/constantnode.h"
+#include "ast/literalnode.h"
 #include "ast/declnode.h"
 #include "ast/id.h"
 #include "ast/logicalnode.h"

@@ -1,5 +1,5 @@
-#ifndef LAX_CONSTANTNODE_H
-#define LAX_CONSTANTNODE_H
+#ifndef LAX_LITERALNODE_H
+#define LAX_LITERALNODE_H
 
 #include "exprnode.h"
 #include "interpreter/exprvisitor.h"
@@ -9,18 +9,18 @@
 #include "tokens/word.h"
 
 /**
- * Node for a constant value.
+ * Node for a literal value.
  *
- * Constants can be numbers, booleans, or any atomic value.
+ * Literals can be numbers, booleans, or any atomic value.
  */
-class ConstantNode : public ExprNode {
+class LiteralNode : public ExprNode {
 public:
     /**
      * Class constructor
      * @param tok the expression to the left of the operator
      * @param type the token representing the operator
      */
-    ConstantNode(Token tok, Type type);
+    LiteralNode(Token tok, Type type);
 
     /**
      * Class constructor
@@ -28,17 +28,17 @@ public:
      * @param op the token representing the operator
      * @param right the expression to the right of the operator
      */
-    explicit ConstantNode(int i);
+    explicit LiteralNode(int i);
 
     /**
-     * Getter for the value of the constant
+     * Getter for the value of the literal
      *
      * @return the value
      */
     int getValue();
 
 	/**
-     * Getter for the type of the constant
+     * Getter for the type of the literal
      *
      * @return the type
      */
@@ -53,4 +53,4 @@ private:
 	Type _type;
 };
 
-#endif // LAX_CONSTANTNODE_H
+#endif // LAX_LITERALNODE_H

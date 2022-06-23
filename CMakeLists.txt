@@ -11,10 +11,10 @@ set(SOURCE_FILES main.cpp
         src/ast/binopnode.cpp
         src/ast/blocknode.cpp
         src/ast/conditionalnode.cpp
-        src/ast/constantnode.cpp
         src/ast/declnode.cpp
         src/ast/exprnode.cpp
         src/ast/id.cpp
+        src/ast/literalnode.cpp
         src/ast/logicalnode.cpp
         src/ast/relationalnode.cpp
         src/ast/stmtexpressionnode.cpp
