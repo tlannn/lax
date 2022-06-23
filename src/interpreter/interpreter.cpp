@@ -34,11 +34,6 @@ int Interpreter::visit(BinOpNode *node) {
     return 0;
 }
 
-/// Visit a LiteralNode and return the literal value represented
-int Interpreter::visit(LiteralNode *node) {
-    return node->getValue();
-}
-
 /// Visit a LogicalNode and return the boolean value represented by the boolean expression
 int Interpreter::visit(LogicalNode *node) {
     int left = evaluate(node->getLeft());
@@ -78,6 +73,11 @@ int Interpreter::visit(RelationalNode *node) {
     return 0;
 }
 
+/// Visit a LiteralNode and return the literal value represented
+int Interpreter::visit(LiteralNode *node) {
+	return node->getValue();
+}
+
 /// Visit an Id (identifier) and return the value of the variable defined with this identifier
 int Interpreter::visit(Id *node) {
 	return _memory[node->getToken().toString()];
@@ -88,32 +88,20 @@ void Interpreter::execute(StmtNode *node) {
     node->accept(this);
 }
 
-/// Visit a StmtExpressionNode node and compute the expression in the statement
-void Interpreter::visit(StmtExpressionNode *node) {
-    evaluate(node->getExpr());
-}
+/// Visit a BlockNode and execute all the statements inside the block
+void Interpreter::visit(BlockNode *node) {
+	std::vector<StmtNode*> stmts = node->getStatements();
 
-/// Visit a StmtPrintNode node and print the result of the expression in the statement
-void Interpreter::visit(StmtPrintNode *node) {
-    int res = evaluate(node->getExpr());
-    std::cout << res << std::endl;
-}
-
-/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
-/// is evaluated to true, otherwise execute the 'else' statement if there is one
-void Interpreter::visit(ConditionalNode *node) {
-    if (evaluate(node->getConditionExpression()))
-        execute(node->getThenStatement());
-
-    else if (node->getElseStatement())
-        execute(node->getElseStatement());
+	for (int i = 0; i < stmts.size(); ++i) {
+		execute(stmts[i]);
+	}
 }
 
 /// Visit a DeclNode and declare a variable
 void Interpreter::visit(DeclNode *node) {
-    if (node->getRValue() != nullptr) {
-        _memory[node->getName()] = evaluate(node->getRValue());
-    }
+	if (node->getRValue() != nullptr) {
+		_memory[node->getName()] = evaluate(node->getRValue());
+	}
 }
 
 /// Visit an AssignNode and assign a new value to a variable
@@ -122,11 +110,23 @@ void Interpreter::visit(AssignNode *node) {
 	_memory[node->getLValue()] = value;
 }
 
-/// Visit a BlockNode and execute all the statements inside the block
-void Interpreter::visit(BlockNode *node) {
-    std::vector<StmtNode*> stmts = node->getStatements();
+/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
+/// is evaluated to true, otherwise execute the 'else' statement if there is one
+void Interpreter::visit(ConditionalNode *node) {
+	if (evaluate(node->getConditionExpression()))
+		execute(node->getThenStatement());
 
-    for (int i = 0; i < stmts.size(); ++i) {
-        execute(stmts[i]);
-    }
+	else if (node->getElseStatement())
+		execute(node->getElseStatement());
+}
+
+/// Visit a StmtPrintNode node and print the result of the expression in the statement
+void Interpreter::visit(StmtPrintNode *node) {
+    int res = evaluate(node->getExpr());
+    std::cout << res << std::endl;
+}
+
+/// Visit a StmtExpressionNode node and compute the expression in the statement
+void Interpreter::visit(StmtExpressionNode *node) {
+	evaluate(node->getExpr());
 }

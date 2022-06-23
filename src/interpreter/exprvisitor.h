@@ -33,14 +33,6 @@ public:
     virtual int visit(BinOpNode *node) = 0;
 
     /**
-     * Visit a LiteralNode and return the literal value represented
-     *
-     * @param node the node to visit
-     * @return the literal value
-     */
-    virtual int visit(LiteralNode *node) = 0;
-
-    /**
      * Visit a LogicalNode and compute the boolean value of the node expression
      *
      * @param node the node to visit
@@ -55,6 +47,14 @@ public:
      * @return the boolean value
      */
     virtual int visit(RelationalNode *node) = 0;
+
+	/**
+     * Visit a LiteralNode and return the literal value represented
+     *
+     * @param node the node to visit
+     * @return the literal value
+     */
+	virtual int visit(LiteralNode *node) = 0;
 
 	/**
      * Visit an Id (identifier) and return the value of the variable defined with this identifier

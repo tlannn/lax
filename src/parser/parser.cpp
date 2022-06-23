@@ -95,15 +95,11 @@ StmtNode* Parser::varDeclStmt() {
 		assignment = logic();
 	}
 
-	if (type->toString() == Type::INT.toString()) {
+	if (type->toString() == Type::INT.toString())
 		node = new DeclNode(varName, Type::INT, assignment);
-		_env.put(new VarSymbol(varName, Type::INT));
-	}
 
-	else if (type->toString() == Type::BOOL.toString()) {
+	else if (type->toString() == Type::BOOL.toString())
 		node = new DeclNode(varName, Type::BOOL, assignment);
-		_env.put(new VarSymbol(varName, Type::BOOL));
-	}
 
 	else throw std::runtime_error("Unknown type '" + type->toString() + "'.");
 

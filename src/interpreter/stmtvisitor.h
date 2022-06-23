@@ -24,12 +24,34 @@ public:
      */
     virtual void execute(StmtNode *node) = 0;
 
-    /**
-     * Visit a StmtExpressionNode node and compute the expression in the statement
+	/**
+     * Visit a BlockNode and execute all the statements inside the block
      *
      * @param node the node to visit
      */
-    virtual void visit(StmtExpressionNode *node) = 0;
+	virtual void visit(BlockNode *node) = 0;
+
+	/**
+     * Visit a DeclNode and declare a variable
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(DeclNode *node) = 0;
+
+	/**
+     * Visit an AssignNode and assign a new value to a variable
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(AssignNode *node) = 0;
+
+	/**
+     * Visit an ConditionalNode and execute the statement referenced if the condition
+     * is evaluated to true
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(ConditionalNode *node) = 0;
 
     /**
      * Visit a StmtPrintNode node and print the result of the expression in the statement
@@ -38,34 +60,12 @@ public:
      */
     virtual void visit(StmtPrintNode *node) = 0;
 
-    /**
-     * Visit an ConditionalNode and execute the statement referenced if the condition
-     * is evaluated to true
-     *
-     * @param node the node to visit
-     */
-    virtual void visit(ConditionalNode *node) = 0;
-
 	/**
-     * Visit a DeclNode and declare a variable
+     * Visit a StmtExpressionNode node and compute the expression in the statement
      *
      * @param node the node to visit
      */
-    virtual void visit(DeclNode *node) = 0;
-
-	/**
-     * Visit an AssignNode and assign a new value to a variable
-     *
-     * @param node the node to visit
-     */
-    virtual void visit(AssignNode *node) = 0;
-
-	/**
-     * Visit a BlockNode and execute all the statements inside the block
-     *
-     * @param node the node to visit
-     */
-    virtual void visit(BlockNode *node) = 0;
+	virtual void visit(StmtExpressionNode *node) = 0;
 };
 
 #endif // LAX_STMTVISITOR_H
