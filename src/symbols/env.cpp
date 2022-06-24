@@ -2,9 +2,7 @@
 #include "env.h"
 
 /// Class constructor
-Env::Env() : _previous(nullptr) {
-	std::cout << "new env: " << this << " (prev: " << _previous << ")" << std::endl;
-}
+Env::Env() : _previous(nullptr) {}
 
 /// Class constructor
 Env::Env(Env *previous) : _previous(previous) {}
@@ -16,9 +14,7 @@ void Env::put(Symbol *symbol) {
 
 /// Look for a symbol defined in the environment or previous environment
 Symbol* Env::get(std::string str) {
-	std::cout << "start: " << std::endl;
     for (Env *env = this; env != nullptr; env = env->getPreviousEnv()) {
-		std::cout << "env: " << env << std::endl;
         Symbol* found = env->_table.lookup(str);
         if (found != nullptr) return found;
     }
