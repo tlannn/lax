@@ -86,19 +86,18 @@ void SemanticAnalyzer::execute(StmtNode *node) {
 
 /// Visit a BlockNode and execute the sequence of statements inside it
 void SemanticAnalyzer::visit(BlockNode *node) {
+	_env = new Env(_env);
 	execute(node->getSequence());
+	_env = _env->getPreviousEnv();
 }
 
 /// Visit a SeqNode and execute all the statements inside it
 void SemanticAnalyzer::visit(SeqNode *node) {
 	std::vector<StmtNode*> stmts = node->getStatements();
-	_env = new Env(_env);
 
 	for (int i = 0; i < stmts.size(); ++i) {
 		execute(stmts[i]);
 	}
-
-	_env = _env->getPreviousEnv();
 }
 
 /// Visit a DeclNode and declare a variable
@@ -147,10 +146,16 @@ void SemanticAnalyzer::visit(AssignNode *node) {
 /// is evaluated to true, otherwise execute the 'else' statement if there is one
 void SemanticAnalyzer::visit(ConditionalNode *node) {
 	evaluate(node->getConditionExpression());
-	execute(node->getThenStatement());
 
-	if (node->getElseStatement())
+	_env = new Env(_env);
+	execute(node->getThenStatement());
+	_env = _env->getPreviousEnv();
+
+	if (node->getElseStatement()) {
+		_env = new Env(_env);
 		execute(node->getElseStatement());
+		_env = _env->getPreviousEnv();
+	}
 }
 
 /// Visit a StmtPrintNode node and print the result of the expression in the statement
