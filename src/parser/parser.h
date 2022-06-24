@@ -78,7 +78,7 @@ private:
 	StmtNode* program();
 
 	/**
-     * Build a node representing a sequence of statements
+     * Build a node representing a block of statements
      *
      * @return the node created
      */

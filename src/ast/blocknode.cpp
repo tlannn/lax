@@ -1,11 +1,11 @@
 #include "blocknode.h"
 
 /// BlockNode constructor
-BlockNode::BlockNode(std::vector<StmtNode*> stmts) : _stmts(stmts) {}
+BlockNode::BlockNode(SeqNode *seq) : _seq(seq) {}
 
-/// Getter for the statements inside the block
-std::vector<StmtNode*> BlockNode::getStatements() {
-    return _stmts;
+/// Getter for the sequence of statements inside the block
+SeqNode* BlockNode::getSequence() {
+    return _seq;
 }
 
 /// Accept method for the visitor pattern

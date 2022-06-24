@@ -88,8 +88,13 @@ void Interpreter::execute(StmtNode *node) {
     node->accept(this);
 }
 
-/// Visit a BlockNode and execute all the statements inside the block
+/// Visit a BlockNode and execute the sequence of statements inside it
 void Interpreter::visit(BlockNode *node) {
+	execute(node->getSequence());
+}
+
+/// Visit a SeqNode and execute all the statements inside it
+void Interpreter::visit(SeqNode *node) {
 	std::vector<StmtNode*> stmts = node->getStatements();
 
 	for (int i = 0; i < stmts.size(); ++i) {

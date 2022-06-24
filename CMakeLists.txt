@@ -17,6 +17,7 @@ set(SOURCE_FILES main.cpp
         src/ast/literalnode.cpp
         src/ast/logicalnode.cpp
         src/ast/relationalnode.cpp
+        src/ast/seqnode.cpp
         src/ast/stmtexpressionnode.cpp
         src/ast/stmtprintnode.cpp
         src/interpreter/interpreter.cpp

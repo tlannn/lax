@@ -11,6 +11,7 @@ class ConditionalNode;
 class DeclNode;
 class AssignNode;
 class BlockNode;
+class SeqNode;
 
 /**
  * Visitor interface for statements
@@ -25,11 +26,18 @@ public:
     virtual void execute(StmtNode *node) = 0;
 
 	/**
-     * Visit a BlockNode and execute all the statements inside the block
+     * Visit a BlockNode and execute the sequence of statements inside it
      *
      * @param node the node to visit
      */
 	virtual void visit(BlockNode *node) = 0;
+
+	/**
+     * Visit a SeqNode and execute all the statements inside it
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(SeqNode *node) = 0;
 
 	/**
      * Visit a DeclNode and declare a variable

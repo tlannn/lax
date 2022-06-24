@@ -38,10 +38,10 @@ StmtNode* Parser::program() {
 		stmts.push_back(stmt());
 	}
 
-	return new BlockNode(stmts);
+	return new SeqNode(stmts);
 }
 
-/// Build a node representing a sequence of statements
+/// Build a node representing a block of statements
 StmtNode* Parser::block() {
 	match(TokenType::LBRACK);
 	std::vector<StmtNode*> stmts;
@@ -51,7 +51,7 @@ StmtNode* Parser::block() {
 
 	match(TokenType::RBRACK);
 
-	return new BlockNode(stmts);
+	return new BlockNode(new SeqNode(stmts));
 }
 
 /// Build a node representing a statement

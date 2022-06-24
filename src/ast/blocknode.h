@@ -4,13 +4,14 @@
 #include <vector>
 
 #include "stmtnode.h"
+#include "seqnode.h"
 #include "interpreter/stmtvisitor.h"
 
 /**
  * Node for blocks of statements
  *
  * A block is delimited by braces, inside which one or multiple statements are
- * present. Each statement is executed one after the other.
+ * present. The statements are represented by a sequence of statements.
  */
 class BlockNode : public StmtNode {
 public:
@@ -19,14 +20,14 @@ public:
      *
      * @param stmts the statements to execute inside the block
      */
-    explicit BlockNode(std::vector<StmtNode*> stmts);
+    explicit BlockNode(SeqNode* seq);
 
 	/**
-	 * Getter for the statements inside the block
+	 * Getter for the sequence of statements inside the block
 	 *
-	 * @return the statements
+	 * @return the sequence
 	 */
-    std::vector<StmtNode*> getStatements();
+    SeqNode* getSequence();
 
 	/**
      * Accept method for the visitor pattern
@@ -34,7 +35,7 @@ public:
     void accept(StmtVisitor *visitor) override;
 
 private:
-    std::vector<StmtNode*> _stmts;
+    SeqNode* _seq;
 };
 
 #endif // LAX_BLOCKNODE_H

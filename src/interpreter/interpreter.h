@@ -15,6 +15,7 @@
 #include "ast/conditionalnode.h"
 #include "ast/stmtnode.h"
 #include "ast/blocknode.h"
+#include "ast/seqnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
 #include "parser/parser.h"
@@ -61,8 +62,11 @@ public:
 	/// Execute a statement node
 	void execute(StmtNode *node) override;
 
-	/// Visit a BlockNode and execute all the statements inside the block
+	/// Visit a BlockNode and execute the sequence of statements inside it
 	void visit(BlockNode *node) override;
+
+	/// Visit a SeqNode and execute all the statements inside it
+	void visit(SeqNode *node) override;
 
 	/// Visit a DeclNode and declare a variable
 	void visit(DeclNode *node) override;
