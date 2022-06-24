@@ -1,7 +1,7 @@
 #include "semanticanalyzer.h"
 
 /// Class constructor
-SemanticAnalyzer::SemanticAnalyzer(Parser &parser) : _parser(parser), _resultType(Type::NONE) {}
+SemanticAnalyzer::SemanticAnalyzer(Parser &parser) : _parser(parser), _resultType(Type::NONE), _env(new Env()) {}
 
 /// Analyze semantically the code parsed by the parser
 void SemanticAnalyzer::analyze() {
@@ -69,7 +69,7 @@ int SemanticAnalyzer::visit(LiteralNode *node) {
 /// Visit an Id (identifier) and return the value of the variable defined with this identifier
 int SemanticAnalyzer::visit(Id *node) {
 	std::string varName = node->getToken().toString();
-	VarSymbol *varSym = dynamic_cast<VarSymbol*>(_env.get(varName));
+	VarSymbol *varSym = dynamic_cast<VarSymbol*>(_env->get(varName));
 
 	if (!varSym)
 		throw std::runtime_error("'" + varName + "' is undefined.");
@@ -87,10 +87,13 @@ void SemanticAnalyzer::execute(StmtNode *node) {
 /// Visit a BlockNode and execute all the statements inside the block
 void SemanticAnalyzer::visit(BlockNode *node) {
 	std::vector<StmtNode*> stmts = node->getStatements();
+	_env = new Env(_env);
 
 	for (int i = 0; i < stmts.size(); ++i) {
 		execute(stmts[i]);
 	}
+
+	_env = _env->getPreviousEnv();
 }
 
 /// Visit a DeclNode and declare a variable
@@ -98,11 +101,11 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 	std::string varName = node->getName();
 	Type varType = node->getType();
 
-	if (_env.get(varName))
+	if (_env->get(varName))
 		throw std::runtime_error("Variable '" + varName + "' is already declared.");
 
 	VarSymbol *varSym = new VarSymbol(varName, varType);
-	_env.put(varSym);
+	_env->put(varSym);
 
 	if (node->getRValue() != nullptr) {
 		evaluate(node->getRValue());
@@ -119,7 +122,7 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 /// Visit an AssignNode and assign a new value to a variable
 void SemanticAnalyzer::visit(AssignNode *node) {
 	std::string varName = node->getLValue();
-	VarSymbol *var = dynamic_cast<VarSymbol*>(_env.get(varName));
+	VarSymbol *var = dynamic_cast<VarSymbol*>(_env->get(varName));
 
 	if (!var)
 		throw std::runtime_error("Variable '" + varName + "' is undefined.");

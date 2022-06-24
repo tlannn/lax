@@ -39,6 +39,14 @@ public:
 	 */
     Symbol* get(std::string str);
 
+	/**
+	 * Return the previous environment saved. May be used to go back to a
+	 * previous state of the environment
+	 *
+	 * @return the previous environment
+	 */
+	Env* getPreviousEnv();
+
 private:
 	Env *_previous;
 	SymbolTable _table;

@@ -59,7 +59,7 @@ public:
 
 private:
     Parser _parser;
-	Env _env;
+	Env *_env;
 	Type _resultType;
 };
 
