@@ -21,6 +21,7 @@ string readFile(string filename);
 
 /// Main
 int main(int argc, char *argv[]) {
+	Logger::log("test");
     if (argc == 1) {
         printf("Please specify a file to run\n");
         exit(NO_ARGUMENT_CODE);

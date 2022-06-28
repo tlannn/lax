@@ -33,6 +33,7 @@ set(SOURCE_FILES main.cpp
         src/tokens/token.cpp
         src/tokens/type.cpp
         src/tokens/word.cpp
+        src/utils/logger.cpp
 )
 
 # Add executable target with source files listed in SOURCE_FILES variable
