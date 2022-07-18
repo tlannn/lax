@@ -1,29 +1,48 @@
 #ifndef LAX_LEXER_H
 #define LAX_LEXER_H
 
+#include <fstream>
 #include <string>
 #include <unordered_map>
 
+#include "lexerror.h"
 #include "tokens/token.h"
 #include "tokens/num.h"
-#include "tokens/op.h"
-#include "tokens/word.h"
 #include "tokens/type.h"
+#include "memento.h"
 
 /**
  * Lexical analyzer for the Lax language
  */
 class Lexer {
 public:
-    static int line; // Counter for the number of lines analyzed in the source code
-    static int col; // Counter for the index of the character in the current line
+    static std::string currentFile; // The name of the current file being read
 
     /**
      * Class constructor
      *
-     * @param source the source code to analyze
+     * @param filename the source code to analyze
      */
-    explicit Lexer(std::string &source);
+    explicit Lexer(const std::string &filename);
+
+	/**
+	 * Open a stream to read a file and place the cursor at the beginning
+	 *
+	 * @param filename the name of the file to open
+	 */
+	void openFile(const std::string &filename);
+
+	/**
+	 * Open a file and push it on top of the stack of files opened
+	 *
+	 * @param filename the name of the file to open
+	 */
+	void pushFile(const std::string &filename);
+
+	/**
+	 * Pop the last file opened and restore the state of the previous file
+	 */
+	void popFile();
 
     /**
      * Continue the reading of the source code and return the next token analyzed
@@ -39,20 +58,88 @@ private:
      *
      * @param word the word to reserve
      */
-    void reserve(Word *word);
+    void reserve(const std::string &word, TokenType type = TokenType::ID);
+
+	/**
+	 * Create a token of a specific type. The lexeme is deduced from the token
+	 * type
+	 *
+	 * @param type the type of the token
+	 * @return the token created
+	 */
+	Token* createToken(TokenType type);
+
+	/**
+	 * Create a token of specific type and lexeme
+	 *
+	 * @param type the type of the token
+	 * @param lexeme the lexeme represented by the token
+	 * @return the token created
+	 */
+	Token* createToken(TokenType type, const std::string &lexeme) const;
+
+	/**
+	 * Throw an error
+	 *
+	 * @param message the message of the error
+	 */
+	void error(const std::string &message) const;
+
+	/**
+	 * Return whether the cursor is at the end of the current file
+	 *
+	 * @return true if the end of the current file has been reached
+	 */
+	bool isAtEnd();
 
     /**
-     * Read a character in the source code and update the current token
+     * Read a character in the source code and return it
+     *
+     * @return the ascii code of the character read, or EOF if the end of file
+	 * is reached
      */
-    void readChar();
+    int advance();
 
     /**
-     * Read a character in the source code and check if it is the expected one
+     * Check if the next character in the source code is the expected one, and
+     * if it is the case, consume it
      *
      * @param expected the expected character
      * @return true if the character read was expected
      */
-    bool readChar(char expected);
+    bool match(char expected);
+
+	/**
+	 * Look at the next character in the source code, but does not move the
+	 * cursor
+	 *
+	 * @return the ascii code of the next character, or EOF if the end of file
+	 * is reached
+	 */
+	int peek();
+
+	/**
+	 * Read a string in the source code
+	 *
+	 * @return the token representing the string
+	 */
+	Token* string();
+
+	/**
+	 * Read a number in the source code
+	 *
+	 * @param d the first digit of the number
+	 * @return the token representing the number
+	 */
+	Token* number(int d);
+
+	/**
+	 * Read an identifier in the source code
+	 *
+	 * @param d the first letter of the identifier
+	 * @return the token representing the identifier
+	 */
+	Token* identifier(int c);
 
     /**
      * Check if the character is a letter
@@ -60,7 +147,7 @@ private:
      * @param c the character to check
      * @return true if the character is a letter
      */
-    static bool isLetter(const char *c);
+    static bool isLetter(int c);
 
     /**
      * Check if the character is a digit
@@ -68,52 +155,24 @@ private:
      * @param c the character to check
      * @return true if the character is a digit
      */
-    static bool isDigit(const char *c);
+    static bool isDigit(int c);
 
-    /**
-     * Check if the character is an operator. Operators are +, -, *, /
-     *
-     * @param c the character to check
-     * @return true if the character is an operator
-     */
-    static bool isOperator(const char *c);
+	/*
+	 * Class attributes
+	 */
 
-    /**
-     * Check if the character is an opening or closing parenthesis
-     *
-     * @param c the character to check
-     * @return true if the character is a parenthesis
-     */
-    static bool isParenthesis(const char *c);
+	Memento *_memento;
+	std::ifstream *_source;
 
-	/**
-     * Check if the character is an opening or closing brace
-     *
-     * @param c the character to check
-     * @return true if the character is a brace
-     */
-    static bool isBraces(const char *c);
+	int _startIndex; // Index in file of the first character of the current lexeme
+	int _startLine; // Line of the first character of the current lexeme
+	int _startCol; // Column of the first character of the current lexeme
 
-    /**
-     * Check if the character is a colon
-     *
-     * @param c the character to check
-     * @return true if the character is a colon
-     */
-    static bool isColon(const char *c);
+	int _index; // Index of the current cursor in file
+	int _line; // Line of the current cursor in file
+	int _col; // Column of the current cursor in file
 
-    /**
-     * Check if the character is a semicolon
-     *
-     * @param c the character to check
-     * @return true if the character is a semicolon
-     */
-    static bool isSemicolon(const char *c);
-
-    std::string _source; // The source code
-    char _look; // Acts as a lookahead, useful for tokens represented by multiple characters
-    int _index; // The index of the last character read
-    std::unordered_map<std::string, Word*> _words; // Reserved words
+    std::unordered_map<std::string, TokenType> _words; // Reserved words
 };
 
 #endif // LAX_LEXER_H

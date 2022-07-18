@@ -1,183 +1,225 @@
 #include "lexer.h"
 
-int Lexer::line = 1;
-int Lexer::col = 1;
+std::string Lexer::currentFile;
 
 /// Class constructor
-Lexer::Lexer(std::string &source) : _source(source), _look(' '), _index(-1) {
-    // Reserve types
-    reserve(&Type::INT); reserve(&Type::BOOL);
+Lexer::Lexer(const std::string &filename) : _memento(nullptr), _source(new std::ifstream),
+	_startIndex(-1), _index(-1), _line(1), _col(0), _startLine(1), _startCol(0) {
+	// Reserve types
+	reserve("int", TokenType::TYPE);
+	reserve("bool", TokenType::TYPE);
 
-    // Reserve keywords
-    reserve(&Word::TRUE); reserve(&Word::FALSE);
-	reserve(&Word::IF); reserve(&Word::ELSE);
-	reserve(&Word::VAR); reserve(&Word::PRINT);
+	// Reserve keywords
+	reserve("true", TokenType::TRUE);
+	reserve("false", TokenType::FALSE);
+	reserve("if", TokenType::IF);
+	reserve("else", TokenType::ELSE);
+	reserve("var", TokenType::VAR);
+	reserve("print", TokenType::PRINT);
+	reserve("include", TokenType::INCLUDE);
 
-	// Reserve operators
-	reserve(&Word::AND); reserve(&Word::OR);
-	reserve(&Word::EQ); reserve(&Word::NEQ);
-	reserve(&Word::LE); reserve(&Word::GE);
-	reserve(&Word::SL); reserve(&Word::SG);
+	openFile(filename);
+}
+
+/// Open a stream to read a file and place the cursor at the beginning
+void Lexer::openFile(const std::string &filename) {
+	_source->close();
+	_source->open(filename);
+
+	if (!_source->is_open())
+		error("Could not open file '" + filename + "'");
+
+	Lexer::currentFile = filename;
+
+	// Reset all attributes
+	_startLine = 1;
+	_startCol = 0;
+	_line = 1;
+	_col = 0;
+	_index = -1;
+}
+
+/// Open a file and push it on top of the stack of files opened
+void Lexer::pushFile(const std::string &filename) {
+	_memento = new Memento(_memento, Lexer::currentFile,
+						   _startIndex, _startLine,_startCol);
+
+	openFile(filename);
+}
+
+/// Pop the last file opened and restore the state of the previous file
+void Lexer::popFile() {
+	openFile(_memento->getSource());
+	_source->seekg(_memento->getIndex()); // Move cursor to old position in file, before the last tokeen read
+
+	_line = _memento->getLine();
+	_col = _memento->getCol();
+	_index = _memento->getIndex();
+
+	// Delete the previous memento
+	Memento *memento = _memento;
+	_memento = _memento->getPrevious();
+	delete memento;
 }
 
 /// Continue the reading of the source code and return the next token analyzed
 Token* Lexer::nextToken() {
+	int c = advance();
+
+	// Set the start position of the next token to the cursor current position
+	_startIndex = _index;
+	_startCol = _col;
+	_startLine = _line;
+
     // Skip whitespaces, tabulations and newlines
-    for (; ; readChar()) {
-        if (_look == ' ' || _look == '\t') continue;
-        else if (_look == '\n') { Lexer::line++; Lexer::col = 1; }
+    for (;; c = advance()) {
+        if (c == ' ' || c == '\t') { _startCol = _col + 1; _startIndex = _index + 1; } // Anticipate advance()
+        else if (c == '\n') { ++_line; _col = 0; } // Place cursor to the beginning of next line
         else break;
     }
 
-    // Recognize boolean and relational operators
-    switch (_look) {
-        case '&':
-            if (readChar('&')) return &Word::AND;
-            break;
-        case '|':
-            if (readChar('|')) return &Word::OR;
-            break;
-        case '=':
-            if (readChar('=')) return &Word::EQ;
-            else {
-                Token *tok = new Token(std::string(1, _look), TokenType::SIMEQ);
-                _look = ' ';
-                return tok;
-            }
-            break;
-        case '!':
-            if (readChar('=')) return &Word::NEQ;
-            break;
-        case '<':
-            if (readChar('=')) return &Word::LE; else return &Word::SL;
-            break;
-        case '>':
-            if (readChar('=')) return &Word::GE; else return &Word::SG;
-            break;
+    // Recognize other tokens
+    switch (c) {
+		case EOF: return createToken(TokenType::END);
+		case '(': return createToken(TokenType::LPAREN);
+		case ')': return createToken(TokenType::RPAREN);
+		case '[': return createToken(TokenType::LBRACK);
+		case ']': return createToken(TokenType::RBRACK);
+		case '{': return createToken(TokenType::LBRACE);
+		case '}': return createToken(TokenType::RBRACE);
+		case ':': return createToken(TokenType::COLON);
+		case ';': return createToken(TokenType::SEMICOL);
+		case '+': return createToken(TokenType::PLUS);
+		case '-': return createToken(TokenType::MINUS);
+		case '*': return createToken(TokenType::STAR);
+		case '/': return createToken(TokenType::SLASH);
+        case '&': if (match('&')) return createToken(TokenType::AND); break;
+        case '|': if (match('|')) return createToken(TokenType::OR); break;
+		case '!': if (match('=')) return createToken(TokenType::NEQ); break;
+		case '=': return createToken(match('=') ? TokenType::EQ : TokenType::SIMEQ);
+        case '<': return createToken(match('=') ? TokenType::LE : TokenType::SL);
+        case '>': return createToken(match('=') ? TokenType::GE : TokenType::SG);
+		case '"': return string();
+		default:
+			if (isDigit(c)) return number(c); // Recognize numbers
+			else if (isLetter(c)) return identifier(c); // Recognize words
+			return createToken(TokenType::UNKNOWN, std::string(1, static_cast<char>(c)));
     }
 
-    // Recognize numbers
-    if (isDigit(&_look)) {
-        int n = 0;
-        do {
-            n = 10 * n + (int)_look - '0'; readChar();
-        } while (isDigit(&_look));
-
-        return new Num(n);
-    }
-
-    // Recognize operators
-    else if (isOperator(&_look)) {
-        Op *op = new Op(std::string(1, _look));
-        _look = ' ';
-        return op;
-    }
-
-    // Recognize parenthesis
-    else if (isParenthesis(&_look)) {
-        Token *tok = new Token(std::string(1, _look), _look == '(' ? TokenType::LPAREN : TokenType::RPAREN);
-        _look = ' ';
-        return tok;
-    }
-
-    // Recognize braces
-    else if (isBraces(&_look)) {
-        Token *tok = new Token(std::string(1, _look), _look == '{' ? TokenType::LBRACK : TokenType::RBRACK);
-        _look = ' ';
-        return tok;
-    }
-
-    // Recognize words
-    else if (isLetter(&_look)) {
-        // Read in a buffer all following letters
-        std::string buffer = "";
-        do {
-            buffer += _look; readChar();
-        } while (isLetter(&_look));
-
-        // If the word is already reserved, return it
-        std::unordered_map<std::string, Word*>::iterator it = _words.find(buffer);
-        if (it != _words.end())
-            return it->second;
-
-        // Reserve this word as an identifier
-        Word *word = new Word(buffer, TokenType::ID);
-        reserve(word);
-        return word;
-    }
-
-    // Recognize semicolons
-    else if (isSemicolon(&_look)) {
-        Token *tok = new Token(std::string(1, _look), TokenType::SEMICOL);
-        _look = ' ';
-        return tok;
-    }
-
-    // Recognize semicolons
-    else if (isColon(&_look)) {
-        Token *tok = new Token(std::string(1, _look), TokenType::COLON);
-        _look = ' ';
-        return tok;
-    }
-
-    // Executed if end of file reached
-    return new Token(TokenType::END);
+	return createToken(TokenType::UNKNOWN, std::string(1, static_cast<char>(c)));
 }
 
-/// Reserve a word, meaning it cannot be used as an identifier
-void Lexer::reserve(Word *word) {
-    _words[word->toString()] = word;
+/// Reserve a word, meaning it cannot be used as an identifier (for variables,
+/// functions, classes, etc.)
+void Lexer::reserve(const std::string &word, TokenType type) {
+    _words[word] = type;
 }
 
-/// Read a character in the source code and update the current token
-void Lexer::readChar() {
-    Lexer::col++;
-    _index++;
-
-    if (_index < _source.length())
-        _look = _source.at(_index);
-    else _look = EOF;
+/// Create a token of a specific type. The lexeme is deduced from the token type
+Token *Lexer::createToken(TokenType type) {
+	return createToken(type, Token::lexeme(type));
 }
 
-/// Read a character in the source code and check if it is the expected one
-bool Lexer::readChar(char expected) {
-    readChar();
-    if (_look != expected) return false;
-    _look = ' ';
+/// Create a token of specific type and lexeme
+Token *Lexer::createToken(TokenType type, const std::string &lexeme) const {
+	return new Token(lexeme, type, _startLine, _startCol);
+}
+
+/// Throw an error
+void Lexer::error(const std::string &message) const {
+	throw LexError(Lexer::currentFile, _startLine, _startCol, message, "LexerError");
+}
+
+/// Return whether the cursor is at the end of the current file
+bool Lexer::isAtEnd() {
+	return _source->peek() == EOF;
+}
+
+/// Read a character in the source code and return it
+int Lexer::advance() {
+	++_index;
+	++_col;
+	return _source->get();
+}
+
+/// Check if the next character in the source code is the expected one, and
+/// if it is the case, consume it
+bool Lexer::match(char expected) {
+	if (isAtEnd() || peek() != expected) return false;
+	advance();
     return true;
 }
 
+/// Look at the next character in the source code, but does not move the cursor
+int Lexer::peek() {
+	return _source->peek();
+}
+
+/// Read a string in the source code
+Token* Lexer::string() {
+	std::string buffer;
+	int c;
+
+	// Read in buffer all characters until closing quotation, end of file or end of line
+	while (peek() != '"' && peek() != EOF && peek() != '\n') {
+		c = advance();
+		buffer += static_cast<char>(c);
+	}
+
+	// Throw error if end of line or file is reached before a closing quote is met
+	if (isAtEnd())
+		error("End of file reached before string end");
+	else if (peek() == '\n')
+		error("Unterminated string literal");
+
+	advance(); // Skip the closing quotation
+
+	return new Token(buffer, TokenType::STRING, _startLine, _startCol);
+}
+
+/// Read a number in the source code
+Token *Lexer::number(int d) {
+	int n = d - '0';
+
+	while (isDigit(peek())) {
+		d = advance();
+		n = 10 * n + d - '0';
+	}
+
+	return new Num(n, _startLine, _startCol);
+}
+
+/// Read an identifier in the source code
+Token *Lexer::identifier(int c) {
+	// Read in a buffer all following letters
+	std::string buffer;
+	buffer += static_cast<char>(c);
+
+	while (isLetter(peek())) {
+		c = advance();
+		buffer += static_cast<char>(c);
+	}
+
+	// Search for the word in reserved keywords
+	auto it = _words.find(buffer);
+
+	// If the word is already reserved, return it
+	if (_words.find(buffer) != _words.end())
+		return createToken(it->second, it->first);
+
+	else {
+		// Reserve this word as an identifier
+		_words[buffer] = TokenType::ID;
+		return createToken(TokenType::ID, buffer);
+	}
+}
+
 /// Check if the character is a letter
-bool Lexer::isLetter(const char *c) {
-    return *c >= 'A' && *c <= 'Z' || *c >= 'a' && *c <= 'z';
+bool Lexer::isLetter(const int c) {
+    return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
 }
 
 /// Check if the character is a digit
-bool Lexer::isDigit(const char *c) {
-    return *c >= '0' && *c <= '9';
-}
-
-/// Check if the character is an operator
-bool Lexer::isOperator(const char *c) {
-    return *c == '+' || *c == '-' || *c == '*' || *c == '/';
-}
-
-/// Check if the character is an opening or closing parenthesis
-bool Lexer::isParenthesis(const char *c) {
-    return *c == '(' || *c == ')';
-}
-
-/// Check if the character is an opening or closing brace
-bool Lexer::isBraces(const char *c) {
-    return *c == '{' || *c == '}';
-}
-
-/// Check if the character is a colon
-bool Lexer::isColon(const char *c) {
-    return *c == ':';
-}
-
-/// Check if the character is a semicolon
-bool Lexer::isSemicolon(const char *c) {
-    return *c == ';';
+bool Lexer::isDigit(const int c) {
+    return c >= '0' && c <= '9';
 }

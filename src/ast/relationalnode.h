@@ -2,9 +2,8 @@
 #define LAX_RELATIONALNODE_H
 
 #include "logicalnode.h"
-#include "interpreter/exprvisitor.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
-#include "tokens/type.h"
 
 /**
  * Node for an equality or inequality expression
@@ -21,12 +20,12 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    RelationalNode(ExprNode *left, Token op, ExprNode *right);
+    RelationalNode(ExprNode *left, Token *op, ExprNode *right);
 
     /**
      * Accept method for the visitor pattern
      */
-    int accept(ExprVisitor *visitor) override;
+	void accept(ASTVisitor *visitor) override;
 };
 
 #endif // LAX_RELATIONALNODE_H

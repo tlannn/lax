@@ -1,11 +1,11 @@
 #include "declnode.h"
 
 /// DeclNode constructor
-DeclNode::DeclNode(std::string name, Type type, ExprNode *expr) : _name(name), _type(type), _rvalue(expr) {}
+DeclNode::DeclNode(Token* id, Type type, ExprNode *expr) : _id(id), _type(type), _rvalue(expr) {}
 
 /// Getter for the name of the variable declared
-std::string DeclNode::getName() {
-    return _name;
+Token* DeclNode::getId() {
+    return _id;
 }
 
 /// Getter for the type of the variable declared
@@ -19,6 +19,6 @@ ExprNode* DeclNode::getRValue() {
 }
 
 /// Accept method for the visitor pattern
-void DeclNode::accept(StmtVisitor *visitor) {
+void DeclNode::accept(ASTVisitor *visitor) {
     visitor->visit(this);
 }

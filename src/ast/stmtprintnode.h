@@ -3,7 +3,7 @@
 
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/stmtvisitor.h"
+#include "interpreter/astvisitor.h"
 
 /**
  * Node for print statements in the program
@@ -16,7 +16,7 @@ public:
     /**
      * Class constructor
      *
-     * @param expr the expression to evaluate and print
+     * @param expr the expression to visit and print
      */
     explicit StmtPrintNode(ExprNode *expr);
 
@@ -30,7 +30,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(StmtVisitor *visitor) override;
+    void accept(ASTVisitor *visitor) override;
 
 protected:
     ExprNode *_expr;

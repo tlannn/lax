@@ -2,11 +2,10 @@
 #define LAX_LITERALNODE_H
 
 #include "exprnode.h"
-#include "interpreter/exprvisitor.h"
-#include "tokens/num.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 #include "tokens/type.h"
-#include "tokens/word.h"
+#include "tokens/object.h"
 
 /**
  * Node for a literal value.
@@ -20,22 +19,14 @@ public:
      * @param tok the expression to the left of the operator
      * @param type the token representing the operator
      */
-    LiteralNode(Token tok, Type type);
-
-    /**
-     * Class constructor
-     * @param left the expression to the left of the operator
-     * @param op the token representing the operator
-     * @param right the expression to the right of the operator
-     */
-    explicit LiteralNode(int i);
+    LiteralNode(Token *tok, Type type);
 
     /**
      * Getter for the value of the literal
      *
      * @return the value
      */
-    int getValue();
+    Object getValue();
 
 	/**
      * Getter for the type of the literal
@@ -47,7 +38,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    int accept(ExprVisitor *visitor) override;
+	void accept(ASTVisitor *visitor) override;
 
 private:
 	Type _type;

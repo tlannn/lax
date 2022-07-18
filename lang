@@ -1,16 +1,19 @@
-var age: int = 19;
-age = age + 1;
-print age + 2;
+int a;
+a = 2 + 3;
+var b = 12;
+b = 4;
 
-var test: bool = false;
+print "a is :";
+print a;
+print "b is :";
+print b;
 
-if (test) {
-	print 1;
-	print 2;
-	print 3;
+if (a < b)
+	print "a is smaller than b";
+
+else if (a == b) {
+	print "a is equal to b";
 }
 
-else if (age > 0 && age <= 18)
-    age = 0;
 else
-	print age;
+	print "a is greater than b";

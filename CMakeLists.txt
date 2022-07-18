@@ -7,6 +7,7 @@ include_directories(src)
 
 # Add all .cpp files in src/ directory as source file
 set(SOURCE_FILES main.cpp
+        src/lax.cpp
         src/ast/assignnode.cpp
         src/ast/binopnode.cpp
         src/ast/blocknode.cpp
@@ -19,20 +20,26 @@ set(SOURCE_FILES main.cpp
         src/ast/relationalnode.cpp
         src/ast/seqnode.cpp
         src/ast/stmtexpressionnode.cpp
+        src/ast/stmtnode.cpp
         src/ast/stmtprintnode.cpp
+        src/common/exception.cpp
         src/interpreter/interpreter.cpp
+        src/interpreter/runtimeerror.cpp
         src/lexer/lexer.cpp
+        src/lexer/lexerror.cpp
+        src/lexer/memento.cpp
+        src/parser/parseerror.cpp
         src/parser/parser.cpp
         src/semantic/semanticanalyzer.cpp
+        src/semantic/semanticerror.cpp
         src/symbols/env.cpp
         src/symbols/symbol.cpp
         src/symbols/symboltable.cpp
         src/symbols/varsymbol.cpp
         src/tokens/num.cpp
-        src/tokens/op.cpp
+        src/tokens/object.cpp
         src/tokens/token.cpp
         src/tokens/type.cpp
-        src/tokens/word.cpp
         src/utils/logger.cpp
 )
 

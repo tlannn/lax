@@ -1,13 +1,15 @@
 #ifndef LAX_TYPE_H
 #define LAX_TYPE_H
 
+#include "token.h"
+#include "tokentype.h"
+
+/**
+ * Type lookup table constants
+ */
 #define _int 0
 #define _bool 1
 #define _undef 2
-
-#include "token.h"
-#include "tokentype.h"
-#include "word.h"
 
 /// Lookup tables for resulting types in arithmetic and logical operations
 extern int addOpLookup[2][2];
@@ -17,11 +19,26 @@ extern int divOpLookup[2][2];
 extern int logicOpLookup[2][2];
 extern int relOpLookup[2][2];
 
-class Type : public Word {
+/// Lax primitive types
+typedef bool lBool;
+typedef int lInt;
+
+/**
+ *
+ */
+class Type : public Token {
 public:
 	static Type NONE; // Not a valid type
     static Type INT; // Basic type 'int' for integers
     static Type BOOL; // Basic type 'bool' for booleans
+    static Type STRING; // Basic type 'bool' for booleans
+
+	/**
+	 * Return the type from a token representing a type keyword
+	 * @param tok the token representing a type
+	 * @return the type associated
+	 */
+	static Type* getType(Token *tok);
 
     /**
      * Getter for the type size
@@ -39,6 +56,14 @@ public:
 	 * @return the wider type
 	 */
 	static Type max(const Type &t1, const Token &op, const Type &t2);
+
+	/**
+	 * Check if the given type is a numeric
+	 *
+	 * @param t the type to check
+	 * @return true if the type is a numeric
+	 */
+	static bool numeric(const Type &t);
 
     /**
      * Overload the equality operator to compare two types

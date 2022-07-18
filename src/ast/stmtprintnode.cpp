@@ -9,6 +9,6 @@ ExprNode* StmtPrintNode::getExpr() {
 }
 
 /// Accept method for the visitor pattern
-void StmtPrintNode::accept(StmtVisitor *visitor) {
+void StmtPrintNode::accept(ASTVisitor *visitor) {
     visitor->visit(this);
 }

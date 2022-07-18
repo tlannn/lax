@@ -1,96 +1,119 @@
 #include "interpreter.h"
 
 /// Class constructor
-Interpreter::Interpreter(Parser &parser) : _parser(parser) {}
+Interpreter::Interpreter(ASTNode *ast) : _ast(ast), _result(Object::null) {}
 
 /// Interpret the code parsed by the parser
 void Interpreter::interpret() {
-    StmtNode *tree = _parser.parse();
-    execute(tree);
+	try {
+		_ast->accept(this);
+	} catch (RuntimeError &e) {
+		Logger::error(e.what());
+	}
 }
 
 /// Evaluate an expression node and return the value to which it has been reduced
-int Interpreter::evaluate(ExprNode *node) {
+void Interpreter::visit(ExprNode *node) {
     return node->accept(this);
 }
 
 /// Visit a BinOpNode and compute the operation represented by the node
-int Interpreter::visit(BinOpNode *node) {
-    int left = evaluate(node->getLeft());
-    int right = evaluate(node->getRight());
-    Token op = node->getToken();
+void Interpreter::visit(BinOpNode *node) {
+	visit(node->getLeft());
+	int left = _result.toInt();
+	visit(node->getRight());
+	int right = _result.toInt();
+	Token *op = node->getToken();
 
-    switch (op.toString().at(0)) {
-        case '+':
-            return left + right;
-        case '-':
-            return left - right;
-        case '*':
-            return left * right;
-        case '/':
-            return left / right;
-    }
-
-    return 0;
+	switch (op->getType()) {
+		case TokenType::PLUS: {
+			_result = Object(left + right);
+			break;
+		}
+		case TokenType::MINUS: {
+			_result = Object(left - right);
+			break;
+		}
+		case TokenType::STAR: {
+			_result = Object(left * right);
+			break;
+		}
+		case TokenType::SLASH: {
+			_result = Object(left / right);
+			break;
+		}
+		default:
+			_result = Object::null;
+			break;
+	}
 }
 
 /// Visit a LogicalNode and return the boolean value represented by the boolean expression
-int Interpreter::visit(LogicalNode *node) {
-    int left = evaluate(node->getLeft());
-    Token op = node->getToken();
+void Interpreter::visit(LogicalNode *node) {
+	visit(node->getLeft());
+	bool left = _result.toBool();
+	Token *op = node->getToken();
 
-    if (op.getType() == TokenType::OR) {
-        if (left) return left;
-    }
-    else if (op.getType() == TokenType::AND) {
-        if (!left) return left;
-    }
+	if (op->getType() == TokenType::OR) {
+		if (left) _result = Object(left);
+	} else if (op->getType() == TokenType::AND) {
+		if (!left) _result = Object(left);
+	}
 
-    return evaluate(node->getRight());
+	visit(node->getRight());
 }
 
 /// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
-int Interpreter::visit(RelationalNode *node) {
-    int left = evaluate(node->getLeft());
-    int right = evaluate(node->getRight());
-    Token op = node->getToken();
+void Interpreter::visit(RelationalNode *node) {
+	visit(node->getLeft());
+	int left = _result.toInt();
+	visit(node->getRight());
+	int right = _result.toInt();
+	Token *op = node->getToken();
 
-    switch (op.getType()) {
-        case TokenType::EQ:
-            return left == right;
-        case TokenType::NEQ:
-            return left != right;
-        case TokenType::SL:
-            return left < right;
-        case TokenType::LE:
-            return left <= right;
-        case TokenType::SG:
-            return left > right;
-        case TokenType::GE:
-            return left >= right;
-    }
-
-    return 0;
+	switch (op->getType()) {
+		case TokenType::EQ:
+			_result = Object(left == right);
+			break;
+		case TokenType::NEQ:
+			_result = Object(left != right);
+			break;
+		case TokenType::SL:
+			_result = Object(left < right);
+			break;
+		case TokenType::LE:
+			_result = Object(left <= right);
+			break;
+		case TokenType::SG:
+			_result = Object(left > right);
+			break;
+		case TokenType::GE:
+			_result = Object(left >= right);
+			break;
+		default:
+			_result = Object::null;
+			break;
+	}
 }
 
 /// Visit a LiteralNode and return the literal value represented
-int Interpreter::visit(LiteralNode *node) {
-	return node->getValue();
+void Interpreter::visit(LiteralNode *node) {
+	_result = node->getValue();
 }
 
 /// Visit an Id (identifier) and return the value of the variable defined with this identifier
-int Interpreter::visit(Id *node) {
-	return _memory[node->getToken().toString()];
+void Interpreter::visit(Id *node) {
+	_result = _memory[node->getToken()->toString()];
 }
 
 /// Execute a statement node
-void Interpreter::execute(StmtNode *node) {
+void Interpreter::visit(StmtNode *node) {
     node->accept(this);
 }
 
 /// Visit a BlockNode and execute the sequence of statements inside it
 void Interpreter::visit(BlockNode *node) {
-	execute(node->getSequence());
+	visit(node->getSequence());
 }
 
 /// Visit a SeqNode and execute all the statements inside it
@@ -98,40 +121,43 @@ void Interpreter::visit(SeqNode *node) {
 	std::vector<StmtNode*> stmts = node->getStatements();
 
 	for (int i = 0; i < stmts.size(); ++i) {
-		execute(stmts[i]);
+		visit(stmts[i]);
 	}
 }
 
 /// Visit a DeclNode and declare a variable
 void Interpreter::visit(DeclNode *node) {
 	if (node->getRValue() != nullptr) {
-		_memory[node->getName()] = evaluate(node->getRValue());
+		visit(node->getRValue());
+		_memory[node->getId()->toString()] = _result;
 	}
 }
 
 /// Visit an AssignNode and assign a new value to a variable
 void Interpreter::visit(AssignNode *node) {
-	int value = evaluate(node->getRValue());
-	_memory[node->getLValue()] = value;
+	visit(node->getExpr());
+	_memory[node->getToken()->toString()] = _result;
 }
 
 /// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
 /// is evaluated to true, otherwise execute the 'else' statement if there is one
 void Interpreter::visit(ConditionalNode *node) {
-	if (evaluate(node->getConditionExpression()))
-		execute(node->getThenStatement());
+	visit(node->getConditionExpression());
+
+	if (_result.toBool())
+		visit(node->getThenStatement());
 
 	else if (node->getElseStatement())
-		execute(node->getElseStatement());
+		visit(node->getElseStatement());
 }
 
 /// Visit a StmtPrintNode node and print the result of the expression in the statement
 void Interpreter::visit(StmtPrintNode *node) {
-    int res = evaluate(node->getExpr());
-    std::cout << res << std::endl;
+    visit(node->getExpr());
+    std::cout << _result.toString() << std::endl;
 }
 
 /// Visit a StmtExpressionNode node and compute the expression in the statement
 void Interpreter::visit(StmtExpressionNode *node) {
-	evaluate(node->getExpr());
+	visit(node->getExpr());
 }

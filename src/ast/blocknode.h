@@ -5,7 +5,7 @@
 
 #include "stmtnode.h"
 #include "seqnode.h"
-#include "interpreter/stmtvisitor.h"
+#include "interpreter/astvisitor.h"
 
 /**
  * Node for blocks of statements
@@ -32,7 +32,7 @@ public:
 	/**
      * Accept method for the visitor pattern
      */
-    void accept(StmtVisitor *visitor) override;
+    void accept(ASTVisitor *visitor) override;
 
 private:
     SeqNode* _seq;

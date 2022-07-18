@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "stmtnode.h"
+#include "interpreter/astvisitor.h"
 
 /**
  * Node for a sequence of statements to execute one after the other
@@ -15,7 +16,7 @@ public:
 	 *
 	 * @param stmts the statements to execute
 	 */
-	SeqNode(std::vector<StmtNode*> stmts);
+	explicit SeqNode(std::vector<StmtNode*> stmts);
 
 	/**
 	 * Getter for the statements to execute
@@ -27,7 +28,7 @@ public:
 	/**
      * Accept method for the visitor pattern
      */
-	void accept(StmtVisitor *visitor);
+	void accept(ASTVisitor *visitor) override;
 
 private:
 	std::vector<StmtNode*> _stmts;

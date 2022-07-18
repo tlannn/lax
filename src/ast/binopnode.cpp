@@ -1,7 +1,7 @@
 #include "binopnode.h"
 
 /// BinOpNode constructor
-BinOpNode::BinOpNode(ExprNode *left, Token op, ExprNode *right) : ExprNode(op), _left(left), _right(right) {}
+BinOpNode::BinOpNode(ExprNode *left, Token *op, ExprNode *right) : ExprNode(op), _left(left), _right(right) {}
 
 /// Getter for the left expression of the operation
 ExprNode* BinOpNode::getLeft() {
@@ -14,6 +14,6 @@ ExprNode* BinOpNode::getRight() {
 }
 
 /// Accept method for the visitor pattern
-int BinOpNode::accept(ExprVisitor *visitor) {
-    return visitor->visit(this);
+void BinOpNode::accept(ASTVisitor *visitor) {
+    visitor->visit(this);
 }

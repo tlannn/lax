@@ -1,7 +1,17 @@
 #include "type.h"
 
 /// Type constructor
-Type::Type(const std::string &word, TokenType type, int size) : Word(word, type), _size(size) {}
+Type::Type(const std::string &word, TokenType type, int size) : Token(word, type), _size(size) {}
+
+/// Return the type from a token representing a type keyword
+Type* Type::getType(Token *tok) {
+	if (tok->toString() == Type::INT.toString())
+		return &Type::INT;
+	else if (tok->toString() == Type::BOOL.toString())
+		return &Type::BOOL;
+	else
+		return &Type::NONE;
+}
 
 /// Getter for the type size
 int Type::getSize() const {
@@ -10,18 +20,20 @@ int Type::getSize() const {
 
 /// Determine the wider type in a binary operation
 Type Type::max(const Type &t1, const Token &op, const Type &t2) {
+	if (!numeric(t1) || !numeric(t2)) return Type::NONE;
+
 	int type1 = typeToInt(t1);
 	int type2 = typeToInt(t2);
 
 	// Arithmetic operators
-	switch (op.toString().at(0)) {
-		case '+':
+	switch (op.getType()) {
+		case TokenType::PLUS:
 			return intToType(addOpLookup[type1][type2]);
-		case '-':
+		case TokenType::MINUS:
 			return intToType(subOpLookup[type1][type2]);
-		case '*':
+		case TokenType::STAR:
 			return intToType(mulOpLookup[type1][type2]);
-		case '/':
+		case TokenType::SLASH:
 			return intToType(divOpLookup[type1][type2]);
 	}
 
@@ -40,6 +52,11 @@ Type Type::max(const Type &t1, const Token &op, const Type &t2) {
 	}
 
 	return Type::NONE;
+}
+
+/// Check if the given type is a numeric
+bool Type::numeric(const Type &t) {
+	return t == Type::INT;
 }
 
 /// Convert a type to a integer value
@@ -78,6 +95,7 @@ bool operator!= (const Type &t1, const Type &t2) {
 Type Type::NONE = Type("none", TokenType::TYPE, 4);
 Type Type::INT = Type("int", TokenType::TYPE, 4);
 Type Type::BOOL = Type("bool", TokenType::TYPE, 1);
+Type Type::STRING = Type("string", TokenType::TYPE, 1);
 
 /// Lookup tables for operations
 int addOpLookup[2][2] = {

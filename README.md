@@ -4,8 +4,13 @@ A custom interpreted language called Lax.
 ## Supported features
 Lax currently supports :
 - arithmetic operations (addition, subtraction...) ;
-- conditional statements, as well as logical expressions ; 
+- conditional statements, as well as logical expressions ;
+- blocks of statements ; 
 - variables declaration and assignment, in addition to the use of variables in expressions ;
+- integers, booleans and strings (character sequences) types ;
+- variable scopes ;
+- inclusion of other source files in the code ;
+- error handling ;
 - printing in the console the result of an expression.
 
 ## Grammar
@@ -13,8 +18,9 @@ The source language is defined as following.
 ```
 program -> (stmt)*
 block -> "{" (stmt)* "}"
-stmt -> varDeclStmt | varAssignStmt | conditionalStmt | printStmt | expressionStmt
-varDeclStmt -> "var" ID ":" TYPE ("=" logic)? ";"
+stmt -> includeStmt | declaration | varAssignStmt | conditionalStmt | printStmt | expressionStmt
+includeStmt -> "include" STRING ";"
+declaration -> ("var" | TYPE) ID ("=" logic)? ";"
 varAssignStmt -> ID "=" logic ";"
 conditionalStmt -> "if" "(" logic ")" (block | stmt) (("else" conditionalStmt)* | "else" (block | stmt))?
 printStmt -> "print" expressionStmt
@@ -24,7 +30,7 @@ join -> rel ("&&" rel)*
 rel -> expr (("==" | "!=" | "<" | "<=" | ">" | ">=") expr)*
 expr -> term (("+" | "-") term)*
 term -> factor (("*" | "/") factor)*
-factor -> "(" logic ")" | NUM | "true" | "false" | ID
+factor -> "(" logic ")" | STRING | NUM | "true" | "false" | ID
 ```
 
 ## CMake commands

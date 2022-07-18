@@ -38,7 +38,7 @@ public:
 	 */
     Type getType();
 
-private:
+protected:
     std::string _name;
     Type _type;
 };

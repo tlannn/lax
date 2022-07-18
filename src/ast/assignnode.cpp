@@ -1,15 +1,19 @@
 #include "assignnode.h"
 
-AssignNode::AssignNode(std::string id, ExprNode *expr) : StmtNode(), _id(id), _expr(expr) {}
+/// AssignNode constructor
+AssignNode::AssignNode(Token *id, ExprNode *expr) : StmtNode(), _id(id), _expr(expr) {}
 
-std::string AssignNode::getLValue() {
+/// Getter for the token of the variable
+Token* AssignNode::getToken() {
     return _id;
 }
 
-ExprNode* AssignNode::getRValue() {
+/// Getter for the new expression assigned
+ExprNode* AssignNode::getExpr() {
     return _expr;
 }
 
-void AssignNode::accept(StmtVisitor *visitor) {
+/// Accept method for the visitor pattern
+void AssignNode::accept(ASTVisitor *visitor) {
     visitor->visit(this);
 }

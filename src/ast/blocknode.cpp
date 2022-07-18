@@ -9,6 +9,6 @@ SeqNode* BlockNode::getSequence() {
 }
 
 /// Accept method for the visitor pattern
-void BlockNode::accept(StmtVisitor *visitor) {
+void BlockNode::accept(ASTVisitor *visitor) {
     visitor->visit(this);
 }

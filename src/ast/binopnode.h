@@ -2,9 +2,8 @@
 #define LAX_BINOPNODE_H
 
 #include "exprnode.h"
-#include "interpreter/exprvisitor.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
-
 
 /**
  * Node for arithmetic expressions in the program, such as basic computes
@@ -21,7 +20,7 @@ public:
      * @param op the token representing the operator
      * @param right the expression to the right of the operator
      */
-    BinOpNode(ExprNode *left, Token op, ExprNode *right);
+    BinOpNode(ExprNode *left, Token *op, ExprNode *right);
 
     /**
      * Getter for the left expression of the operation
@@ -40,7 +39,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    int accept(ExprVisitor *visitor) override;
+	void accept(ASTVisitor *visitor) override;
 
 protected:
     ExprNode *_left;

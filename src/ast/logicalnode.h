@@ -2,9 +2,8 @@
 #define LAX_LOGICALNODE_H
 
 #include "exprnode.h"
-#include "interpreter/exprvisitor.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
-#include "tokens/type.h"
 
 /**
  * Node for a logical expression
@@ -21,7 +20,7 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    LogicalNode(ExprNode *left, Token op, ExprNode *right);
+    LogicalNode(ExprNode *left, Token *op, ExprNode *right);
 
     /**
      * Getter for the left expression of the operation
@@ -40,7 +39,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    int accept(ExprVisitor *visitor) override;
+	void accept(ASTVisitor *visitor) override;
 
 protected:
     ExprNode *_left;

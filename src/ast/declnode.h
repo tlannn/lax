@@ -1,18 +1,17 @@
 #ifndef LAX_DECLNODE_H
 #define LAX_DECLNODE_H
 
-#include <string>
-
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/stmtvisitor.h"
+#include "interpreter/astvisitor.h"
+#include "tokens/token.h"
 #include "tokens/type.h"
 
 /**
  * Node for variable declaration statements
  *
  * When declaring a variable, its name and type must be specified. The variable
- * can be initialized at declaration ; int that case, an expression is
+ * can be initialized at declaration ; in that case, an expression is
  * associated to the node
  */
 class DeclNode : public StmtNode {
@@ -20,18 +19,18 @@ public:
 	/**
 	 * Class constructor
 	 *
-	 * @param name the name of the variable declared
+	 * @param id the name of the variable declared
 	 * @param type the type of the variable
 	 * @param expr the expression associated to the variable (if any)
 	 */
-    DeclNode(std::string name, Type type, ExprNode *expr);
+    DeclNode(Token *id, Type type, ExprNode *expr);
 
 	/**
      * Getter for the name of the variable declared
      *
      * @return the name of the variable
      */
-    std::string getName();
+    Token* getId();
 
 	/**
      * Getter for the type of the variable declared
@@ -51,10 +50,10 @@ public:
 	/**
      * Accept method for the visitor pattern
      */
-    void accept(StmtVisitor *visitor) override;
+    void accept(ASTVisitor *visitor) override;
 
 private:
-    std::string _name;
+    Token *_id;
     Type _type;
     ExprNode *_rvalue;
 };

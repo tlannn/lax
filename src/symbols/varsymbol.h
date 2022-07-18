@@ -15,6 +15,12 @@ public:
 	 * @param type the type of the variable
 	 */
     VarSymbol(std::string &name, Type &type);
+
+	/**
+	 * Change the type of the variable
+	 * @param type the new type
+	 */
+	void setType(Type type);
 };
 
 #endif // LAX_VARSYMBOL_H

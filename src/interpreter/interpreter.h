@@ -1,14 +1,17 @@
 #ifndef LAX_INTERPRETER_H
 #define LAX_INTERPRETER_H
 
+#include <iostream>
 #include <vector>
 
-#include "exprvisitor.h"
-#include "stmtvisitor.h"
+#include "astvisitor.h"
+#include "runtimeerror.h"
+#include "ast/astnode.h"
 #include "ast/exprnode.h"
 #include "ast/assignnode.h"
 #include "ast/binopnode.h"
 #include "ast/literalnode.h"
+#include "ast/id.h"
 #include "ast/declnode.h"
 #include "ast/logicalnode.h"
 #include "ast/relationalnode.h"
@@ -18,49 +21,49 @@
 #include "ast/seqnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
-#include "parser/parser.h"
 #include "symbols/symboltable.h"
+#include "utils/logger.h"
 
 /**
  * Interpreter for the Lax language
  *
- * Implements the ExprVisitor and StmtVisitor visitor interfaces.
+ * Implements the ASTVisitor interface.
  * The role of the interpreter is to visit an Abstract Syntax Tree and simulate
  * the execution of the program represented. It defines methods that describe how
  * nodes of an AST must be handled.
  */
-class Interpreter : public ExprVisitor, StmtVisitor {
+class Interpreter : public ASTVisitor {
 public:
 	/**
 	 * Class constructor
 	 *
 	 * @param parser
 	 */
-	explicit Interpreter(Parser &parser);
+	explicit Interpreter(ASTNode *ast);
 
 	/// Interpret the code parsed by the parser
 	void interpret();
 
 	/// Evaluate an expression node and return the value to which it has been reduced
-	int evaluate(ExprNode *node) override;
+	void visit(ExprNode *node) override;
 
 	/// Visit a BinOpNode and compute the operation represented by the node
-	int visit(BinOpNode *node) override;
+	void visit(BinOpNode *node) override;
 
 	/// Visit a LogicalNode and return the boolean value represented by the boolean expression
-	int visit(LogicalNode *node) override;
+	void visit(LogicalNode *node) override;
 
 	/// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
-	int visit(RelationalNode *node) override;
+	void visit(RelationalNode *node) override;
 
 	/// Visit a LiteralNode and return the literal value represented
-	int visit(LiteralNode *node) override;
+	void visit(LiteralNode *node) override;
 
 	/// Visit an Id (identifier) and return the value of the variable defined with this identifier
-	int visit(Id *node) override;
+	void visit(Id *node) override;
 
 	/// Execute a statement node
-	void execute(StmtNode *node) override;
+	void visit(StmtNode *node) override;
 
 	/// Visit a BlockNode and execute the sequence of statements inside it
 	void visit(BlockNode *node) override;
@@ -85,8 +88,9 @@ public:
 	void visit(StmtExpressionNode *node) override;
 
 private:
-	Parser _parser;
-	std::unordered_map<std::string, int> _memory;
+	ASTNode *_ast;
+	Object _result;
+	std::unordered_map<std::string, Object> _memory;
 };
 
 #endif // LAX_INTERPRETER_H

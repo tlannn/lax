@@ -2,14 +2,8 @@
 #define LAX_ID_H
 
 #include "exprnode.h"
-#include "tokens/word.h"
-#include "tokens/type.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-class ExprNode;
-class ExprVisitor;
+#include "interpreter/astvisitor.h"
+#include "tokens/token.h"
 
 /**
  * Node for an identifier
@@ -25,12 +19,12 @@ public:
 	 *
 	 * @param word the word defining the identifier
 	 */
-    Id(Word word);
+    explicit Id(Token *word);
 
 	/**
 	 * Accept method for the visitor pattern
 	 */
-    int accept(ExprVisitor *visitor) override;
+	void accept(ASTVisitor *visitor) override;
 };
 
 #endif // LAX_ID_H

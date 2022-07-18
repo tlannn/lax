@@ -2,13 +2,8 @@
 #define LAX_STMTNODE_H
 
 #include "astnode.h"
-#include "interpreter/stmtvisitor.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-class StmtVisitor;
 
 /**
  * Node for statements in the program
@@ -26,7 +21,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    virtual void accept(StmtVisitor *visitor) = 0;
+    void accept(ASTVisitor *visitor) override;
 };
 
 #endif // LAX_STMTNODE_H

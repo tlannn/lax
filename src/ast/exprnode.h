@@ -2,14 +2,8 @@
 #define LAX_EXPRNODE_H
 
 #include "astnode.h"
-#include "interpreter/exprvisitor.h"
+#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
-#include "tokens/type.h"
-
-/*
- * Forward declarations for cyclic dependencies
- */
-class ExprVisitor;
 
 /**
  * Node for expressions in the program
@@ -24,28 +18,22 @@ public:
      * @param tok the token in the expression
      * @param type the type of the expression
      */
-    ExprNode(Token tok);
+    explicit ExprNode(Token *tok);
 
     /**
      * Getter for the token
      *
      * @return the token
      */
-    Token getToken();
+    Token* getToken();
 
     /**
-     * Abstract accept method for the visitor pattern
-     *
-     * Accepts an *ExprVisitor* and call its visit method corresponding to
-     * the type of the node
-     *
-     * @param visitor the visitor that wants to visit the node
-     * @return the reduced value of the expression
+     * Accept method for the visitor pattern
      */
-    virtual int accept(ExprVisitor *visitor) = 0;
+    void accept(ASTVisitor *visitor) override;
 
 protected:
-    Token _tok;
+    Token *_tok;
 };
 
 #endif // LAX_EXPRNODE_H

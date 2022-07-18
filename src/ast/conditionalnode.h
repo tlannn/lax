@@ -1,16 +1,14 @@
 #ifndef LAX_CONDITIONALNODE_H
 #define LAX_CONDITIONALNODE_H
 
-#include <iostream>
-
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/stmtvisitor.h"
+#include "interpreter/astvisitor.h"
 
 /**
  * Node for if/else statements in the program
  *
- * If/else statements first evaluate a condition (represented by a boolean expression),
+ * If/else statements first visit a condition (represented by a boolean expression),
  * and then execute the 'then' statement referenced by the node if the condition
  * is evaluated to true. Otherwise, the 'else' statement referenced is executed if
  * there is one.
@@ -51,7 +49,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(StmtVisitor *visitor) override;
+    void accept(ASTVisitor *visitor) override;
 
 protected:
     ExprNode *_expr;

@@ -15,7 +15,7 @@ public:
      *
      * @param v the numeric value
      */
-    explicit Num(int value);
+    Num(int value, int line, int col);
 
     /**
      * Getter for the numeric value of the token

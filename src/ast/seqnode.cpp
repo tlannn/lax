@@ -9,6 +9,6 @@ std::vector<StmtNode *> SeqNode::getStatements() {
 }
 
 /// Accept method for the visitor pattern
-void SeqNode::accept(StmtVisitor *visitor) {
+void SeqNode::accept(ASTVisitor *visitor) {
 	visitor->visit(this);
 }

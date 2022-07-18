@@ -10,23 +10,30 @@
  */
 class Token {
 public:
-    /// Class constructor
-    Token();
+     /**
+      * Class constructor
+      * @param lexeme the lexeme (character sequence) of the token
+      * @param type the token type
+      * @param line the line where the token is located in the source code
+      * @param col the column where the token is located in the source code
+      */
+    Token(const std::string &lexeme, TokenType type, int line, int col);
 
-    /**
-     * Class constructor
-     *
-     * @param type the type of the token
-     */
-    explicit Token(TokenType type);
+	/**
+	 * Class constructor
+	 * @param lexeme the lexeme (character sequence) of the token
+	 * @param type the token type
+	 */
+	Token(const std::string &lexeme, TokenType type);
 
-    /**
-     * Class constructor
-     *
-     * @param lexeme the sequence of characters forming the lexeme
-     * @param type the type of the token
-     */
-    Token(const std::string &lexeme, TokenType t);
+	/**
+	 * Return the lexeme associated to a token type.
+	 * The lexemes are language-defined
+	 *
+	 * @param type the token type
+	 * @return the lexeme
+	 */
+	static std::string lexeme(TokenType type);
 
     /**
      * Getter for the token type
@@ -35,16 +42,30 @@ public:
      */
     int getType() const;
 
-    /**
+	/**
+	 * Getter for the token line
+	 * @return the line
+	 */
+	int getLine() const;
+
+	/**
+	 * Getter for the token column
+	 * @return the column
+	 */
+	int getColumn() const;
+
+	/**
      * Stringify the token
      *
      * @return a string representing the token
      */
-    virtual std::string toString() const;
+	virtual std::string toString() const;
 
 protected:
     TokenType _type;
     std::string _text;
+	int _line;
+	int _col;
 };
 
 #endif // LAX_TOKEN_H

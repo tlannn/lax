@@ -1,93 +1,106 @@
 #include "semanticanalyzer.h"
 
 /// Class constructor
-SemanticAnalyzer::SemanticAnalyzer(Parser &parser) : _parser(parser), _resultType(Type::NONE), _env(new Env()) {}
+SemanticAnalyzer::SemanticAnalyzer(ASTNode *ast) : _ast(ast), _resultType(Type::NONE), _env(new Env()),
+													_errors(false) {}
 
 /// Analyze semantically the code parsed by the parser
 void SemanticAnalyzer::analyze() {
-    StmtNode *tree = _parser.parse();
-    execute(tree);
+	_ast->accept(this);
+}
+
+/// Return whether errors occurred during semantic analysis
+bool SemanticAnalyzer::hadErrors() const {
+	return _errors;
+}
+
+/// Return an exception on a specific token
+SemanticError SemanticAnalyzer::error(Token *token, const std::string &message, const std::string &type) {
+	_errors = true;
+	return SemanticError(Lexer::currentFile, token->getLine(), token->getColumn(), message, type);
+}
+
+/// Report an error to inform the user
+void SemanticAnalyzer::report(const SemanticError &err) {
+	Logger::error(err.what());
 }
 
 /// Evaluate an expression node and return the value to which it has been reduced
-int SemanticAnalyzer::evaluate(ExprNode *node) {
-    return node->accept(this);
+void SemanticAnalyzer::visit(ExprNode *node) {
+	node->accept(this);
 }
 
 /// Visit a BinOpNode and compute the operation represented by the node
-int SemanticAnalyzer::visit(BinOpNode *node) {
-	Token op = node->getToken();
+void SemanticAnalyzer::visit(BinOpNode *node) {
+	Token *op = node->getToken();
 
-	evaluate(node->getLeft());
+	visit(node->getLeft());
 	Type typeLeft = _resultType;
 
-	evaluate(node->getRight());
+	visit(node->getRight());
 	Type typeRight = _resultType;
 
-	_resultType = Type::max(typeLeft, op, typeRight);
+	_resultType = Type::max(typeLeft, *op, typeRight);
 
-    return 0;
+	if (_resultType == Type::NONE)
+		report(error(node->getRight()->getToken(),
+					"Incompatible type '" + typeRight.toString() + "' with type '" + typeLeft.toString() + "'",
+					"Bad Operand"));
 }
 
 /// Visit a LogicalNode and return the boolean value represented by the boolean expression
-int SemanticAnalyzer::visit(LogicalNode *node) {
-	Token op = node->getToken();
-
-	evaluate(node->getLeft());
-	Type typeLeft = _resultType;
-
-	evaluate(node->getRight());
-	Type typeRight = _resultType;
-
-	_resultType = Type::max(typeLeft, op, typeRight);
-
-	return 0;
+void SemanticAnalyzer::visit(LogicalNode *node) {
+	_resultType = Type::BOOL;
 }
 
 /// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
-int SemanticAnalyzer::visit(RelationalNode *node) {
-	Token op = node->getToken();
-
-	evaluate(node->getLeft());
+void SemanticAnalyzer::visit(RelationalNode *node) {
+	visit(node->getLeft());
 	Type typeLeft = _resultType;
 
-	evaluate(node->getRight());
+	visit(node->getRight());
 	Type typeRight = _resultType;
 
-	_resultType = Type::max(typeLeft, op, typeRight);
+	if (Type::numeric(typeLeft) && Type::numeric(typeRight) ||
+		typeLeft == Type::BOOL && typeRight == Type::BOOL)
+		_resultType = Type::BOOL;
 
-	return 0;
+	else report(error(node->getRight()->getToken(),
+					 "Cannot compare type '" + typeRight.toString() + "' with type '" + typeLeft.toString() + "'",
+					 "Bad Operand"));
 }
 
 /// Visit a LiteralNode and return the literal value represented
-int SemanticAnalyzer::visit(LiteralNode *node) {
+void SemanticAnalyzer::visit(LiteralNode *node) {
 	_resultType = node->getType();
-
-	return 0;
 }
 
 /// Visit an Id (identifier) and return the value of the variable defined with this identifier
-int SemanticAnalyzer::visit(Id *node) {
-	std::string varName = node->getToken().toString();
-	VarSymbol *varSym = dynamic_cast<VarSymbol*>(_env->get(varName));
+void SemanticAnalyzer::visit(Id *node) {
+	std::string varName = node->getToken()->toString();
+	VarSymbol *varSym = dynamic_cast<VarSymbol *>(_env->get(varName));
 
-	if (!varSym)
-		throw std::runtime_error("'" + varName + "' is undefined.");
+	if (!varSym) {
+		report(error(node->getToken(),
+					 "'" + varName + "' was not declared in this scope",
+					 "Undefined symbol"));
 
-	_resultType = varSym->getType();
+		_resultType = Type::NONE;
+	}
 
-	return 0;
+	else
+		_resultType = varSym->getType();
 }
 
 /// Execute a statement node
-void SemanticAnalyzer::execute(StmtNode *node) {
+void SemanticAnalyzer::visit(StmtNode *node) {
     node->accept(this);
 }
 
 /// Visit a BlockNode and execute the sequence of statements inside it
 void SemanticAnalyzer::visit(BlockNode *node) {
 	_env = new Env(_env);
-	execute(node->getSequence());
+	visit(node->getSequence());
 	_env = _env->getPreviousEnv();
 }
 
@@ -96,74 +109,94 @@ void SemanticAnalyzer::visit(SeqNode *node) {
 	std::vector<StmtNode*> stmts = node->getStatements();
 
 	for (int i = 0; i < stmts.size(); ++i) {
-		execute(stmts[i]);
+		visit(stmts[i]);
 	}
 }
 
 /// Visit a DeclNode and declare a variable
 void SemanticAnalyzer::visit(DeclNode *node) {
-	std::string varName = node->getName();
+	std::string varName = node->getId()->toString();
 	Type varType = node->getType();
 
-	if (_env->get(varName))
-		throw std::runtime_error("Variable '" + varName + "' is already declared.");
+	// Check if variable is already declared in the scope
+	if (_env->get(varName)) {
+		report(error(node->getId(),
+					 "'" + varName + "' has already been declared in this scope",
+					 "Error"));
 
-	VarSymbol *varSym = new VarSymbol(varName, varType);
-	_env->put(varSym);
+		// Change varType to the type of the variable already declared
+		varType = _env->get(varName)->getType();
+	}
 
+	// Evaluate assigned expression, if any
 	if (node->getRValue() != nullptr) {
-		evaluate(node->getRValue());
+		visit(node->getRValue());
 		Type assignType = _resultType;
 
-		if (assignType != varType)
-			throw std::runtime_error("Cannot assign type '" + assignType.toString() + "' to variable '" +
-									 varName + "' of type '" + varType.toString() + "'.");
+		if (varType == Type::NONE) {
+			varType = assignType;
+		}
 
-		this->evaluate(node->getRValue());
+		else if (assignType != varType)
+			report(error(node->getRValue()->getToken(),
+				  "Cannot convert type '" + assignType.toString() + "' to '" + varType.toString() + "'",
+				  "TypeError"));
+	}
+
+	if (!_env->get(varName)) {
+		auto *varSym = new VarSymbol(varName, varType);
+		_env->put(varSym);
 	}
 }
 
 /// Visit an AssignNode and assign a new value to a variable
 void SemanticAnalyzer::visit(AssignNode *node) {
-	std::string varName = node->getLValue();
-	VarSymbol *var = dynamic_cast<VarSymbol*>(_env->get(varName));
+	std::string varName = node->getToken()->toString();
+	VarSymbol *var = dynamic_cast<VarSymbol *>(_env->get(varName));
 
-	if (!var)
-		throw std::runtime_error("Variable '" + varName + "' is undefined.");
+	if (!var) {
+		report(error(node->getToken(),
+					 "'" + varName + "' was not declared in this scope", "Undefined symbol"));
+		visit(node->getExpr());
+		return;
+	}
 
 	Type varType = var->getType();
-	evaluate(node->getRValue());
+	visit(node->getExpr());
+
 	Type assignType = _resultType;
 
-	if (assignType != varType)
-		throw std::runtime_error("Cannot assign type '" + assignType.toString() + "' to variable '" +
-								 varName + "' of type '" + varType.toString() + "'.");
+	if (varType == Type::NONE)
+		var->setType(assignType);
 
-	evaluate(node->getRValue());
+	else if (assignType != varType)
+		report(error(node->getExpr()->getToken(),
+					 "Cannot convert '" + assignType.toString() + "' to '" + varType.toString() + "'",
+					 "TypeError"));
 }
 
 /// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
 /// is evaluated to true, otherwise execute the 'else' statement if there is one
 void SemanticAnalyzer::visit(ConditionalNode *node) {
-	evaluate(node->getConditionExpression());
+	visit(node->getConditionExpression());
 
 	_env = new Env(_env);
-	execute(node->getThenStatement());
+	visit(node->getThenStatement());
 	_env = _env->getPreviousEnv();
 
 	if (node->getElseStatement()) {
 		_env = new Env(_env);
-		execute(node->getElseStatement());
+		visit(node->getElseStatement());
 		_env = _env->getPreviousEnv();
 	}
 }
 
 /// Visit a StmtPrintNode node and print the result of the expression in the statement
 void SemanticAnalyzer::visit(StmtPrintNode *node) {
-    evaluate(node->getExpr());
+	visit(node->getExpr());
 }
 
 /// Visit a StmtExpressionNode node and compute the expression in the statement
 void SemanticAnalyzer::visit(StmtExpressionNode *node) {
-	evaluate(node->getExpr());
+	visit(node->getExpr());
 }

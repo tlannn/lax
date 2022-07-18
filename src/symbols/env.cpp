@@ -1,4 +1,3 @@
-#include <iostream>
 #include "env.h"
 
 /// Class constructor
