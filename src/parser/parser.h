@@ -220,6 +220,13 @@ private:
 	 */
 	StmtNode* expressionStmt();
 
+	/**
+     * Build a node representing an expression
+     *
+     * @return the node created
+     */
+	ExprNode* expr();
+
     /**
      * Build a node representing a logical OR expression
      *
@@ -242,11 +249,11 @@ private:
     ExprNode* rel();
 
     /**
-     * Build a node representing an expression
+     * Build a node representing a binary operation
      *
      * @return the node created
      */
-    ExprNode* expr();
+    ExprNode* binop();
 
     /**
      * Build a node representing a term

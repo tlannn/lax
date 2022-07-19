@@ -200,7 +200,7 @@ StmtNode* Parser::declaration() {
 	move();
 	Token *identifier = previous();
 
-	ExprNode *assignment = match(TokenType::SIMEQ) ? logic() : nullptr;
+	ExprNode *assignment = match(TokenType::SIMEQ) ? expr() : nullptr;
 
 	consume(TokenType::SEMICOL);
 
@@ -213,7 +213,7 @@ StmtNode* Parser::varAssignStmt() {
 
 	consume(TokenType::SIMEQ);
 
-	auto *node = new AssignNode(identifier, logic());
+	auto *node = new AssignNode(identifier, expr());
 
 	consume(TokenType::SEMICOL);
 
@@ -223,7 +223,7 @@ StmtNode* Parser::varAssignStmt() {
 /// Build a node representing an if/else statement
 StmtNode* Parser::conditionalStmt() {
     consume(TokenType::LPAREN, ErrorMode::REPAIR);
-    ExprNode *condition = Parser::logic();
+    ExprNode *condition = Parser::expr();
     consume(TokenType::RPAREN, ErrorMode::REPAIR);
 
     StmtNode *thenStmt = check(TokenType::LBRACE) ? block() : stmt();
@@ -259,6 +259,11 @@ StmtNode* Parser::expressionStmt() {
 	return new StmtExpressionNode(expr);
 }
 
+/// Build a node representing an expression
+ExprNode* Parser::expr() {
+	return logic();
+}
+
 /// Build a node representing a logical OR expression
 ExprNode* Parser::logic() {
 	ExprNode *expr = join();
@@ -285,20 +290,20 @@ ExprNode* Parser::join() {
 
 /// Build a node representing an equality or inequality expression
 ExprNode* Parser::rel() {
-	ExprNode *expr = this->expr();
+	ExprNode *expr = binop();
 
 	while (match(TokenType::EQ) || match(TokenType::NEQ) ||
 			match(TokenType::SL) || match(TokenType::LE) ||
 			match(TokenType::SG) || match(TokenType::GE)) {
 		Token *op = previous();
-		expr = new RelationalNode(expr, op, this->expr());
+		expr = new RelationalNode(expr, op, binop());
 	}
 
 	return expr;
 }
 
-/// Build a node representing an expression
-ExprNode* Parser::expr() {
+/// Build a node representing a binary operation
+ExprNode* Parser::binop() {
 	ExprNode *expr = term();
 
 	while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
