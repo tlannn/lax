@@ -9,6 +9,7 @@ Lexer::Lexer(const std::string &filename) : _memento(nullptr), _source(new std::
 	// Reserve types
 	reserve("int", TokenType::TYPE);
 	reserve("bool", TokenType::TYPE);
+	reserve("string", TokenType::TYPE);
 
 	// Reserve keywords
 	reserve("true", TokenType::TRUE);

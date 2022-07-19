@@ -9,6 +9,8 @@ Type* Type::getType(Token *tok) {
 		return &Type::INT;
 	else if (tok->toString() == Type::BOOL.toString())
 		return &Type::BOOL;
+	else if (tok->toString() == Type::STRING.toString())
+		return &Type::STRING;
 	else
 		return &Type::NONE;
 }

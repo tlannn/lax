@@ -1,26 +1,2 @@
-/**
- * This is a Lax code example
- **/
-
-// Declare variables a and b
-int a;
-a = 2 + 3;
-var b = 12;
-b = 4;
-
-// Print the value of both variables
-print "a is :";
-print a;
-print "b is :";
-print b;
-
-// Print whether a is greater or less than b
-if (a < b)
-	print "a is smaller than b";
-
-else if (a == b) {
-	print "a is equal to b";
-}
-
-else
-	print "a is greater than b";
+string str = "test";
+print str;
