@@ -1,3 +1,4 @@
+#include <iostream>
 #include "lexer.h"
 
 std::string Lexer::currentFile;
@@ -92,7 +93,10 @@ Token* Lexer::nextToken() {
 		case '+': return createToken(TokenType::PLUS);
 		case '-': return createToken(TokenType::MINUS);
 		case '*': return createToken(TokenType::STAR);
-		case '/': return createToken(TokenType::SLASH);
+		case '/':
+			if (match('/')) { inlineComment(); return nextToken(); }
+			else if (peek() == '*') { blockComment(); return nextToken(); }
+			else return createToken(TokenType::SLASH);
         case '&': if (match('&')) return createToken(TokenType::AND); break;
         case '|': if (match('|')) return createToken(TokenType::OR); break;
 		case '!': if (match('=')) return createToken(TokenType::NEQ); break;
@@ -211,6 +215,45 @@ Token *Lexer::identifier(int c) {
 		// Reserve this word as an identifier
 		_words[buffer] = TokenType::ID;
 		return createToken(TokenType::ID, buffer);
+	}
+}
+
+/// Skip an inline comment
+void Lexer::inlineComment() {
+	while (peek() != '\n' && !isAtEnd()) advance();
+}
+
+/// Skip a block comment, with nested block comments
+void Lexer::blockComment() {
+	short int count = 0;
+
+	std::stack<short int> s;
+	while (match('*')) ++count;
+	s.push(count);
+	count = 0;
+
+	while (!s.empty() && !isAtEnd()) {
+		// Check for opening comments
+		if (match('/') && peek() == '*') {
+			// Count the number of stars and push into the stack
+			while (match('*')) ++count;
+			s.push(count);
+
+			count = 0; // Reset counter
+		}
+
+		// Check for closing comments
+		else if (peek() == '*') {
+			while (match('*')) ++count;
+
+			// Pop from the stack if the number of stars is the same as the last tag in stack
+			if (match('/') && count == s.top())
+				s.pop();
+
+			count = 0; // Reset counter
+		}
+
+		else advance();
 	}
 }
 

@@ -2,6 +2,7 @@
 #define LAX_LEXER_H
 
 #include <fstream>
+#include <stack>
 #include <string>
 #include <unordered_map>
 
@@ -140,6 +141,16 @@ private:
 	 * @return the token representing the identifier
 	 */
 	Token* identifier(int c);
+
+	/**
+	 * Skip an inline comment
+	 */
+	void inlineComment();
+
+	/**
+	 * Skip a block comment, with nested block comments
+	 */
+	void blockComment();
 
     /**
      * Check if the character is a letter

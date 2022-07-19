@@ -3,6 +3,7 @@ A custom interpreted language called Lax.
 
 ## Supported features
 Lax currently supports :
+- inline and block comments ;
 - arithmetic operations (addition, subtraction...) ;
 - conditional statements, as well as logical expressions ;
 - blocks of statements ; 
@@ -31,6 +32,29 @@ rel -> expr (("==" | "!=" | "<" | "<=" | ">" | ">=") expr)*
 expr -> term (("+" | "-") term)*
 term -> factor (("*" | "/") factor)*
 factor -> "(" logic ")" | STRING | NUM | "true" | "false" | ID
+```
+
+More over, inline and block comments are supported. Like the following :
+```
+// This is an inline comment
+
+/*
+    This is a block comment.
+    
+    /**
+        This a nested block comment.
+        
+        You can identify nested block
+        comments with the number of stars
+        following the slash.
+    **/
+*/
+
+/*
+    This block comment won't work,
+    as the number of stars are not
+    the same
+**/
 ```
 
 ## CMake commands
