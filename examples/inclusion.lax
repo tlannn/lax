@@ -9,6 +9,6 @@
  * It will be executed right where the inclusion statement appears.
  * Thus, the print statement will be executed after the included file.
  */
-include "./variables.lax";
+include "variables.lax";
 
 print "Finished.";

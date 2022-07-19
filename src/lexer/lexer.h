@@ -27,6 +27,14 @@ public:
     explicit Lexer(const std::string &filename);
 
 	/**
+	 * Return the part containing the path to a file
+	 *
+	 * @param filepath the file name with its path
+	 * @return the file path
+	 */
+	static std::string getPath(const std::string &filepath);
+
+	/**
 	 * Open a stream to read a file and place the cursor at the beginning
 	 *
 	 * @param filename the name of the file to open

@@ -22,10 +22,26 @@ Lexer::Lexer(const std::string &filename) : _memento(nullptr), _source(new std::
 	openFile(filename);
 }
 
+/// Return the part containing the path to a file
+std::string Lexer::getPath(const std::string &filepath) {
+	size_t index = filepath.find_last_of('/');
+	return filepath.substr(0, index + 1);
+}
+
 /// Open a stream to read a file and place the cursor at the beginning
 void Lexer::openFile(const std::string &filename) {
+	Memento *memento = _memento;
+	std::string filepath;
+
+	// Determine the path to the file according to the paths to previous files opened
+	while (memento) {
+		filepath.insert(0, getPath(memento->getSource()));
+		memento = memento->getPrevious();
+	}
+
+	// Close the old stream and open a new one to the file
 	_source->close();
-	_source->open(filename);
+	_source->open(filepath + filename);
 
 	if (!_source->is_open())
 		error("Could not open file '" + filename + "'");
