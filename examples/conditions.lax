@@ -1,0 +1,27 @@
+/**
+ * Lax code example - conditions
+ *
+ * Example that shows how to deal with conditionals
+ **/
+
+// Create variables a and b
+var a = 2;
+var b = 3;
+
+/*
+ * The following conditional will print whether a is greater than, less than, or equal to b.
+ * Note that when a single statement is executed after a condition, braces are optional.
+ */
+
+// Check if a is less than b
+if (a < b)
+	print "a is smaller than b";
+
+// If the precedent condition is evaluated to false, check if the two are equals
+else if (a == b) {
+	print "a is equal to b";
+}
+
+// Reached if all conditions are falsy
+else
+	print "a is greater than b";

@@ -1,0 +1,14 @@
+/**
+ * Lax code example - inclusion
+ *
+ * Example that shows how to include other Lax files
+ **/
+
+/*
+ * Include the file called variables.lax
+ * It will be executed right where the inclusion statement appears.
+ * Thus, the print statement will be executed after the included file.
+ */
+include "./variables.lax";
+
+print "Finished.";

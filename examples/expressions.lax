@@ -1,0 +1,14 @@
+/**
+ * Lax code example - expressions
+ *
+ * Example that shows how to deal with binary operations and logical expressions.
+ **/
+
+// Print 6
+print (1 + 2) * 4 / 2;
+
+// Print 'true'
+print 1 < 2;
+
+// Print 'false'
+print (10 == 10 - 2) || 1 < 10 && false;

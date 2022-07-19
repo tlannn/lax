@@ -1,6 +1,6 @@
-/*
- * This is a Lax code sample
- */
+/**
+ * This is a Lax code example
+ **/
 
 // Declare variables a and b
 int a;
