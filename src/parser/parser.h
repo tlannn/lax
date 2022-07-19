@@ -21,6 +21,7 @@
 #include "ast/stmtnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
+#include "ast/unarynode.h"
 #include "tokens/token.h"
 #include "lexer/lexer.h"
 #include "symbols/varsymbol.h"
@@ -261,6 +262,13 @@ private:
      * @return the node created
      */
     ExprNode* term();
+
+	/**
+     * Build a node representing an unary
+     *
+     * @return the node created
+     */
+	ExprNode* unary();
 
     /**
      * Build a node representing a factor

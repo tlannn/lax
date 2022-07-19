@@ -316,14 +316,22 @@ ExprNode* Parser::binop() {
 
 /// Build a node representing a term
 ExprNode* Parser::term() {
-	ExprNode *expr = factor();
+	ExprNode *expr = unary();
 
 	while (match(TokenType::STAR) || match(TokenType::SLASH)) {
 		Token *op = previous();
-		expr = new BinOpNode(expr, op, factor());
+		expr = new BinOpNode(expr, op, unary());
 	}
 
 	return expr;
+}
+
+/// Build a node representing an unary
+ExprNode *Parser::unary() {
+	if (match(TokenType::PLUS) || match(TokenType::MINUS) || match(TokenType::BANG))
+		return new UnaryNode(previous(), unary());
+
+	return factor();
 }
 
 /// Build a node representing a factor

@@ -11,4 +11,4 @@ print (1 + 2) * 4 / 2;
 print 1 < 2;
 
 // Print 'false'
-print (10 == 10 - 2) || 1 < 10 && false;
+print (-10 == 10 - 2) || 1 < 10 && !true;

@@ -92,6 +92,21 @@ void SemanticAnalyzer::visit(Id *node) {
 		_resultType = varSym->getType();
 }
 
+/// Visit an unary expression and return the literal value
+void SemanticAnalyzer::visit(UnaryNode *node) {
+	visit(node->getExpr());
+	TokenType operatorType = node->getToken()->getType();
+
+	if (operatorType == TokenType::BANG)
+		_resultType = Type::BOOL;
+	else if ((operatorType == TokenType::PLUS || operatorType == TokenType::MINUS) && Type::numeric(_resultType))
+		_resultType = _resultType;
+	else
+		report(error(node->getToken(),
+					 "Expected numeric value after '" + node->getToken()->toString(),
+					 "Unexpected symbol"));
+}
+
 /// Execute a statement node
 void SemanticAnalyzer::visit(StmtNode *node) {
     node->accept(this);

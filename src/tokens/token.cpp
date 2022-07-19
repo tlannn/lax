@@ -45,7 +45,7 @@ Token::Token(const std::string &lexeme, TokenType type, const int line, const in
 Token::Token(const std::string &lexeme, TokenType type) : Token(lexeme, type, -1, -1) {}
 
 /// Getter for the token type
-int Token::getType() const {
+TokenType Token::getType() const {
     return _type;
 }
 

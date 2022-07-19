@@ -106,6 +106,20 @@ void Interpreter::visit(Id *node) {
 	_result = _memory[node->getToken()->toString()];
 }
 
+/// Visit an unary expression and return the literal value
+void Interpreter::visit(UnaryNode *node) {
+	visit(node->getExpr());
+	TokenType operatorType = node->getToken()->getType();
+
+	if (operatorType == TokenType::BANG)
+		_result = Object(!_result.toBool());
+
+	else if (operatorType == TokenType::PLUS || operatorType == TokenType::MINUS)
+		_result = Object(-_result.toInt());
+
+	else _result = Object::null;
+}
+
 /// Execute a statement node
 void Interpreter::visit(StmtNode *node) {
     node->accept(this);

@@ -155,8 +155,11 @@ _BinaryOperation_:
 &emsp;&emsp; _Term_ (**+** | **-**) _Term_
 
 _Term_:  
-&emsp;&emsp; _Factor_  
-&emsp;&emsp; _Factor_ (__*__ | **/**) _Factor_
+&emsp;&emsp; _Unary_  
+&emsp;&emsp; _Unary_ (__*__ | **/**) _Unary_
+
+_Unary_:  
+&emsp;&emsp; (**!** | **+** | **-**)? _Factor_
 
 _Factor_:  
 &emsp;&emsp; **(** _Expression_ **)**  

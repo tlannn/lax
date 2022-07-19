@@ -22,6 +22,7 @@ set(SOURCE_FILES main.cpp
         src/ast/stmtexpressionnode.cpp
         src/ast/stmtnode.cpp
         src/ast/stmtprintnode.cpp
+        src/ast/unarynode.cpp
         src/common/exception.cpp
         src/interpreter/interpreter.cpp
         src/interpreter/runtimeerror.cpp

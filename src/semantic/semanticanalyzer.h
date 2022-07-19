@@ -17,6 +17,7 @@
 #include "ast/seqnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
+#include "ast/unarynode.h"
 #include "lexer/lexer.h"
 #include "interpreter/astvisitor.h"
 #include "symbols/env.h"
@@ -76,6 +77,9 @@ public:
 
 	/// Visit an Id (identifier) and return the value of the variable defined with this identifier
 	void visit(Id *node) override;
+
+	/// Visit an unary expression and return the literal value
+	void visit(UnaryNode *node) override;
 
 	/// Execute a statement node
     void visit(StmtNode *node) override;

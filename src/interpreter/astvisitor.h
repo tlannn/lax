@@ -11,6 +11,7 @@ class Id;
 class LiteralNode;
 class LogicalNode;
 class RelationalNode;
+class UnaryNode;
 
 class StmtNode;
 class StmtExpressionNode;
@@ -73,6 +74,14 @@ public:
      * @return the value of the variable
      */
 	virtual void visit(Id *node) = 0;
+
+	/**
+     * Visit an unary expression and return the literal value
+     *
+     * @param node the node to visit
+     * @return the literal value
+     */
+	virtual void visit(UnaryNode *node) = 0;
 
 	/**
      * Execute a statement node

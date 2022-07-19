@@ -115,7 +115,7 @@ Token* Lexer::nextToken() {
 			else return createToken(TokenType::SLASH);
         case '&': if (match('&')) return createToken(TokenType::AND); break;
         case '|': if (match('|')) return createToken(TokenType::OR); break;
-		case '!': if (match('=')) return createToken(TokenType::NEQ); break;
+		case '!': return createToken(match('=') ? TokenType::NEQ : TokenType::BANG);
 		case '=': return createToken(match('=') ? TokenType::EQ : TokenType::SIMEQ);
         case '<': return createToken(match('=') ? TokenType::LE : TokenType::SL);
         case '>': return createToken(match('=') ? TokenType::GE : TokenType::SG);

@@ -40,7 +40,7 @@ public:
      *
      * @return the token type
      */
-    int getType() const;
+    TokenType getType() const;
 
 	/**
 	 * Getter for the token line
