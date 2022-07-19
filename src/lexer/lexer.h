@@ -153,12 +153,20 @@ private:
 	void blockComment();
 
     /**
-     * Check if the character is a letter
+     * Check if the character is a letter or an underscore
      *
      * @param c the character to check
-     * @return true if the character is a letter
+     * @return true if the character is a letter or an underscore
      */
-    static bool isLetter(int c);
+    static bool isAlpha(int c);
+
+	/**
+     * Check if the character is a letter, an underscore or a digit
+     *
+     * @param c the character to check
+     * @return true if the character is a letter, an underscore or a digit
+     */
+	static bool isAlphaNum(int c);
 
     /**
      * Check if the character is a digit

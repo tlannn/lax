@@ -106,7 +106,7 @@ Token* Lexer::nextToken() {
 		case '"': return string();
 		default:
 			if (isDigit(c)) return number(c); // Recognize numbers
-			else if (isLetter(c)) return identifier(c); // Recognize words
+			else if (isAlpha(c)) return identifier(c); // Recognize words
 			return createToken(TokenType::UNKNOWN, std::string(1, static_cast<char>(c)));
     }
 
@@ -165,7 +165,7 @@ Token* Lexer::string() {
 	int c;
 
 	// Read in buffer all characters until closing quotation, end of file or end of line
-	while (peek() != '"' && peek() != EOF && peek() != '\n') {
+	while (peek() != '"' && peek() != '\n' && !isAtEnd()) {
 		c = advance();
 		buffer += static_cast<char>(c);
 	}
@@ -199,7 +199,7 @@ Token *Lexer::identifier(int c) {
 	std::string buffer;
 	buffer += static_cast<char>(c);
 
-	while (isLetter(peek())) {
+	while (isAlphaNum(peek())) {
 		c = advance();
 		buffer += static_cast<char>(c);
 	}
@@ -257,9 +257,14 @@ void Lexer::blockComment() {
 	}
 }
 
-/// Check if the character is a letter
-bool Lexer::isLetter(const int c) {
-    return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z';
+/// Check if the character is a letter or an underscore
+bool Lexer::isAlpha(const int c) {
+    return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == '_';
+}
+
+/// Check if the character is a letter, an underscore or a digit
+bool Lexer::isAlphaNum(const int c) {
+	return isAlpha(c) || isDigit(c);
 }
 
 /// Check if the character is a digit
