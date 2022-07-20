@@ -1,6 +1,8 @@
 #ifndef LAX_EXPRNODE_H
 #define LAX_EXPRNODE_H
 
+#include <memory>
+
 #include "astnode.h"
 #include "interpreter/astvisitor.h"
 #include "tokens/token.h"
@@ -18,14 +20,14 @@ public:
      * @param tok the token in the expression
      * @param type the type of the expression
      */
-    explicit ExprNode(Token *tok);
+    explicit ExprNode(std::unique_ptr<Token> tok);
 
     /**
      * Getter for the token
      *
      * @return the token
      */
-    Token* getToken();
+	Token* getToken();
 
     /**
      * Accept method for the visitor pattern
@@ -33,7 +35,7 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 protected:
-    Token *_tok;
+	std::unique_ptr<Token> _tok;
 };
 
 #endif // LAX_EXPRNODE_H

@@ -1,6 +1,6 @@
 #include "type.h"
 
-/// Type constructor
+/// Class constructor
 Type::Type(const std::string &word, TokenType type, int size) : Token(word, type), _size(size) {}
 
 /// Return the type from a token representing a type keyword

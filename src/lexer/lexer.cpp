@@ -4,7 +4,7 @@
 std::string Lexer::currentFile;
 
 /// Class constructor
-Lexer::Lexer(const std::string &filename) : _memento(nullptr), _source(new std::ifstream),
+Lexer::Lexer(const std::string &filename) : _source(std::make_unique<std::ifstream>()),
 	_startIndex(-1), _index(-1), _line(1), _col(0), _startLine(1), _startCol(0) {
 	// Reserve types
 	reserve("int", TokenType::TYPE);
@@ -31,13 +31,16 @@ std::string Lexer::getPath(const std::string &filepath) {
 
 /// Open a stream to read a file and place the cursor at the beginning
 void Lexer::openFile(const std::string &filename) {
-	Memento *memento = _memento;
 	std::string filepath;
 
 	// Determine the path to the file according to the paths to previous files opened
-	while (memento) {
-		filepath.insert(0, getPath(memento->getSource()));
-		memento = memento->getPrevious();
+	if (!_mementos.empty()) {
+		Memento *memento = &_mementos.top();
+
+		while (memento) {
+			filepath.insert(0, getPath(memento->getSource()));
+			memento = memento->getPrevious();
+		}
 	}
 
 	// Close the old stream and open a new one to the file
@@ -59,29 +62,33 @@ void Lexer::openFile(const std::string &filename) {
 
 /// Open a file and push it on top of the stack of files opened
 void Lexer::pushFile(const std::string &filename) {
-	_memento = new Memento(_memento, Lexer::currentFile,
-						   _startIndex, _startLine,_startCol);
+	_mementos.push(
+			Memento(!_mementos.empty() ? &_mementos.top() : nullptr,
+						   Lexer::currentFile, _startIndex, _startLine, _startCol
+					   )
+	);
 
 	openFile(filename);
 }
 
 /// Pop the last file opened and restore the state of the previous file
 void Lexer::popFile() {
-	openFile(_memento->getSource());
-	_source->seekg(_memento->getIndex()); // Move cursor to old position in file, before the last tokeen read
+	Memento memento = _mementos.top();
+	openFile(memento.getSource());
+	_source->seekg(memento.getIndex()); // Move cursor to old position in file, before the last token read
 
-	_line = _memento->getLine();
-	_col = _memento->getCol();
-	_index = _memento->getIndex();
+	_line = memento.getLine();
+	_col = memento.getCol();
+	_index = memento.getIndex();
 
-	// Delete the previous memento
-	Memento *memento = _memento;
-	_memento = _memento->getPrevious();
-	delete memento;
+	// Delete the old memento
+	_mementos.pop();
+	/*Memento *memento = _memento;
+	delete memento;*/
 }
 
 /// Continue the reading of the source code and return the next token analyzed
-Token* Lexer::nextToken() {
+std::unique_ptr<Token> Lexer::nextToken() {
 	int c = advance();
 
 	// Set the start position of the next token to the cursor current position
@@ -137,13 +144,13 @@ void Lexer::reserve(const std::string &word, TokenType type) {
 }
 
 /// Create a token of a specific type. The lexeme is deduced from the token type
-Token *Lexer::createToken(TokenType type) {
+std::unique_ptr<Token> Lexer::createToken(TokenType type) {
 	return createToken(type, Token::lexeme(type));
 }
 
 /// Create a token of specific type and lexeme
-Token *Lexer::createToken(TokenType type, const std::string &lexeme) const {
-	return new Token(lexeme, type, _startLine, _startCol);
+std::unique_ptr<Token> Lexer::createToken(TokenType type, const std::string &lexeme) const {
+	return std::make_unique<Token>(lexeme, type, _startLine, _startCol);
 }
 
 /// Throw an error
@@ -177,7 +184,7 @@ int Lexer::peek() {
 }
 
 /// Read a string in the source code
-Token* Lexer::string() {
+std::unique_ptr<Token> Lexer::string() {
 	std::string buffer;
 	int c;
 
@@ -195,11 +202,11 @@ Token* Lexer::string() {
 
 	advance(); // Skip the closing quotation
 
-	return new Token(buffer, TokenType::STRING, _startLine, _startCol);
+	return createToken(TokenType::STRING, buffer);
 }
 
 /// Read a number in the source code
-Token *Lexer::number(int d) {
+std::unique_ptr<Token> Lexer::number(int d) {
 	int n = d - '0';
 
 	while (isDigit(peek())) {
@@ -207,11 +214,11 @@ Token *Lexer::number(int d) {
 		n = 10 * n + d - '0';
 	}
 
-	return new Num(n, _startLine, _startCol);
+	return createToken(TokenType::NUM, std::to_string(n));
 }
 
 /// Read an identifier in the source code
-Token *Lexer::identifier(int c) {
+std::unique_ptr<Token> Lexer::identifier(int c) {
 	// Read in a buffer all following letters
 	std::string buffer;
 	buffer += static_cast<char>(c);

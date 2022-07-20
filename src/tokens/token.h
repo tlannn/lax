@@ -1,6 +1,8 @@
 #ifndef LAX_TOKEN_H
 #define LAX_TOKEN_H
 
+#include <iostream>
+
 #include <string>
 
 #include "tokentype.h"
@@ -25,6 +27,11 @@ public:
 	 * @param type the token type
 	 */
 	Token(const std::string &lexeme, TokenType type);
+
+	/**
+	 * Class destructor
+	 */
+	virtual ~Token() = default;
 
 	/**
 	 * Return the lexeme associated to a token type.

@@ -1,6 +1,7 @@
 #ifndef LAX_SEQNODE_H
 #define LAX_SEQNODE_H
 
+#include <memory>
 #include <vector>
 
 #include "stmtnode.h"
@@ -16,14 +17,14 @@ public:
 	 *
 	 * @param stmts the statements to execute
 	 */
-	explicit SeqNode(std::vector<StmtNode*> stmts);
+	explicit SeqNode(std::vector<std::unique_ptr<StmtNode>> stmts);
 
 	/**
 	 * Getter for the statements to execute
 	 *
 	 * @return the statements
 	 */
-	std::vector<StmtNode*> getStatements();
+	const std::vector<std::unique_ptr<StmtNode>>& getStatements();
 
 	/**
      * Accept method for the visitor pattern
@@ -31,7 +32,7 @@ public:
 	void accept(ASTVisitor *visitor) override;
 
 private:
-	std::vector<StmtNode*> _stmts;
+	std::vector<std::unique_ptr<StmtNode>> _stmts;
 };
 
 #endif // LAX_SEQNODE_H

@@ -1,6 +1,8 @@
 #ifndef LAX_LITERALNODE_H
 #define LAX_LITERALNODE_H
 
+#include <memory>
+
 #include "exprnode.h"
 #include "interpreter/astvisitor.h"
 #include "tokens/token.h"
@@ -19,7 +21,7 @@ public:
      * @param tok the expression to the left of the operator
      * @param type the token representing the operator
      */
-    LiteralNode(Token *tok, Type type);
+    LiteralNode(std::unique_ptr<Token> tok, Type type);
 
     /**
      * Getter for the value of the literal

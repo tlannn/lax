@@ -3,7 +3,7 @@
 
 Object Object::null = Object();
 
-/// Default class constructor
+/// Class constructor
 Object::Object() : _type(Type::NONE), _value() {}
 
 /// Class constructor

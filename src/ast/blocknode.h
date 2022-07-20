@@ -1,7 +1,7 @@
 #ifndef LAX_BLOCKNODE_H
 #define LAX_BLOCKNODE_H
 
-#include <vector>
+#include <memory>
 
 #include "stmtnode.h"
 #include "seqnode.h"
@@ -20,14 +20,14 @@ public:
      *
      * @param stmts the statements to execute inside the block
      */
-    explicit BlockNode(SeqNode* seq);
+    explicit BlockNode(std::unique_ptr<SeqNode> seq);
 
 	/**
 	 * Getter for the sequence of statements inside the block
 	 *
 	 * @return the sequence
 	 */
-    SeqNode* getSequence();
+	SeqNode* getSequence();
 
 	/**
      * Accept method for the visitor pattern
@@ -35,7 +35,7 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 private:
-    SeqNode* _seq;
+	std::unique_ptr<SeqNode> _seq;
 };
 
 #endif // LAX_BLOCKNODE_H

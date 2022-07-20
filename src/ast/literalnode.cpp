@@ -1,7 +1,7 @@
 #include "literalnode.h"
 
-/// ConstantNode constructor
-LiteralNode::LiteralNode(Token *tok, Type type) : ExprNode(tok), _type(type) {}
+/// Class constructor
+LiteralNode::LiteralNode(std::unique_ptr<Token> tok, Type type) : ExprNode(std::move(tok)), _type(type) {}
 
 /// Getter for the value of the literal
 Object LiteralNode::getValue() {
@@ -22,5 +22,5 @@ Type LiteralNode::getType() {
 
 /// Accept method for the visitor pattern
 void LiteralNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+	visitor->visit(this);
 }

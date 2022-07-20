@@ -1,6 +1,7 @@
 #ifndef LAX_MEMENTO_H
 #define LAX_MEMENTO_H
 
+#include <memory>
 #include <string>
 
 /**
@@ -29,7 +30,7 @@ public:
 	 * Getter for the previous memento
 	 * @return the previous memento
 	 */
-	Memento *getPrevious() const;
+	Memento* getPrevious() const;
 
 	/**
 	 * Getter for the source file name

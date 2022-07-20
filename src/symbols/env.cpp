@@ -6,9 +6,14 @@ Env::Env() : _previous(nullptr) {}
 /// Class constructor
 Env::Env(Env *previous) : _previous(previous) {}
 
+/// Class destructor
+Env::~Env() {
+	delete _previous;
+}
+
 /// Define a symbol in the environment
-void Env::put(Symbol *symbol) {
-    _table.define(symbol);
+void Env::put(std::unique_ptr<Symbol> symbol) {
+    _table.define(std::move(symbol));
 }
 
 /// Look for a symbol defined in the environment or previous environment

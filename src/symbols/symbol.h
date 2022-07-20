@@ -20,7 +20,7 @@ public:
     Symbol(std::string name, Type type);
 
 	/**
-	 * Default class destructor
+	 * Class destructor
 	 */
 	virtual ~Symbol() = default;
 

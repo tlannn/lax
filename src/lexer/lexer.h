@@ -2,6 +2,7 @@
 #define LAX_LEXER_H
 
 #include <fstream>
+#include <memory>
 #include <stack>
 #include <string>
 #include <unordered_map>
@@ -58,7 +59,7 @@ public:
      *
      * @return the token analyzed
      */
-    Token* nextToken();
+	std::unique_ptr<Token> nextToken();
 
 private:
     /**
@@ -76,7 +77,7 @@ private:
 	 * @param type the type of the token
 	 * @return the token created
 	 */
-	Token* createToken(TokenType type);
+	std::unique_ptr<Token> createToken(TokenType type);
 
 	/**
 	 * Create a token of specific type and lexeme
@@ -85,7 +86,7 @@ private:
 	 * @param lexeme the lexeme represented by the token
 	 * @return the token created
 	 */
-	Token* createToken(TokenType type, const std::string &lexeme) const;
+	std::unique_ptr<Token> createToken(TokenType type, const std::string &lexeme) const;
 
 	/**
 	 * Throw an error
@@ -132,7 +133,7 @@ private:
 	 *
 	 * @return the token representing the string
 	 */
-	Token* string();
+	std::unique_ptr<Token> string();
 
 	/**
 	 * Read a number in the source code
@@ -140,7 +141,7 @@ private:
 	 * @param d the first digit of the number
 	 * @return the token representing the number
 	 */
-	Token* number(int d);
+	std::unique_ptr<Token> number(int d);
 
 	/**
 	 * Read an identifier in the source code
@@ -148,7 +149,7 @@ private:
 	 * @param d the first letter of the identifier
 	 * @return the token representing the identifier
 	 */
-	Token* identifier(int c);
+	std::unique_ptr<Token> identifier(int c);
 
 	/**
 	 * Skip an inline comment
@@ -188,8 +189,8 @@ private:
 	 * Class attributes
 	 */
 
-	Memento *_memento;
-	std::ifstream *_source;
+	std::stack<Memento> _mementos;
+	std::unique_ptr<std::ifstream> _source;
 
 	int _startIndex; // Index in file of the first character of the current lexeme
 	int _startLine; // Line of the first character of the current lexeme

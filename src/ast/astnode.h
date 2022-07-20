@@ -14,6 +14,11 @@ public:
 	ASTNode() = default;
 
 	/**
+	 * Class destructor
+	 */
+	virtual ~ASTNode() = default;
+
+	/**
 	 * Accepts an *ASTVisitor* and call its visit method corresponding to
      * the type of the node
      *

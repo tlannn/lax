@@ -1,11 +1,11 @@
 #include "stmtexpressionnode.h"
 
-/// StmtExpressionNode constructor
-StmtExpressionNode::StmtExpressionNode(ExprNode *expr) : _expr(expr) {}
+/// Class constructor
+StmtExpressionNode::StmtExpressionNode(std::unique_ptr<ExprNode> expr) : _expr(std::move(expr)) {}
 
 /// Getter for the expression to visit
 ExprNode* StmtExpressionNode::getExpr() {
-    return _expr;
+    return _expr.get();
 }
 
 /// Accept method for the visitor pattern

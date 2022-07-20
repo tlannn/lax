@@ -1,6 +1,7 @@
 #ifndef LAX_LAX_H
 #define LAX_LAX_H
 
+#include <memory>
 #include <string>
 
 #include "lexer/lexer.h"

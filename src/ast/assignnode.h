@@ -1,6 +1,8 @@
 #ifndef LAX_ASSIGNNODE_H
 #define LAX_ASSIGNNODE_H
 
+#include <memory>
+
 #include "ast/exprnode.h"
 #include "ast/stmtnode.h"
 #include "interpreter/astvisitor.h"
@@ -23,19 +25,19 @@ public:
 	 * @param id the identifier to assign a value to
 	 * @param expr the expression to assign to the identifier
 	 */
-    AssignNode(Token *id, ExprNode *expr);
+    AssignNode(std::unique_ptr<Token> id, std::unique_ptr<ExprNode> expr);
 
 	/**
 	 * Getter for the token of the variable
 	 * @return the variable token
 	 */
-    Token* getToken();
+	Token* getToken();
 
 	/**
 	 * Getter for the new expression assigned
 	 * @return the expression
 	 */
-    ExprNode* getExpr();
+	ExprNode* getExpr();
 
 	/**
 	 * Accept method for the visitor pattern
@@ -43,8 +45,8 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 private:
-    Token* _id;
-    ExprNode *_expr;
+	std::unique_ptr<Token> _id;
+    std::unique_ptr<ExprNode> _expr;
 };
 
 #endif // LAX_ASSIGNNODE_H

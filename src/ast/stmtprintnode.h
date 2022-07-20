@@ -1,6 +1,8 @@
 #ifndef LAX_STMTPRINTNODE_H
 #define LAX_STMTPRINTNODE_H
 
+#include <memory>
+
 #include "exprnode.h"
 #include "stmtnode.h"
 #include "interpreter/astvisitor.h"
@@ -18,14 +20,14 @@ public:
      *
      * @param expr the expression to visit and print
      */
-    explicit StmtPrintNode(ExprNode *expr);
+    explicit StmtPrintNode(std::unique_ptr<ExprNode> expr);
 
     /**
      * Getter for the expression to print
      *
      * @return the expression
      */
-    ExprNode* getExpr();
+	ExprNode* getExpr();
 
     /**
      * Accept method for the visitor pattern
@@ -33,7 +35,7 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 protected:
-    ExprNode *_expr;
+	std::unique_ptr<ExprNode> _expr;
 };
 
 #endif // LAX_STMTPRINTNODE_H

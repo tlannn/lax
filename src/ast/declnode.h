@@ -1,6 +1,8 @@
 #ifndef LAX_DECLNODE_H
 #define LAX_DECLNODE_H
 
+#include <memory>
+
 #include "exprnode.h"
 #include "stmtnode.h"
 #include "interpreter/astvisitor.h"
@@ -23,14 +25,14 @@ public:
 	 * @param type the type of the variable
 	 * @param expr the expression associated to the variable (if any)
 	 */
-    DeclNode(Token *id, Type type, ExprNode *expr);
+    DeclNode(std::shared_ptr<Token> id, Type type, std::unique_ptr<ExprNode> expr);
 
 	/**
      * Getter for the name of the variable declared
      *
      * @return the name of the variable
      */
-    Token* getId();
+	std::shared_ptr<Token> getId();
 
 	/**
      * Getter for the type of the variable declared
@@ -45,7 +47,7 @@ public:
      * @return the expression associated, or nullptr if the variable is not
      * initialized at declaration
      */
-    ExprNode* getRValue();
+	ExprNode* getRValue();
 
 	/**
      * Accept method for the visitor pattern
@@ -53,9 +55,9 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 private:
-    Token *_id;
+	std::shared_ptr<Token> _id;
     Type _type;
-    ExprNode *_rvalue;
+	std::unique_ptr<ExprNode> _rvalue;
 };
 
 #endif // LAX_DECLNODE_H

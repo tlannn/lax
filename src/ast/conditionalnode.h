@@ -23,28 +23,31 @@ public:
      * @param thenSmt the statement executed if the condition is evaluated to true
      * @param elseStmt the statement executed if the condition is evaluated to false
      */
-    ConditionalNode(ExprNode *expr, StmtNode *thenStmt, StmtNode *elseStmt);
+    ConditionalNode(
+			std::unique_ptr<ExprNode> expr,
+			std::unique_ptr<StmtNode> thenStmt,
+			std::unique_ptr<StmtNode> elseStmt);
 
     /**
      * Getter for the condition expression
      *
      * @return the conditional expression
      */
-    ExprNode* getConditionExpression();
+	ExprNode* getConditionExpression();
 
     /**
      * Getter for the 'then' statement
      *
      * @return the 'then' statement
      */
-    StmtNode* getThenStatement();
+	StmtNode* getThenStatement();
 
     /**
      * Getter for the 'else' statement
      *
      * @return the 'else' statement
      */
-    StmtNode* getElseStatement();
+	StmtNode* getElseStatement();
 
     /**
      * Accept method for the visitor pattern
@@ -52,9 +55,9 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 protected:
-    ExprNode *_expr;
-    StmtNode *_thenStmt;
-    StmtNode *_elseStmt;
+	std::unique_ptr<ExprNode> _expr;
+	std::unique_ptr<StmtNode> _thenStmt;
+	std::unique_ptr<StmtNode> _elseStmt;
 };
 
 #endif // LAX_CONDITIONALNODE_H

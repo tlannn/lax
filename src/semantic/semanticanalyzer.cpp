@@ -1,8 +1,12 @@
 #include "semanticanalyzer.h"
 
 /// Class constructor
-SemanticAnalyzer::SemanticAnalyzer(ASTNode *ast) : _ast(ast), _resultType(Type::NONE), _env(new Env()),
-													_errors(false) {}
+SemanticAnalyzer::SemanticAnalyzer(ASTNode *ast) :
+	_ast(ast), _env(new Env()), _resultType(Type::NONE), _errors(false) {}
+
+SemanticAnalyzer::~SemanticAnalyzer() {
+	delete _env;
+}
 
 /// Analyze semantically the code parsed by the parser
 void SemanticAnalyzer::analyze() {
@@ -15,7 +19,8 @@ bool SemanticAnalyzer::hadErrors() const {
 }
 
 /// Return an exception on a specific token
-SemanticError SemanticAnalyzer::error(Token *token, const std::string &message, const std::string &type) {
+SemanticError SemanticAnalyzer::error(
+		Token *token, const std::string &message, const std::string &type) {
 	_errors = true;
 	return SemanticError(Lexer::currentFile, token->getLine(), token->getColumn(), message, type);
 }
@@ -32,7 +37,7 @@ void SemanticAnalyzer::visit(ExprNode *node) {
 
 /// Visit a BinOpNode and compute the operation represented by the node
 void SemanticAnalyzer::visit(BinOpNode *node) {
-	Token *op = node->getToken();
+	Token* op = node->getToken();
 
 	visit(node->getLeft());
 	Type typeLeft = _resultType;
@@ -121,11 +126,10 @@ void SemanticAnalyzer::visit(BlockNode *node) {
 
 /// Visit a SeqNode and execute all the statements inside it
 void SemanticAnalyzer::visit(SeqNode *node) {
-	std::vector<StmtNode*> stmts = node->getStatements();
+	auto& stmts = node->getStatements();
 
-	for (int i = 0; i < stmts.size(); ++i) {
-		visit(stmts[i]);
-	}
+	for (int i = 0; i < stmts.size(); ++i)
+		visit(stmts[i].get());
 }
 
 /// Visit a DeclNode and declare a variable
@@ -135,7 +139,7 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 
 	// Check if variable is already declared in the scope
 	if (_env->get(varName)) {
-		report(error(node->getId(),
+		report(error(node->getId().get(),
 					 "'" + varName + "' has already been declared in this scope",
 					 "Error"));
 
@@ -158,10 +162,8 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 				  "TypeError"));
 	}
 
-	if (!_env->get(varName)) {
-		auto *varSym = new VarSymbol(varName, varType);
-		_env->put(varSym);
-	}
+	if (!_env->get(varName))
+		_env->put(std::make_unique<VarSymbol>(varName, varType));
 }
 
 /// Visit an AssignNode and assign a new value to a variable

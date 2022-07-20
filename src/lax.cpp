@@ -11,14 +11,14 @@ void Lax::run(const std::string &filepath) {
 
 		// Parse the file
 		Parser parser(lexer);
-		ASTNode* ast = parser.parse();
+		std::unique_ptr<ASTNode> ast = parser.parse();
 
 		// Stop here if there is syntax errors
 		if (parser.hadErrors())
 			return;
 
 		// Start semantic analysis
-		SemanticAnalyzer analyzer(ast);
+		SemanticAnalyzer analyzer(ast.get());
 		analyzer.analyze();
 
 		// Stop here if there is semantic errors
@@ -26,7 +26,7 @@ void Lax::run(const std::string &filepath) {
 			return;
 
 		// Interpret the program
-		Interpreter interpreter(ast);
+		Interpreter interpreter(ast.get());
 		interpreter.interpret();
 	} catch (std::exception &e) {
 		Logger::error(e.what());

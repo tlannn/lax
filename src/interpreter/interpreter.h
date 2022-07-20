@@ -2,7 +2,7 @@
 #define LAX_INTERPRETER_H
 
 #include <iostream>
-#include <vector>
+#include <unordered_map>
 
 #include "astvisitor.h"
 #include "runtimeerror.h"

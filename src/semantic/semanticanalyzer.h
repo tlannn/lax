@@ -1,6 +1,8 @@
 #ifndef LAX_SEMANTICANALYZER_H
 #define LAX_SEMANTICANALYZER_H
 
+#include <memory>
+
 #include "semanticerror.h"
 #include "ast/astnode.h"
 #include "ast/exprnode.h"
@@ -32,6 +34,11 @@ public:
      * @param parser
      */
     explicit SemanticAnalyzer(ASTNode *ast);
+
+	/**
+	 * Class destructor
+	 */
+	~SemanticAnalyzer();
 
     /**
      * Analyze semantically the code parsed by the parser

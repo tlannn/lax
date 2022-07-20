@@ -1,16 +1,17 @@
 #include "assignnode.h"
 
-/// AssignNode constructor
-AssignNode::AssignNode(Token *id, ExprNode *expr) : StmtNode(), _id(id), _expr(expr) {}
+/// Class constructor
+AssignNode::AssignNode(std::unique_ptr<Token> id, std::unique_ptr<ExprNode> expr) : StmtNode(),
+	_id(std::move(id)), _expr(std::move(expr)) {}
 
 /// Getter for the token of the variable
 Token* AssignNode::getToken() {
-    return _id;
+    return _id.get();
 }
 
 /// Getter for the new expression assigned
 ExprNode* AssignNode::getExpr() {
-    return _expr;
+    return _expr.get();
 }
 
 /// Accept method for the visitor pattern

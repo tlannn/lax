@@ -1,10 +1,10 @@
 #include "seqnode.h"
 
-/// SeqNode constructor
-SeqNode::SeqNode(std::vector<StmtNode *> stmts) : _stmts(stmts) {}
+/// Class constructor
+SeqNode::SeqNode(std::vector<std::unique_ptr<StmtNode>> stmts) : _stmts(std::move(stmts)) {}
 
 /// Getter for the statements to execute
-std::vector<StmtNode *> SeqNode::getStatements() {
+const std::vector<std::unique_ptr<StmtNode>>& SeqNode::getStatements() {
 	return _stmts;
 }
 

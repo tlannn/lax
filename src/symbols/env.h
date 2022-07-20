@@ -1,6 +1,7 @@
 #ifndef LAX_ENV_H
 #define LAX_ENV_H
 
+#include <memory>
 #include <string>
 
 #include "symbols/symboltable.h"
@@ -25,11 +26,16 @@ public:
     explicit Env(Env *previous);
 
 	/**
+	 * Class destructor
+	 */
+	~Env();
+
+	/**
 	 * Define a symbol in the environment
 	 *
 	 * @param symbol the symbol to add
 	 */
-    void put(Symbol *symbol);
+    void put(std::unique_ptr<Symbol> symbol);
 
 	/**
 	 * Look for a symbol defined in the environment or previous environment

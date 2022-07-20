@@ -1,6 +1,7 @@
 #ifndef LAX_SYMBOLTABLE_H
 #define LAX_SYMBOLTABLE_H
 
+#include <memory>
 #include <unordered_map>
 
 #include "symbol.h"
@@ -25,7 +26,7 @@ public:
      * Add a symbol to the table
      * @param symbol the symbol to add
      */
-    void define(Symbol *symbol);
+    void define(std::unique_ptr<Symbol> symbol);
 
     /**
      * Fetch a symbol in the table
@@ -35,7 +36,7 @@ public:
     Symbol* lookup(std::string name);
 
 private:
-    std::unordered_map<std::string, Symbol*> _symbols;
+    std::unordered_map<std::string, std::unique_ptr<Symbol>> _symbols;
 };
 
 

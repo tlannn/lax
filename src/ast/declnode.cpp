@@ -1,10 +1,11 @@
 #include "declnode.h"
 
-/// DeclNode constructor
-DeclNode::DeclNode(Token* id, Type type, ExprNode *expr) : _id(id), _type(type), _rvalue(expr) {}
+/// Class constructor
+DeclNode::DeclNode(std::shared_ptr<Token> id, Type type, std::unique_ptr<ExprNode> expr) :
+	_id(std::move(id)), _type(type), _rvalue(std::move(expr)) {}
 
 /// Getter for the name of the variable declared
-Token* DeclNode::getId() {
+std::shared_ptr<Token> DeclNode::getId() {
     return _id;
 }
 
@@ -15,7 +16,7 @@ Type DeclNode::getType() {
 
 /// Getter for the expression associated to the variable at declaration
 ExprNode* DeclNode::getRValue() {
-    return _rvalue;
+    return _rvalue.get();
 }
 
 /// Accept method for the visitor pattern

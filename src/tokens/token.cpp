@@ -1,5 +1,12 @@
 #include "token.h"
 
+/// Class constructor
+Token::Token(const std::string &lexeme, TokenType type, const int line, const int col) :
+	_text(lexeme), _type(type), _line(line), _col(col) {}
+
+/// Class constructor
+Token::Token(const std::string &lexeme, TokenType type) : Token(lexeme, type, -1, -1) {}
+
 /// Return the lexeme associated to a token type
 std::string Token::lexeme(TokenType type) {
 	switch (type) {
@@ -14,7 +21,7 @@ std::string Token::lexeme(TokenType type) {
 		case TokenType::COLON: return ":";
 		case TokenType::SEMICOL: return ";";
 
-		// Operators
+			// Operators
 		case TokenType::BANG: return "!";
 		case TokenType::EQ: return "==";
 		case TokenType::NEQ: return "!=";
@@ -25,7 +32,7 @@ std::string Token::lexeme(TokenType type) {
 		case TokenType::AND: return "&&";
 		case TokenType::OR: return "||";
 
-		// Keywords
+			// Keywords
 		case TokenType::VAR: return "var";
 		case TokenType::TRUE: return "true";
 		case TokenType::FALSE: return "false";
@@ -36,13 +43,6 @@ std::string Token::lexeme(TokenType type) {
 		default: return "";
 	}
 }
-
-/// Token constructor
-Token::Token(const std::string &lexeme, TokenType type, const int line, const int col) :
-	_text(lexeme), _type(type), _line(line), _col(col) {}
-
-/// Token constructor
-Token::Token(const std::string &lexeme, TokenType type) : Token(lexeme, type, -1, -1) {}
 
 /// Getter for the token type
 TokenType Token::getType() const {

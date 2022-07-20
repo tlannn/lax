@@ -23,7 +23,7 @@ void Interpreter::visit(BinOpNode *node) {
 	int left = _result.toInt();
 	visit(node->getRight());
 	int right = _result.toInt();
-	Token *op = node->getToken();
+	Token* op = node->getToken();
 
 	switch (op->getType()) {
 		case TokenType::PLUS: {
@@ -52,7 +52,7 @@ void Interpreter::visit(BinOpNode *node) {
 void Interpreter::visit(LogicalNode *node) {
 	visit(node->getLeft());
 	bool left = _result.toBool();
-	Token *op = node->getToken();
+	Token* op = node->getToken();
 
 	if (op->getType() == TokenType::OR) {
 		if (left) _result = Object(left);
@@ -69,7 +69,7 @@ void Interpreter::visit(RelationalNode *node) {
 	int left = _result.toInt();
 	visit(node->getRight());
 	int right = _result.toInt();
-	Token *op = node->getToken();
+	Token* op = node->getToken();
 
 	switch (op->getType()) {
 		case TokenType::EQ:
@@ -132,10 +132,10 @@ void Interpreter::visit(BlockNode *node) {
 
 /// Visit a SeqNode and execute all the statements inside it
 void Interpreter::visit(SeqNode *node) {
-	std::vector<StmtNode*> stmts = node->getStatements();
+	auto& stmts = node->getStatements();
 
 	for (int i = 0; i < stmts.size(); ++i) {
-		visit(stmts[i]);
+		visit(stmts[i].get());
 	}
 }
 

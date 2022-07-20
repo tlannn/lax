@@ -13,7 +13,7 @@ public:
 	static Object null;
 
 	/**
-	 * Default class constructor
+	 * Class constructor
 	 */
 	Object();
 

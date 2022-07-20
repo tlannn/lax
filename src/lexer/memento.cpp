@@ -5,7 +5,7 @@ Memento::Memento(Memento *previous, const std::string &source, int index, int li
 	_previous(previous), _source(source), _index(index), _line(line), _col(col) {}
 
 /// Getter for the previous memento
-Memento *Memento::getPrevious() const {
+Memento* Memento::getPrevious() const {
 	return _previous;
 }
 

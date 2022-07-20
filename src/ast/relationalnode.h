@@ -1,6 +1,8 @@
 #ifndef LAX_RELATIONALNODE_H
 #define LAX_RELATIONALNODE_H
 
+#include <memory>
+
 #include "logicalnode.h"
 #include "interpreter/astvisitor.h"
 #include "tokens/token.h"
@@ -20,7 +22,7 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    RelationalNode(ExprNode *left, Token *op, ExprNode *right);
+    RelationalNode(std::unique_ptr<ExprNode> left, std::unique_ptr<Token> op, std::unique_ptr<ExprNode> right);
 
     /**
      * Accept method for the visitor pattern

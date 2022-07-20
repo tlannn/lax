@@ -1,6 +1,8 @@
 #ifndef LAX_LOGICALNODE_H
 #define LAX_LOGICALNODE_H
 
+#include <memory>
+
 #include "exprnode.h"
 #include "interpreter/astvisitor.h"
 #include "tokens/token.h"
@@ -20,21 +22,21 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    LogicalNode(ExprNode *left, Token *op, ExprNode *right);
+    LogicalNode(std::unique_ptr<ExprNode> left, std::unique_ptr<Token> op, std::unique_ptr<ExprNode> right);
 
     /**
      * Getter for the left expression of the operation
      *
      * @return the left expression
      */
-    ExprNode* getLeft();
+	ExprNode* getLeft();
 
     /**
      * Getter for the right expression of the operation
      *
      * @return the right expression
      */
-    ExprNode* getRight();
+	ExprNode* getRight();
 
     /**
      * Accept method for the visitor pattern
@@ -42,8 +44,8 @@ public:
 	void accept(ASTVisitor *visitor) override;
 
 protected:
-    ExprNode *_left;
-    ExprNode *_right;
+	std::unique_ptr<ExprNode> _left;
+	std::unique_ptr<ExprNode> _right;
 };
 
 #endif // LAX_LOGICALNODE_H

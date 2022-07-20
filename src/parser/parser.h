@@ -1,7 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -40,7 +39,7 @@ public:
      *
      * @param lex the lexical analyzer used to read the source code
      */
-    explicit Parser(Lexer lex);
+    explicit Parser(Lexer &lex);
 
     /**
      * Parse the source code until the end of file is reached. The resulting
@@ -48,7 +47,7 @@ public:
      *
      * @return the root of the AST created
      */
-    StmtNode* parse();
+    std::unique_ptr<ASTNode> parse();
 
 	/**
 	 * Return whether errors occurred during parsing
@@ -70,19 +69,19 @@ private:
      * Read the next token in the source code
      * @return the next token
      */
-    Token* move();
+	Token* move();
 
 	/**
 	 * Getter for the last token read in the source code
 	 * @return the last token
 	 */
-    Token* previous();
+	Token* previous();
 
 	/**
 	 * Getter for the next token to be read in the source code
 	 * @return the next token
 	 */
-    Token* peek();
+	Token* peek();
 
 	/**
 	 * Raise an error on the next token to be read
@@ -101,7 +100,7 @@ private:
 	 * @param token the token that raised the error
 	 * @param mode the error mode
 	 */
-	void error(const std::string &error, Token *token, ErrorMode mode = ErrorMode::PANIC);
+	void error(const std::string &error, Token* token, ErrorMode mode = ErrorMode::PANIC);
 
 	/**
 	 * Report an error to inform the user
@@ -163,123 +162,123 @@ private:
 	 *
 	 * @return the node created
 	 */
-	StmtNode* program();
+	std::unique_ptr<StmtNode> program();
 
 	/**
      * Build a node representing a block of statements
      *
      * @return the node created
      */
-	StmtNode* block();
+	std::unique_ptr<StmtNode> block();
 
 	/**
 	 * Build a node representing a statement
 	 *
 	 * @return the node created
 	 */
-	StmtNode* stmt();
+	std::unique_ptr<StmtNode> stmt();
 
 	/**
 	 * Build a node representing an include statement
 	 *
 	 * @return the node created
 	 */
-	StmtNode* includeStmt();
+	std::unique_ptr<StmtNode> includeStmt();
 
 	/**
      * Build a node representing a variable declaration statement
      *
      * @return the node created
      */
-	StmtNode* declaration();
+	std::unique_ptr<StmtNode> declaration();
 
 	/**
      * Build a node representing a variable assignment statement
      *
      * @return the node created
      */
-	StmtNode* varAssignStmt();
+	std::unique_ptr<StmtNode> varAssignStmt();
 
 	/**
 	 * Build a node representing an if/else statement
 	 *
 	 * @return the node created
 	 */
-	StmtNode* conditionalStmt();
+	std::unique_ptr<StmtNode> conditionalStmt();
 
 	/**
 	 * Build a node representing a print statement
 	 *
 	 * @return the node created
 	 */
-	StmtNode* printStmt();
+	std::unique_ptr<StmtNode> printStmt();
 
 	/**
 	 * Build a node representing an expression statement
 	 *
 	 * @return the node created
 	 */
-	StmtNode* expressionStmt();
+	std::unique_ptr<StmtNode> expressionStmt();
 
 	/**
      * Build a node representing an expression
      *
      * @return the node created
      */
-	ExprNode* expr();
+	std::unique_ptr<ExprNode> expr();
 
     /**
      * Build a node representing a logical OR expression
      *
      * @return the node created
      */
-    ExprNode* logic();
+	std::unique_ptr<ExprNode> logic();
 
     /**
      * Build a node representing a logical AND expression
      *
      * @return the node created
      */
-    ExprNode* join();
+	std::unique_ptr<ExprNode> join();
 
     /**
      * Build a node representing an equality or inequality expression
      *
      * @return the node created
      */
-    ExprNode* rel();
+	std::unique_ptr<ExprNode> rel();
 
     /**
      * Build a node representing a binary operation
      *
      * @return the node created
      */
-    ExprNode* binop();
+	std::unique_ptr<ExprNode> binop();
 
     /**
      * Build a node representing a term
      *
      * @return the node created
      */
-    ExprNode* term();
+	std::unique_ptr<ExprNode> term();
 
 	/**
      * Build a node representing an unary
      *
      * @return the node created
      */
-	ExprNode* unary();
+	std::unique_ptr<ExprNode> unary();
 
     /**
      * Build a node representing a factor
      *
      * @return the node created
      */
-    ExprNode* factor();
+	std::unique_ptr<ExprNode> factor();
 
-    Lexer _lex; // The lexical analyzer
-    Token *_previous; // The lookahead token
-    Token *_lookahead; // The lookahead token
+    Lexer &_lex; // The lexical analyzer
+	std::unique_ptr<Token> _previous; // The last token consumed
+	std::unique_ptr<Token> _lookahead; // The lookahead token
 	bool _errors; // Becomes true when an error occurs
 };
 

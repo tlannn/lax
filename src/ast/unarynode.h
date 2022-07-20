@@ -1,6 +1,8 @@
 #ifndef LAX_UNARYNODE_H
 #define LAX_UNARYNODE_H
 
+#include <memory>
+
 #include "exprnode.h"
 
 /**
@@ -17,7 +19,7 @@ public:
 	 * @param op the prefix operator
 	 * @param expr the expression associated (the operand)
 	 */
-	UnaryNode(Token *op, ExprNode *expr);
+	UnaryNode(std::unique_ptr<Token> op, std::unique_ptr<ExprNode> expr);
 
 	/**
 	 * Getter for the expression of the operation
@@ -32,7 +34,7 @@ public:
 	void accept(ASTVisitor *visitor) override;
 
 private:
-	ExprNode *_expr;
+	std::unique_ptr<ExprNode> _expr;
 };
 
 #endif //LAX_UNARYNODE_H
