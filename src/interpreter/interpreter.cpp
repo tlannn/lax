@@ -12,7 +12,7 @@ void Interpreter::interpret() {
 	}
 }
 
-/// Evaluate an expression node and return the value to which it has been reduced
+/// Visit an ExprNode and determine the value to which it can be reduced
 void Interpreter::visit(ExprNode *node) {
     return node->accept(this);
 }
@@ -48,7 +48,8 @@ void Interpreter::visit(BinOpNode *node) {
 	}
 }
 
-/// Visit a LogicalNode and return the boolean value represented by the boolean expression
+/// Visit a LogicalNode and compute the boolean value represented by the
+/// boolean expression
 void Interpreter::visit(LogicalNode *node) {
 	visit(node->getLeft());
 	bool left = _result.toBool();
@@ -63,7 +64,8 @@ void Interpreter::visit(LogicalNode *node) {
 	visit(node->getRight());
 }
 
-/// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+/// Visit a RelationalNode and compute the resulting boolean value
+/// according to the truthiness of the equality or inequality
 void Interpreter::visit(RelationalNode *node) {
 	visit(node->getLeft());
 	int left = _result.toInt();
@@ -96,17 +98,18 @@ void Interpreter::visit(RelationalNode *node) {
 	}
 }
 
-/// Visit a LiteralNode and return the literal value represented
+/// Visit a LiteralNode and determine the literal value represented
 void Interpreter::visit(LiteralNode *node) {
 	_result = node->getValue();
 }
 
-/// Visit an Id (identifier) and return the value of the variable defined with this identifier
+/// Visit an Id and determine the value of the variable defined with this
+/// identifier
 void Interpreter::visit(Id *node) {
 	_result = _memory[node->getToken()->toString()];
 }
 
-/// Visit an unary expression and return the literal value
+/// Visit an UnaryNode and determine the resulting literal value
 void Interpreter::visit(UnaryNode *node) {
 	visit(node->getExpr());
 	TokenType operatorType = node->getToken()->getType();
@@ -120,7 +123,7 @@ void Interpreter::visit(UnaryNode *node) {
 	else _result = Object::null;
 }
 
-/// Execute a statement node
+/// Visit a StmtNode and execute the statement
 void Interpreter::visit(StmtNode *node) {
     node->accept(this);
 }
@@ -153,8 +156,9 @@ void Interpreter::visit(AssignNode *node) {
 	_memory[node->getToken()->toString()] = _result;
 }
 
-/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
-/// is evaluated to true, otherwise execute the 'else' statement if there is one
+/// Visit a ConditionalNode and execute the 'then' statement referenced
+/// if the condition is evaluated to true, otherwise execute the 'else'
+/// statement if there is one
 void Interpreter::visit(ConditionalNode *node) {
 	visit(node->getConditionExpression());
 
@@ -165,13 +169,13 @@ void Interpreter::visit(ConditionalNode *node) {
 		visit(node->getElseStatement());
 }
 
-/// Visit a StmtPrintNode node and print the result of the expression in the statement
+/// Visit a StmtPrintNode and print the result of an expression
 void Interpreter::visit(StmtPrintNode *node) {
     visit(node->getExpr());
     std::cout << _result.toString() << std::endl;
 }
 
-/// Visit a StmtExpressionNode node and compute the expression in the statement
+/// Visit a StmtExpressionNode and reduce an expression
 void Interpreter::visit(StmtExpressionNode *node) {
 	visit(node->getExpr());
 }

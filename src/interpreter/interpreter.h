@@ -42,53 +42,89 @@ public:
 	 */
 	explicit Interpreter(ASTNode *ast);
 
-	/// Interpret the code parsed by the parser
+	/**
+	 * Interpret the code parsed by the parser
+	 */
 	void interpret();
 
-	/// Evaluate an expression node and return the value to which it has been reduced
+	/**
+	 * Visit an ExprNode and determine the value to which it can be reduced
+	 */
 	void visit(ExprNode *node) override;
 
-	/// Visit a BinOpNode and compute the operation represented by the node
+	/**
+	 * Visit a BinOpNode and compute the operation represented by the node
+	 */
 	void visit(BinOpNode *node) override;
 
-	/// Visit a LogicalNode and return the boolean value represented by the boolean expression
+	/**
+	 * Visit a LogicalNode and compute the boolean value represented by the
+	 * boolean expression
+	 */
 	void visit(LogicalNode *node) override;
 
-	/// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+	/**
+	 * Visit a RelationalNode and compute the resulting boolean value
+	 * according to the truthiness of the equality or inequality
+	 */
 	void visit(RelationalNode *node) override;
 
-	/// Visit a LiteralNode and return the literal value represented
+	/**
+	 * Visit a LiteralNode and determine the literal value represented
+	 */
 	void visit(LiteralNode *node) override;
 
-	/// Visit an Id (identifier) and return the value of the variable defined with this identifier
+	/**
+	 * Visit an Id and determine the value of the variable defined with this
+	 * identifier
+	 */
 	void visit(Id *node) override;
 
-	/// Visit an unary expression and return the literal value
+	/**
+	 * Visit an UnaryNode and determine the resulting literal value
+	 */
 	void visit(UnaryNode *node) override;
 
-	/// Execute a statement node
+	/**
+	 * Visit a StmtNode and execute the statement
+	 */
 	void visit(StmtNode *node) override;
 
-	/// Visit a BlockNode and execute the sequence of statements inside it
+	/**
+	 * Visit a BlockNode and execute the sequence of statements inside it
+	 */
 	void visit(BlockNode *node) override;
 
-	/// Visit a SeqNode and execute all the statements inside it
+	/**
+	 * Visit a SeqNode and execute all the statements inside it
+	 */
 	void visit(SeqNode *node) override;
 
-	/// Visit a DeclNode and declare a variable
+	/**
+	 * Visit a DeclNode and declare a variable
+	 */
 	void visit(DeclNode *node) override;
 
-	/// Visit an AssignNode and assign a new value to a variable
+	/**
+	 * Visit an AssignNode and assign a new value to a variable
+	 */
 	void visit(AssignNode *node) override;
 
-	/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
-	/// is evaluated to true, otherwise execute the 'else' statement if there is one
+	/**
+	 * Visit a ConditionalNode and execute the 'then' statement referenced
+	 * if the condition is evaluated to true, otherwise execute the 'else'
+	 * statement if there is one
+	 */
 	void visit(ConditionalNode *node) override;
 
-	/// Visit a StmtPrintNode node and print the result of the expression in the statement
+	/**
+	 * Visit a StmtPrintNode and print the result of an expression
+	 */
 	void visit(StmtPrintNode *node) override;
 
-	/// Visit a StmtExpressionNode node and compute the expression in the statement
+	/**
+	 * Visit a StmtExpressionNode and reduce an expression
+	 */
 	void visit(StmtExpressionNode *node) override;
 
 private:

@@ -30,12 +30,14 @@ void SemanticAnalyzer::report(const SemanticError &err) {
 	Logger::error(err.what());
 }
 
-/// Evaluate an expression node and return the value to which it has been reduced
+/// Visit an expression node and determine the type of the value to which it
+/// has been reduced
 void SemanticAnalyzer::visit(ExprNode *node) {
 	node->accept(this);
 }
 
-/// Visit a BinOpNode and compute the operation represented by the node
+/// Visit a BinOpNode and determine the type of the result computed by the
+/// operation represented by the node
 void SemanticAnalyzer::visit(BinOpNode *node) {
 	Token* op = node->getToken();
 
@@ -53,12 +55,12 @@ void SemanticAnalyzer::visit(BinOpNode *node) {
 					"Bad Operand"));
 }
 
-/// Visit a LogicalNode and return the boolean value represented by the boolean expression
+/// Visit a LogicalNode and set the type of the expression as boolean
 void SemanticAnalyzer::visit(LogicalNode *node) {
 	_resultType = Type::BOOL;
 }
 
-/// Visit a RelationalNode and return a boolean value according to the truthiness of the equality or inequality
+/// Visit a RelationalNode and set the type of the expression as boolean
 void SemanticAnalyzer::visit(RelationalNode *node) {
 	visit(node->getLeft());
 	Type typeLeft = _resultType;
@@ -75,12 +77,12 @@ void SemanticAnalyzer::visit(RelationalNode *node) {
 					 "Bad Operand"));
 }
 
-/// Visit a LiteralNode and return the literal value represented
+/// Visit a LiteralNode and determine the type of the literal
 void SemanticAnalyzer::visit(LiteralNode *node) {
 	_resultType = node->getType();
 }
 
-/// Visit an Id (identifier) and return the value of the variable defined with this identifier
+/// Visit an Id and determine the type of the value associated
 void SemanticAnalyzer::visit(Id *node) {
 	std::string varName = node->getToken()->toString();
 	VarSymbol *varSym = dynamic_cast<VarSymbol *>(_env->get(varName));
@@ -97,7 +99,7 @@ void SemanticAnalyzer::visit(Id *node) {
 		_resultType = varSym->getType();
 }
 
-/// Visit an unary expression and return the literal value
+/// Visit an UnaryNode and determine the type of the literal
 void SemanticAnalyzer::visit(UnaryNode *node) {
 	visit(node->getExpr());
 	TokenType operatorType = node->getToken()->getType();
@@ -112,19 +114,20 @@ void SemanticAnalyzer::visit(UnaryNode *node) {
 					 "Unexpected symbol"));
 }
 
-/// Execute a statement node
+/// Visit a StmtNode and check semantics inside it
 void SemanticAnalyzer::visit(StmtNode *node) {
     node->accept(this);
 }
 
-/// Visit a BlockNode and execute the sequence of statements inside it
+/// Visit a BlockNode and check semantics in the sequence of statements
+/// inside it
 void SemanticAnalyzer::visit(BlockNode *node) {
 	_env = new Env(_env);
 	visit(node->getSequence());
 	_env = _env->getPreviousEnv();
 }
 
-/// Visit a SeqNode and execute all the statements inside it
+/// Visit a SeqNode and check semantics in all statements inside it
 void SemanticAnalyzer::visit(SeqNode *node) {
 	auto& stmts = node->getStatements();
 
@@ -132,7 +135,8 @@ void SemanticAnalyzer::visit(SeqNode *node) {
 		visit(stmts[i].get());
 }
 
-/// Visit a DeclNode and declare a variable
+/// Visit a DeclNode and create a symbol associated to the variable created
+/// to keep track of its type
 void SemanticAnalyzer::visit(DeclNode *node) {
 	std::string varName = node->getId()->toString();
 	Type varType = node->getType();
@@ -166,7 +170,8 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 		_env->put(std::make_unique<VarSymbol>(varName, varType));
 }
 
-/// Visit an AssignNode and assign a new value to a variable
+/// Visit an AssignNode and check that the new value is type-consistent, and
+/// if needed, update the type of the variable symbol
 void SemanticAnalyzer::visit(AssignNode *node) {
 	std::string varName = node->getToken()->toString();
 	VarSymbol *var = dynamic_cast<VarSymbol *>(_env->get(varName));
@@ -192,8 +197,7 @@ void SemanticAnalyzer::visit(AssignNode *node) {
 					 "TypeError"));
 }
 
-/// Visit a ConditionalNode and execute the 'then' statement referenced if the condition
-/// is evaluated to true, otherwise execute the 'else' statement if there is one
+/// Visit a ConditionalNode and check symbols in both branches 'then' and 'else'
 void SemanticAnalyzer::visit(ConditionalNode *node) {
 	visit(node->getConditionExpression());
 
@@ -208,12 +212,12 @@ void SemanticAnalyzer::visit(ConditionalNode *node) {
 	}
 }
 
-/// Visit a StmtPrintNode node and print the result of the expression in the statement
+/// Visit a StmtPrintNode and check semantics in the expression to print
 void SemanticAnalyzer::visit(StmtPrintNode *node) {
 	visit(node->getExpr());
 }
 
-/// Visit a StmtExpressionNode node and compute the expression in the statement
+/// Visit a StmtExpressionNode and check semantics in the expression
 void SemanticAnalyzer::visit(StmtExpressionNode *node) {
 	visit(node->getExpr());
 }
