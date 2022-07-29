@@ -260,6 +260,9 @@ void Lexer::blockComment() {
 	count = 0;
 
 	while (!s.empty() && !isAtEnd()) {
+		// Increase line count on new lines
+		if (peek() == '\n') _line++;
+
 		// Check for opening comments
 		if (match('/') && peek() == '*') {
 			// Count the number of stars and push into the stack
