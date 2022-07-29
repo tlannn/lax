@@ -3,55 +3,56 @@ project(lax)                            # Create project "lax"
 set(CMAKE_CXX_STANDARD 14)              # Enable c++14 standard
 
 # Add the src/ directory as a search path for include files
-include_directories(src)
+include_directories(include)
 
 # Add all .cpp files in src/ directory as source file
-set(SOURCE_FILES main.cpp
-        src/lax.cpp
-        src/ast/assignnode.cpp
-        src/ast/binopnode.cpp
-        src/ast/blocknode.cpp
-        src/ast/callnode.cpp
-        src/ast/conditionalnode.cpp
-        src/ast/declnode.cpp
-        src/ast/exprnode.cpp
-        src/ast/id.cpp
-        src/ast/funnode.cpp
-        src/ast/literalnode.cpp
-        src/ast/logicalnode.cpp
-        src/ast/relationalnode.cpp
-        src/ast/returnnode.cpp
-        src/ast/seqnode.cpp
-        src/ast/stmtexpressionnode.cpp
-        src/ast/stmtnode.cpp
-        src/ast/stmtprintnode.cpp
-        src/ast/unarynode.cpp
-        src/common/compiletimeexception.cpp
-        src/common/exception.cpp
-        src/common/valuetype.cpp
-        src/interpreter/callframe.cpp
-        src/interpreter/interpreter.cpp
-        src/interpreter/return.cpp
-        src/interpreter/runtimeerror.cpp
-        src/lexer/lexer.cpp
-        src/lexer/lexerror.cpp
-        src/lexer/memento.cpp
-        src/objects/objclosure.cpp
-        src/objects/object.cpp
-        src/objects/objfunction.cpp
-        src/objects/objstring.cpp
-        src/objects/variable.cpp
-        src/parser/parseerror.cpp
-        src/parser/parser.cpp
-        src/semantic/semanticanalyzer.cpp
-        src/semantic/semanticerror.cpp
-        src/symbols/env.cpp
-        src/symbols/funsymbol.cpp
-        src/symbols/symbol.cpp
-        src/symbols/symboltable.cpp
-        src/symbols/varsymbol.cpp
-        src/tokens/token.cpp
-        src/utils/logger.cpp)
+set(SOURCE_FILES
+        src/main.cpp
+        src/Lax.cpp
+        src/ast/AssignNode.cpp
+        src/ast/BinOpNode.cpp
+        src/ast/BlockNode.cpp
+        src/ast/CallNode.cpp
+        src/ast/ConditionalNode.cpp
+        src/ast/DeclNode.cpp
+        src/ast/ExprNode.cpp
+        src/ast/Id.cpp
+        src/ast/FunNode.cpp
+        src/ast/LiteralNode.cpp
+        src/ast/LogicalNode.cpp
+        src/ast/RelationalNode.cpp
+        src/ast/ReturnNode.cpp
+        src/ast/SeqNode.cpp
+        src/ast/StmtExpressionNode.cpp
+        src/ast/StmtNode.cpp
+        src/ast/StmtPrintNode.cpp
+        src/ast/UnaryNode.cpp
+        src/common/CompileTimeException.cpp
+        src/common/Exception.cpp
+        src/common/ValueType.cpp
+        src/interpreter/Callframe.cpp
+        src/interpreter/Interpreter.cpp
+        src/interpreter/Return.cpp
+        src/interpreter/RuntimeError.cpp
+        src/lexer/Lexer.cpp
+        src/lexer/LexError.cpp
+        src/lexer/Memento.cpp
+        src/objects/ObjClosure.cpp
+        src/objects/Object.cpp
+        src/objects/ObjFunction.cpp
+        src/objects/ObjString.cpp
+        src/objects/Variable.cpp
+        src/parser/ParseError.cpp
+        src/parser/Parser.cpp
+        src/semantic/SemanticAnalyzer.cpp
+        src/semantic/SemanticError.cpp
+        src/symbols/Env.cpp
+        src/symbols/FunSymbol.cpp
+        src/symbols/Symbol.cpp
+        src/symbols/SymbolTable.cpp
+        src/symbols/VarSymbol.cpp
+        src/tokens/Token.cpp
+        src/utils/Logger.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})
