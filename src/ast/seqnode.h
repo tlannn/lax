@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "astvisitor.h"
 #include "stmtnode.h"
-#include "interpreter/astvisitor.h"
 
 /**
  * Node for a sequence of statements to execute one after the other

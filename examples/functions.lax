@@ -1,0 +1,55 @@
+/**
+ * Lax code example - functions
+ *
+ * Example that shows how to use functions
+ **/
+
+/// Function that prints a message
+/// Note the absence of return type in the function signature, meaning it must not return a value
+fun say(string str) {
+	print str;
+}
+
+/// Function that adds two numbers and return the result
+/// Note the return type in the function signature
+fun add(int a, int b) : int {
+	return a + b;
+}
+
+/// Function that prints a message describing the truthiness of a condition
+fun isTrue(bool condition) {
+	if (condition) {
+		print "Condition is true !";
+
+		// Though the function returns nothing, you can still use the keyword
+		// to return prematurely from the function
+		return;
+	}
+
+	print "Condition is false !";
+}
+
+/*
+ * Print a welcome message
+ */
+string helloWorld = "Hello world!";
+say(helloWorld);
+
+print ""; // Print an empty line
+
+/*
+ * Print the sum of 3 and 4
+ */
+print "The result of 3+4 is :";
+print add(3, 4);
+
+print ""; // Print an empty line
+
+/*
+ * Print whether the condition is true or false
+ */
+print "If a = 2 and b = 3, is the condition 'a < b' true ?";
+
+var a = 2;
+var b = 3;
+isTrue(a > b);

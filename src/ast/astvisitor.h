@@ -7,20 +7,23 @@
 class ASTNode;
 class ExprNode;
 class BinOpNode;
+class CallNode;
 class Id;
 class LiteralNode;
 class LogicalNode;
 class RelationalNode;
 class UnaryNode;
 
+class AssignNode;
+class BlockNode;
+class ConditionalNode;
+class DeclNode;
+class FunNode;
+class ReturnNode;
+class SeqNode;
 class StmtNode;
 class StmtExpressionNode;
 class StmtPrintNode;
-class ConditionalNode;
-class DeclNode;
-class AssignNode;
-class BlockNode;
-class SeqNode;
 
 /**
  * Visitor interface
@@ -70,6 +73,13 @@ public:
 	virtual void visit(Id *node) = 0;
 
 	/**
+     * Visit a CallNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(CallNode *node) = 0;
+
+	/**
      * Visit an UnaryNode
      *
      * @param node the node to visit
@@ -112,11 +122,25 @@ public:
 	virtual void visit(AssignNode *node) = 0;
 
 	/**
+     * Visit a FunNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(FunNode *node) = 0;
+
+	/**
      * Visit an ConditionalNode
      *
      * @param node the node to visit
      */
 	virtual void visit(ConditionalNode *node) = 0;
+
+	/**
+     * Visit a ReturnNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(ReturnNode *node) = 0;
 
 	/**
 	 * Visit a StmtPrintNode

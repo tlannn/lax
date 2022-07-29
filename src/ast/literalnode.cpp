@@ -1,23 +1,28 @@
 #include "literalnode.h"
 
 /// Class constructor
-LiteralNode::LiteralNode(std::unique_ptr<Token> tok, Type type) : ExprNode(std::move(tok)), _type(type) {}
+//LiteralNode::LiteralNode(std::unique_ptr<Token> tok, ValueType type) : ExprNode(std::move(tok)), _type(type) {}
+LiteralNode::LiteralNode(std::unique_ptr<Token> tok, Value value) :
+						ExprNode(tok.get()), _token(std::move(tok)), _value(value) {}
 
 /// Getter for the value of the literal
-Object LiteralNode::getValue() {
-	if (_type == Type::INT)
-        return Object(stoi(_tok->toString()));
-	else if (_type == Type::BOOL)
-        return Object(_tok->getType() == TokenType::TRUE);
-	else if (_type == Type::STRING)
-		return Object(_tok->toString());
+Value LiteralNode::getValue() {
+	/*if (IS_INT())
+	if (_type == ValueType::VAL_INT)
+        return Value(stoi(_tok->toString()));
+	else if (_type == ValueType::VAL_BOOL)
+        return Value(_tok->getType() == TokenType::TRUE);
+	else if (_type == ValueType::STRING)
+		return Value(_tok->toString());
 
-    return Object::null;
+    return Value::null;*/
+
+	return _value;
 }
 
 /// Getter for the type of the literal
-Type LiteralNode::getType() {
-	return _type;
+Token* LiteralNode::getToken() {
+	return _token.get();
 }
 
 /// Accept method for the visitor pattern

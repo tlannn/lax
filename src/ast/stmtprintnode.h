@@ -3,9 +3,9 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/astvisitor.h"
 
 /**
  * Node for print statements in the program

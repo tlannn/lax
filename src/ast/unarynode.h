@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "exprnode.h"
 
 /**
@@ -28,6 +29,8 @@ public:
 	 */
 	ExprNode* getExpr() const;
 
+	Token* getOperator() const;
+
 	/**
 	 * Accept method for the visitor pattern
 	 */
@@ -35,6 +38,7 @@ public:
 
 private:
 	std::unique_ptr<ExprNode> _expr;
+	std::unique_ptr<Token> _op;
 };
 
 #endif //LAX_UNARYNODE_H

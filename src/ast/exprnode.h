@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "astnode.h"
-#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 
 /**
@@ -17,16 +17,13 @@ class ExprNode : public ASTNode {
 public:
     /**
      * Class constructor
-     * @param tok the token in the expression
-     * @param type the type of the expression
      */
-    explicit ExprNode(std::unique_ptr<Token> tok);
+    ExprNode(Token *token);
 
-    /**
-     * Getter for the token
-     *
-     * @return the token
-     */
+	/**
+	 * Getter for the token of the node
+	 * @return the token
+	 */
 	Token* getToken();
 
     /**
@@ -35,7 +32,7 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 protected:
-	std::unique_ptr<Token> _tok;
+	Token *_token;
 };
 
 #endif // LAX_EXPRNODE_H

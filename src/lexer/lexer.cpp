@@ -17,6 +17,8 @@ Lexer::Lexer(const std::string &filename) : _source(std::make_unique<std::ifstre
 	reserve("if", TokenType::IF);
 	reserve("else", TokenType::ELSE);
 	reserve("var", TokenType::VAR);
+	reserve("fun", TokenType::FUN);
+	reserve("return", TokenType::RETURN);
 	reserve("print", TokenType::PRINT);
 	reserve("include", TokenType::INCLUDE);
 
@@ -114,6 +116,7 @@ std::unique_ptr<Token> Lexer::nextToken() {
 		case '}': return createToken(TokenType::RBRACE);
 		case ':': return createToken(TokenType::COLON);
 		case ';': return createToken(TokenType::SEMICOL);
+		case ',': return createToken(TokenType::COMMA);
 		case '+': return createToken(TokenType::PLUS);
 		case '-': return createToken(TokenType::MINUS);
 		case '*': return createToken(TokenType::STAR);

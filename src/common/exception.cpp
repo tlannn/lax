@@ -1,14 +1,14 @@
 #include "exception.h"
 
 /// Class constructor
-Exception::Exception(const std::string &file, const int line, const int col, const std::string &message,
-					 const std::string &type) : std::exception(),
-					 _file(file), _line(line), _col(col), _message(message), _type(type) {}
+Exception::Exception(std::string message, std::string type) :
+					 std::exception(), _message(std::move(message)), _type(std::move(type)) {}
 
 /// Get string identifying exception
 const char *Exception::what() const noexcept {
-	return (
-			new std::string(_file + ":" + std::to_string(_line) + ":" + std::to_string(_col) + ": " +
-							_type + ": " + _message)
-	)->c_str();
+	if (_type.empty())
+		return _message.c_str();
+
+	else
+		return (new std::string(_type + ": " + _message))->c_str();
 }

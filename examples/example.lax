@@ -1,2 +1,22 @@
-string str = "test";
+fun f(string s, int i) : int {
+	fun g() {
+		print s;
+	}
+	g();
+
+	return g;
+}
+
+// Print 'test'
+var str = "test";
 print str;
+
+// Call 'f()'
+var func = f("bonsoir", 1);
+print func;
+func();
+
+// Print '3'
+int test;
+test = 3;
+print test;

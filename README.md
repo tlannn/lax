@@ -12,7 +12,7 @@ $ make # Compile to create the executable
 To run the interpreter with a specific file :
 ```
 # In directory build/
-$ ./lax ../lang # replace 'lang' by any Lax file
+$ ./lax ../examples/example.lax # replace '../examples/example.lax' by any file containing Lax code
 ```
 
 
@@ -28,6 +28,7 @@ Lax currently supports :
 - variable scopes ;
 - inclusion of other source files in the code ;
 - error handling ;
+- functions definition and call ;
 - printing in the console the result of an expression.
 
 ## Grammar
@@ -49,8 +50,8 @@ by an _Expression_, followed by a semicolon token.
 
 The grammar also uses BNF-style conventions :
 - _x*_ denotes zero or more occurrences of _x_ ;
-- _x?_ denotes one or more occurrences of _x_ ;
-- _x | y_ denotes a choice between x and y (the choice is exclusive).
+- _x?_ denotes zero or one occurrences of _x_ ;
+- _x_ | _y_ denotes a choice between _x_ and _y_ (the choice is exclusive).
 
 Be aware that parenthesis can appear in the grammar in two cases : either as language token, in that case the 
 parenthesis would be bolded, or to regroup multiple symbols to apply a repetition operator, like (_x | y_)*
@@ -82,7 +83,8 @@ _Type_:
 
 _PrimitiveType_:  
 &emsp;&emsp; **int**  
-&emsp;&emsp; **bool**
+&emsp;&emsp; **bool**  
+&emsp;&emsp; **string**
 
 ### Blocks and sequences
 
@@ -100,7 +102,8 @@ _Block_:
 _Statement_:  
 &emsp;&emsp; _IncludeStatement_  
 &emsp;&emsp; _DeclarationStatement_  
-&emsp;&emsp; _AssignmentStatement_  
+&emsp;&emsp; _FunctionDefinitionStatement_  
+&emsp;&emsp; _ReturnStatement_  
 &emsp;&emsp; _ConditionalStatement_  
 &emsp;&emsp; _PrintStatement_  
 &emsp;&emsp; _ExpressionStatement_
@@ -111,6 +114,16 @@ _IncludeStatement_:
 _DeclarationStatement_:  
 &emsp;&emsp; (_Type_ | **var**) _Identifier_ **;**  
 &emsp;&emsp; (_Type_ | **var**) _Identifier_ **=** _Expression_ **;**
+
+_FunctionDefinitionStatement_:  
+&emsp;&emsp; **fun** _Identifier_ **(** _FunctionParameters_* **)** ( **:** _Type_ )? _Block_
+
+_FunctionParameters_:  
+&emsp;&emsp; (_Type_ | **var**) _Identifier_  
+&emsp;&emsp; (_Type_ | **var**) _Identifier_ **,** _FunctionParameters_
+
+_ReturnStatement_:  
+&emsp;&emsp; **return** _Expression_? **;**
 
 _AssignmentStatement_:  
 &emsp;&emsp; _Identifier_ **=** _Expression_ **;**
@@ -128,7 +141,11 @@ _ExpressionStatement_:
 ### Expressions
 
 _Expression_:  
-&emsp;&emsp; _Logic_
+&emsp;&emsp; _Assignment_
+
+_Assignment_:  
+&emsp;&emsp; _Logic_  
+&emsp;&emsp; _Identifier_ **=** _Assignment_
 
 _Logic_:  
 &emsp;&emsp; _Join_  
@@ -159,12 +176,21 @@ _Term_:
 &emsp;&emsp; _Unary_ (__*__ | **/**) _Unary_
 
 _Unary_:  
-&emsp;&emsp; (**!** | **+** | **-**)? _Factor_
+&emsp;&emsp; (**!** | **+** | **-**)? _Unary_  
+&emsp;&emsp; _Call_
+
+_Call_:  
+&emsp;&emsp; _Factor_  
+&emsp;&emsp; _Factor_ **(** _Arguments_? **)**
 
 _Factor_:  
 &emsp;&emsp; **(** _Expression_ **)**  
 &emsp;&emsp; _Literal_  
 &emsp;&emsp; _Identifier_
+
+_Arguments_:  
+&emsp;&emsp; _Expression_  
+&emsp;&emsp; _Expression_ **,** _Arguments_
 
 ### Comments
 

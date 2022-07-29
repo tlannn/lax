@@ -4,10 +4,13 @@
 #include <memory>
 
 #include "semanticerror.h"
+#include "ast/astvisitor.h"
 #include "ast/astnode.h"
 #include "ast/exprnode.h"
 #include "ast/assignnode.h"
 #include "ast/binopnode.h"
+#include "ast/callnode.h"
+#include "ast/funnode.h"
 #include "ast/literalnode.h"
 #include "ast/id.h"
 #include "ast/declnode.h"
@@ -17,12 +20,14 @@
 #include "ast/stmtnode.h"
 #include "ast/blocknode.h"
 #include "ast/seqnode.h"
+#include "ast/returnnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
 #include "ast/unarynode.h"
 #include "lexer/lexer.h"
-#include "interpreter/astvisitor.h"
+#include "objects/object.h"
 #include "symbols/env.h"
+#include "symbols/funsymbol.h"
 #include "symbols/varsymbol.h"
 #include "utils/logger.h"
 
@@ -100,6 +105,11 @@ public:
 	void visit(Id *node) override;
 
 	/**
+     * Visit a CallNode and check if the function called is defined
+     */
+	void visit(CallNode *node) override;
+
+	/**
 	 * Visit an UnaryNode and determine the type of the literal
 	 */
 	void visit(UnaryNode *node) override;
@@ -133,10 +143,20 @@ public:
 	void visit(AssignNode *node) override;
 
 	/**
+     * Visit a FunNode and define a function in the environment
+     */
+	void visit(FunNode *node) override;
+
+	/**
 	 * Visit a ConditionalNode and check symbols in both branches 'then'
 	 * and 'else'
 	 */
 	void visit(ConditionalNode *node) override;
+
+	/**
+	 * Visit a ReturnNode and exit a function call by returning a value
+	 */
+	void visit(ReturnNode *node) override;
 
     /**
      * Visit a StmtPrintNode and check semantics in the expression to print
@@ -151,7 +171,7 @@ public:
 private:
 	ASTNode *_ast; // The root node of the AST
 	Env *_env; // The environment that keeps track of identifiers used
-	Type _resultType; // The type of the result of the last node visited
+	ValueType _resultType; // The type of the result of the last node visited
 	bool _errors; // Becomes true when an error occurs
 };
 

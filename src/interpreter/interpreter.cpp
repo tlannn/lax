@@ -1,7 +1,7 @@
 #include "interpreter.h"
 
 /// Class constructor
-Interpreter::Interpreter(ASTNode *ast) : _ast(ast), _result(Object::null) {}
+Interpreter::Interpreter(ASTNode *ast) : _ast(ast), _result(NULL_VAL), _frame(new CallFrame()) {}
 
 /// Interpret the code parsed by the parser
 void Interpreter::interpret() {
@@ -19,31 +19,45 @@ void Interpreter::visit(ExprNode *node) {
 
 /// Visit a BinOpNode and compute the operation represented by the node
 void Interpreter::visit(BinOpNode *node) {
-	visit(node->getLeft());
-	int left = _result.toInt();
-	visit(node->getRight());
-	int right = _result.toInt();
-	Token* op = node->getToken();
+	Token* op = node->getOperator();
 
+	// Determine the value of the left operand
+	visit(node->getLeft());
+	Value v = INT_VAL(1);
+
+	if (!IS_INT(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	int left = AS_INT(_result);
+
+	// Determine the value of the right operand
+	visit(node->getRight());
+
+	if (!IS_INT(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	int right = AS_INT(_result);
+
+	// Compute the result
 	switch (op->getType()) {
 		case TokenType::PLUS: {
-			_result = Object(left + right);
+			_result = INT_VAL(left + right);
 			break;
 		}
 		case TokenType::MINUS: {
-			_result = Object(left - right);
+			_result = INT_VAL(left - right);
 			break;
 		}
 		case TokenType::STAR: {
-			_result = Object(left * right);
+			_result = INT_VAL(left * right);
 			break;
 		}
 		case TokenType::SLASH: {
-			_result = Object(left / right);
+			_result = INT_VAL(left / right);
 			break;
 		}
 		default:
-			_result = Object::null;
+			_result = NULL_VAL;
 			break;
 	}
 }
@@ -51,14 +65,20 @@ void Interpreter::visit(BinOpNode *node) {
 /// Visit a LogicalNode and compute the boolean value represented by the
 /// boolean expression
 void Interpreter::visit(LogicalNode *node) {
+	Token* op = node->getOperator();
+
+	// Determine the value of the left operand
 	visit(node->getLeft());
-	bool left = _result.toBool();
-	Token* op = node->getToken();
+
+	if (!IS_BOOL(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	bool left = AS_BOOL(_result);
 
 	if (op->getType() == TokenType::OR) {
-		if (left) _result = Object(left);
+		if (left) _result = BOOL_VAL(left);
 	} else if (op->getType() == TokenType::AND) {
-		if (!left) _result = Object(left);
+		if (!left) _result = BOOL_VAL(left);
 	}
 
 	visit(node->getRight());
@@ -67,33 +87,45 @@ void Interpreter::visit(LogicalNode *node) {
 /// Visit a RelationalNode and compute the resulting boolean value
 /// according to the truthiness of the equality or inequality
 void Interpreter::visit(RelationalNode *node) {
+	Token* op = node->getOperator();
+
+	// Determine the value of the left operand
 	visit(node->getLeft());
-	int left = _result.toInt();
+
+	if (!IS_INT(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	int left = AS_INT(_result);
+
+	// Determine the value of the right operand
 	visit(node->getRight());
-	int right = _result.toInt();
-	Token* op = node->getToken();
+
+	if (!IS_INT(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	int right = AS_INT(_result);
 
 	switch (op->getType()) {
 		case TokenType::EQ:
-			_result = Object(left == right);
+			_result = BOOL_VAL(left == right);
 			break;
 		case TokenType::NEQ:
-			_result = Object(left != right);
+			_result = BOOL_VAL(left != right);
 			break;
 		case TokenType::SL:
-			_result = Object(left < right);
+			_result = BOOL_VAL(left < right);
 			break;
 		case TokenType::LE:
-			_result = Object(left <= right);
+			_result = BOOL_VAL(left <= right);
 			break;
 		case TokenType::SG:
-			_result = Object(left > right);
+			_result = BOOL_VAL(left > right);
 			break;
 		case TokenType::GE:
-			_result = Object(left >= right);
+			_result = BOOL_VAL(left >= right);
 			break;
 		default:
-			_result = Object::null;
+			_result = NULL_VAL;
 			break;
 	}
 }
@@ -106,21 +138,65 @@ void Interpreter::visit(LiteralNode *node) {
 /// Visit an Id and determine the value of the variable defined with this
 /// identifier
 void Interpreter::visit(Id *node) {
-	_result = _memory[node->getToken()->toString()];
+	_result = _frame->get(node->getName()->toString());
+}
+
+/// Visit a CallNode and evaluate the call
+void Interpreter::visit(CallNode *node) {
+	visit(node->getCallee());
+
+	if (!IS_CLOSURE(_result))
+		throw RuntimeError("Error on function call");
+
+	auto *function = AS_CLOSURE(_result)->getFunction();
+
+	// Compute all arguments
+	std::vector<Value> args;
+	for (auto& arg : node->getArgs()) {
+		visit(arg.get());
+		args.push_back(_result);
+	}
+
+	// Check that the number of arguments is the same as in the function declaration
+	if (node->getArgs().size() != function->arity())
+		throw RuntimeError("Function " + function->toString() + " expected " +
+							std::to_string(function->arity()) + " arguments but got " +
+							std::to_string(node->getArgs().size()));
+
+	// Execute the function call
+	_result = function->call(this, new CallFrame(_frame), std::move(args));
 }
 
 /// Visit an UnaryNode and determine the resulting literal value
 void Interpreter::visit(UnaryNode *node) {
 	visit(node->getExpr());
-	TokenType operatorType = node->getToken()->getType();
+	TokenType operatorType = node->getOperator()->getType();
 
-	if (operatorType == TokenType::BANG)
-		_result = Object(!_result.toBool());
+	if (operatorType == TokenType::BANG) {
+		// Determine the value of the expression associated
+		visit(node->getExpr());
 
-	else if (operatorType == TokenType::PLUS || operatorType == TokenType::MINUS)
-		_result = Object(-_result.toInt());
+		if (!IS_BOOL(_result))
+			throw RuntimeError("incompatible value", "error");
 
-	else _result = Object::null;
+		bool result = AS_BOOL(_result);
+
+		_result = BOOL_VAL(!result);
+	}
+
+	else if (operatorType == TokenType::PLUS || operatorType == TokenType::MINUS) {
+		// Determine the value of the expression associated
+		visit(node->getExpr());
+
+		if (!IS_INT(_result))
+			throw RuntimeError("incompatible value", "error");
+
+		int result = AS_INT(_result);
+
+		_result = INT_VAL(-result);
+	}
+
+	else _result = NULL_VAL;
 }
 
 /// Visit a StmtNode and execute the statement
@@ -130,7 +206,25 @@ void Interpreter::visit(StmtNode *node) {
 
 /// Visit a BlockNode and execute the sequence of statements inside it
 void Interpreter::visit(BlockNode *node) {
-	visit(node->getSequence());
+	executeBlock(node, new CallFrame(_frame));
+}
+
+/// Execute the instructions inside a block
+void Interpreter::executeBlock(BlockNode *node, CallFrame *frame) {
+	CallFrame *previousFrame = _frame;
+
+	try {
+		_frame = frame;
+		visit(node->getSequence());
+	} catch (RuntimeError &e) {
+		_frame = previousFrame;
+		delete frame;
+
+		throw;
+	}
+
+	_frame = previousFrame;
+	delete frame;
 }
 
 /// Visit a SeqNode and execute all the statements inside it
@@ -144,35 +238,79 @@ void Interpreter::visit(SeqNode *node) {
 
 /// Visit a DeclNode and declare a variable
 void Interpreter::visit(DeclNode *node) {
+	Value value = NULL_VAL;
+
 	if (node->getRValue() != nullptr) {
 		visit(node->getRValue());
-		_memory[node->getId()->toString()] = _result;
+		value = _result;
 	}
+
+	_frame->set(node->getId()->toString(), value);
 }
 
 /// Visit an AssignNode and assign a new value to a variable
 void Interpreter::visit(AssignNode *node) {
 	visit(node->getExpr());
-	_memory[node->getToken()->toString()] = _result;
+	_frame->set(node->getName(), _result);
+}
+
+/// Visit a FunNode and save its function definition
+void Interpreter::visit(FunNode *node) {
+	// Save the function definition in the current call frame
+	_frame->set(node->getName()->toString(), OBJ_VAL(new ObjClosure(new ObjFunction(node))));
+
+	// The result of the definition is null
+	_result = NULL_VAL;
 }
 
 /// Visit a ConditionalNode and execute the 'then' statement referenced
 /// if the condition is evaluated to true, otherwise execute the 'else'
 /// statement if there is one
 void Interpreter::visit(ConditionalNode *node) {
+	// Determine the value of the condition
 	visit(node->getConditionExpression());
 
-	if (_result.toBool())
+	if (!IS_BOOL(_result))
+		throw RuntimeError("incompatible value", "error");
+
+	bool result = AS_BOOL(_result);
+
+	if (result)
 		visit(node->getThenStatement());
 
 	else if (node->getElseStatement())
 		visit(node->getElseStatement());
 }
 
+/// Visit a ReturnNode and return from a function
+void Interpreter::visit(ReturnNode *node) {
+	_result = NULL_VAL;
+
+	if (node->getValue())
+		visit(node->getValue());
+
+	throw Return(_result);
+}
+
 /// Visit a StmtPrintNode and print the result of an expression
 void Interpreter::visit(StmtPrintNode *node) {
     visit(node->getExpr());
-    std::cout << _result.toString() << std::endl;
+
+	std::string result;
+
+	if (IS_INT(_result))
+		result = std::to_string(AS_INT(_result));
+
+	else if (IS_BOOL(_result))
+		result = AS_BOOL(_result) ? "true" : "false";
+
+	else if (IS_OBJ(_result))
+		result = AS_CPPSTRING(_result);
+
+	else if (IS_NULL(_result))
+		result = "null";
+
+    std::cout << result << std::endl;
 }
 
 /// Visit a StmtExpressionNode and reduce an expression

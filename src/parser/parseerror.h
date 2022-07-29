@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include "common/exception.h"
+#include "common/compiletimeexception.h"
 
 /**
  * Exception class for errors occurring during parsing
  */
-class ParseError : public Exception {
+class ParseError : public CompileTimeException {
 public:
 	/**
 	 * Class constructor

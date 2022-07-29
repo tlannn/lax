@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "exprnode.h"
-#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 
 /**
@@ -38,6 +38,13 @@ public:
      */
 	ExprNode* getRight();
 
+	/**
+     * Getter for the operator of the operation
+     *
+     * @return the operator
+     */
+	Token* getOperator();
+
     /**
      * Accept method for the visitor pattern
      */
@@ -46,6 +53,7 @@ public:
 protected:
     std::unique_ptr<ExprNode> _left;
 	std::unique_ptr<ExprNode> _right;
+	std::unique_ptr<Token> _op;
 };
 
 #endif // LAX_BINOPNODE_H

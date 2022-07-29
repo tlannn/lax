@@ -1,7 +1,7 @@
 #include "declnode.h"
 
 /// Class constructor
-DeclNode::DeclNode(std::shared_ptr<Token> id, Type type, std::unique_ptr<ExprNode> expr) :
+DeclNode::DeclNode(std::shared_ptr<Token> id, ValueType type, std::unique_ptr<ExprNode> expr) :
 	_id(std::move(id)), _type(type), _rvalue(std::move(expr)) {}
 
 /// Getter for the name of the variable declared
@@ -10,7 +10,7 @@ std::shared_ptr<Token> DeclNode::getId() {
 }
 
 /// Getter for the type of the variable declared
-Type DeclNode::getType() {
+ValueType DeclNode::getType() {
     return _type;
 }
 

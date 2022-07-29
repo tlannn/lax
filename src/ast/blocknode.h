@@ -3,9 +3,9 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "stmtnode.h"
 #include "seqnode.h"
-#include "interpreter/astvisitor.h"
 
 /**
  * Node for blocks of statements

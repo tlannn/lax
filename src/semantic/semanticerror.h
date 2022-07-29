@@ -3,9 +3,9 @@
 
 #include <string>
 
-#include "common/exception.h"
+#include "common/compiletimeexception.h"
 
-class SemanticError : public Exception {
+class SemanticError : public CompileTimeException {
 public:
 	SemanticError(const std::string &file, int line, int col, const std::string &message, const std::string &type);
 };

@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "exprnode.h"
-#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 
 /**
@@ -19,14 +19,24 @@ public:
 	/**
 	 * Class constructor
 	 *
-	 * @param word the word defining the identifier
+	 * @param name the name defining the identifier
 	 */
-    explicit Id(std::unique_ptr<Token> word);
+    explicit Id(std::unique_ptr<Token> name);
+
+	/**
+	 * Getter for the name of the identifier
+	 *
+	 * @return the name
+	 */
+	Token* getName();
 
 	/**
 	 * Accept method for the visitor pattern
 	 */
 	void accept(ASTVisitor *visitor) override;
+
+private:
+	std::unique_ptr<Token> _name;
 };
 
 #endif // LAX_ID_H

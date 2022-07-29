@@ -3,9 +3,10 @@
 
 #include <memory>
 
-#include "ast/exprnode.h"
-#include "ast/stmtnode.h"
-#include "interpreter/astvisitor.h"
+#include "astvisitor.h"
+#include "id.h"
+#include "exprnode.h"
+#include "stmtnode.h"
 #include "tokens/token.h"
 
 /**
@@ -17,7 +18,7 @@
  * with no specific type, then any value can be assigned. In that case, the
  * variable will take the type of the first value assigned.
  */
-class AssignNode : public StmtNode {
+class AssignNode : public ExprNode {
 public:
 	/**
 	 * Class constructor
@@ -25,13 +26,13 @@ public:
 	 * @param id the identifier to assign a value to
 	 * @param expr the expression to assign to the identifier
 	 */
-    AssignNode(std::unique_ptr<Token> id, std::unique_ptr<ExprNode> expr);
+    AssignNode(std::unique_ptr<ExprNode> identifier, std::unique_ptr<ExprNode> expr);
 
 	/**
 	 * Getter for the token of the variable
 	 * @return the variable token
 	 */
-	Token* getToken();
+	std::string getName();
 
 	/**
 	 * Getter for the new expression assigned
@@ -45,7 +46,7 @@ public:
     void accept(ASTVisitor *visitor) override;
 
 private:
-	std::unique_ptr<Token> _id;
+	std::unique_ptr<ExprNode> _identifier;
     std::unique_ptr<ExprNode> _expr;
 };
 

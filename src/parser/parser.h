@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <map>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -11,6 +12,7 @@
 #include "ast/assignnode.h"
 #include "ast/binopnode.h"
 #include "ast/blocknode.h"
+#include "ast/callnode.h"
 #include "ast/literalnode.h"
 #include "ast/declnode.h"
 #include "ast/id.h"
@@ -20,11 +22,12 @@
 #include "ast/stmtnode.h"
 #include "ast/stmtexpressionnode.h"
 #include "ast/stmtprintnode.h"
+#include "ast/funnode.h"
+#include "ast/returnnode.h"
 #include "ast/unarynode.h"
-#include "tokens/token.h"
 #include "lexer/lexer.h"
-#include "symbols/varsymbol.h"
-#include "symbols/env.h"
+#include "objects/objstring.h"
+#include "tokens/token.h"
 #include "utils/logger.h"
 
 /**
@@ -169,7 +172,7 @@ private:
      *
      * @return the node created
      */
-	std::unique_ptr<StmtNode> block();
+	std::unique_ptr<BlockNode> block();
 
 	/**
 	 * Build a node representing a statement
@@ -190,35 +193,49 @@ private:
      *
      * @return the node created
      */
-	std::unique_ptr<StmtNode> declaration();
+	std::unique_ptr<DeclNode> declaration();
 
 	/**
      * Build a node representing a variable assignment statement
      *
      * @return the node created
      */
-	std::unique_ptr<StmtNode> varAssignStmt();
+	std::unique_ptr<ExprNode> varAssignStmt();
+
+	/**
+     * Build a node representing a function declaration statement
+     *
+     * @return the node created
+     */
+	std::unique_ptr<FunNode> function();
+
+	/**
+     * Build a node representing a return statement
+     *
+     * @return the node created
+     */
+	std::unique_ptr<ReturnNode> returnStmt();
 
 	/**
 	 * Build a node representing an if/else statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> conditionalStmt();
+	std::unique_ptr<ConditionalNode> conditionalStmt();
 
 	/**
 	 * Build a node representing a print statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> printStmt();
+	std::unique_ptr<StmtPrintNode> printStmt();
 
 	/**
 	 * Build a node representing an expression statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> expressionStmt();
+	std::unique_ptr<StmtExpressionNode> expressionStmt();
 
 	/**
      * Build a node representing an expression
@@ -269,12 +286,27 @@ private:
      */
 	std::unique_ptr<ExprNode> unary();
 
+	/**
+	 * Build a node representing a function call
+	 *
+	 * @return the node created
+	 */
+	std::unique_ptr<ExprNode> call();
+
     /**
      * Build a node representing a factor
      *
      * @return the node created
      */
 	std::unique_ptr<ExprNode> factor();
+
+	/**
+	 * Parse arguments for a function call and return a node representation of it
+	 *
+	 * @param callee the callee called
+	 * @return the node created
+	 */
+	std::unique_ptr<ExprNode> arguments(std::unique_ptr<ExprNode> callee);
 
     Lexer &_lex; // The lexical analyzer
 	std::unique_ptr<Token> _previous; // The last token consumed

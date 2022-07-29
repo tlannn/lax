@@ -1,15 +1,14 @@
 #include "exprnode.h"
 
 /// Class constructor
-ExprNode::ExprNode(std::unique_ptr<Token> tok) : _tok(std::move(tok)) {}
+ExprNode::ExprNode(Token *token) : _token(token) {}
 
-/// Getter for the operator
+/// Getter for the token of the node
 Token* ExprNode::getToken() {
-    return _tok.get();
+	return _token;
 }
 
 /// Abstract accept method for the visitor pattern
 void ExprNode::accept(ASTVisitor *visitor) {
-	std::cout << "ExprNode - accept" << std::endl;
     visitor->visit(this);
 }

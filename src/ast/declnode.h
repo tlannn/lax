@@ -3,11 +3,11 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/astvisitor.h"
+#include "common/valuetype.h"
 #include "tokens/token.h"
-#include "tokens/type.h"
 
 /**
  * Node for variable declaration statements
@@ -25,7 +25,7 @@ public:
 	 * @param type the type of the variable
 	 * @param expr the expression associated to the variable (if any)
 	 */
-    DeclNode(std::shared_ptr<Token> id, Type type, std::unique_ptr<ExprNode> expr);
+    DeclNode(std::shared_ptr<Token> id, ValueType type, std::unique_ptr<ExprNode> expr);
 
 	/**
      * Getter for the name of the variable declared
@@ -39,7 +39,7 @@ public:
      *
      * @return the type of the variable
      */
-    Type getType();
+    ValueType getType();
 
 	/**
      * Getter for the expression associated to the variable at declaration
@@ -56,7 +56,7 @@ public:
 
 private:
 	std::shared_ptr<Token> _id;
-    Type _type;
+    ValueType _type;
 	std::unique_ptr<ExprNode> _rvalue;
 };
 

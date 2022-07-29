@@ -31,18 +31,21 @@ enum TokenType {
 	SIMEQ = 281, // Assignment operator
 	SEMICOL = 282, // Semicolon
 	COLON = 283, // Colon
-    AND = 284, // Logical and operator
-    OR = 285, // Logical or operator
-    VAR = 286, // Var keyword
-    DO = 287, // Do keyword
-    BREAK = 288, // Break keyword
-    IF = 289, // If keyword
-    ELSE = 290, // Else keyword
-    WHILE = 291, // While keyword
-    FOR = 292, // For keyword
-    INCLUDE = 293, // Include keyword
-    PRINT = 294, // Print keyword
-    END = 295 // End of file
+	COMMA = 284, // Comma
+    AND = 285, // Logical and operator
+    OR = 286, // Logical or operator
+    VAR = 287, // Var keyword
+    FUN = 288, // Fun keyword
+    RETURN = 289, // Return keyword
+    DO = 290, // Do keyword
+    BREAK = 291, // Break keyword
+    IF = 292, // If keyword
+    ELSE = 293, // Else keyword
+    WHILE = 294, // While keyword
+    FOR = 295, // For keyword
+    INCLUDE = 296, // Include keyword
+    PRINT = 297, // Print keyword
+    END = 298 // End of file
 };
 
 #endif // LAX_TOKENTYPE_H

@@ -1,8 +1,8 @@
 #ifndef LAX_STMTNODE_H
 #define LAX_STMTNODE_H
 
+#include "astvisitor.h"
 #include "astnode.h"
-#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 
 /**

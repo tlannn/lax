@@ -1,7 +1,8 @@
 #ifndef LAX_ASTNODE_H
 #define LAX_ASTNODE_H
 
-#include "interpreter/astvisitor.h"
+#include "astvisitor.h"
+#include "tokens/token.h"
 
 /**
  * Base node for the Abstract Syntax Tree
@@ -11,6 +12,7 @@ public:
 	/**
 	 * Class constructor
 	 */
+//	ASTNode(Token *token);
 	ASTNode() = default;
 
 	/**
@@ -19,12 +21,21 @@ public:
 	virtual ~ASTNode() = default;
 
 	/**
+	 * Getter for the token of the node
+	 * @return the token
+	 */
+//	Token* getToken();
+
+	/**
 	 * Accepts an *ASTVisitor* and call its visit method corresponding to
      * the type of the node
      *
      * @param visitor the visitor that wants to visit the node
 	 */
 	virtual void accept(ASTVisitor *visitor) = 0;
+
+protected:
+//	Token *_token;
 };
 
 #endif // LAX_ASTNODE_H

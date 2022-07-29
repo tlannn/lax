@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "tokens/type.h"
+#include "common/valuetype.h"
 
 /**
  * Represent an identifier (aka symbol) and carries information with it, that
@@ -17,7 +17,7 @@ public:
 	 * @param name the name of the symbol
 	 * @param type the type of the symbol
 	 */
-    Symbol(std::string name, Type type);
+    Symbol(std::string name, ValueType type);
 
 	/**
 	 * Class destructor
@@ -36,11 +36,11 @@ public:
 	 *
 	 * @return the type
 	 */
-    Type getType();
+    ValueType getType();
 
 protected:
     std::string _name;
-    Type _type;
+    ValueType _type;
 };
 
 #endif // LAX_SYMBOL_H

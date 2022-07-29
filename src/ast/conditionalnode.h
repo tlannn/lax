@@ -1,9 +1,9 @@
 #ifndef LAX_CONDITIONALNODE_H
 #define LAX_CONDITIONALNODE_H
 
+#include "astvisitor.h"
 #include "exprnode.h"
 #include "stmtnode.h"
-#include "interpreter/astvisitor.h"
 
 /**
  * Node for if/else statements in the program

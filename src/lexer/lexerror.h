@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include "common/exception.h"
+#include "common/compiletimeexception.h"
 
 /**
  * Exception class for errors occurring during lexical analysis
  */
-class LexError : public Exception {
+class LexError : public CompileTimeException {
 public:
 	/**
 	 * Class constructor

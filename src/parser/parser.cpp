@@ -1,7 +1,5 @@
 #include "parser.h"
 
-#include <memory>
-
 /// Class constructor
 Parser::Parser(Lexer &lex) : _lex(lex), _previous(nullptr), _lookahead(nullptr), _errors(false) {}
 
@@ -143,7 +141,7 @@ std::unique_ptr<StmtNode> Parser::program() {
 }
 
 /// Build a node representing a block of statements
-std::unique_ptr<StmtNode> Parser::block() {
+std::unique_ptr<BlockNode> Parser::block() {
 	consume(TokenType::LBRACE, ErrorMode::REPAIR);
 	std::vector<std::unique_ptr<StmtNode>> stmts;
 
@@ -159,7 +157,9 @@ std::unique_ptr<StmtNode> Parser::block() {
 std::unique_ptr<StmtNode> Parser::stmt() {
 	try {
 		if (match(TokenType::VAR) || match(TokenType::TYPE)) return declaration();
-		else if (match(TokenType::ID)) return varAssignStmt();
+//		else if (match(TokenType::ID)) return varAssignStmt();
+		else if (match(TokenType::FUN)) return function();
+		else if (match(TokenType::RETURN)) return returnStmt();
 		else if (match(TokenType::IF)) return conditionalStmt();
 		else if (match(TokenType::INCLUDE)) return includeStmt();
 		else if (match(TokenType::PRINT)) return printStmt();
@@ -196,9 +196,9 @@ std::unique_ptr<StmtNode> Parser::includeStmt() {
 }
 
 /// Build a node representing a variable declaration statement
-std::unique_ptr<StmtNode> Parser::declaration() {
+std::unique_ptr<DeclNode> Parser::declaration() {
 	// Determine the variable type based on the keyword
-	Type *type = previous()->getType() == TokenType::VAR ? &Type::NONE : Type::getType(previous());
+	ValueType type = previous()->getType() == TokenType::VAR ? ValueType::VAL_NULL : ValueType::getType(previous());
 	move();
 	std::shared_ptr<Token> identifier = std::move(_previous);
 
@@ -206,24 +206,103 @@ std::unique_ptr<StmtNode> Parser::declaration() {
 
 	consume(TokenType::SEMICOL);
 
-	return std::make_unique<DeclNode>(identifier, *type, std::move(assignment));
+	return std::make_unique<DeclNode>(identifier, type, std::move(assignment));
 }
 
 /// Build a node representing a variable assignment statement
-std::unique_ptr<StmtNode> Parser::varAssignStmt() {
-	std::unique_ptr<Token> identifier = std::move(_previous);
+std::unique_ptr<ExprNode> Parser::varAssignStmt() {
+	/*if (match(TokenType::ID)) {
+		consume(TokenType::ID);
 
-	consume(TokenType::SIMEQ);
+		consume(TokenType::SIMEQ);
 
-	auto node = std::make_unique<AssignNode>(std::move(identifier), expr());
+		auto node = std::make_unique<AssignNode>(std::move(_previous), expr());
 
-	consume(TokenType::SEMICOL);
+		consume(TokenType::SEMICOL);
+
+		return node;
+	}
+
+	return logic();*/
+
+
+	std::unique_ptr<ExprNode> node = logic();
+
+	if (match(TokenType::SIMEQ)) {
+		std::unique_ptr<Token> equals = std::move(_previous);
+		std::unique_ptr<ExprNode> value = varAssignStmt();
+
+		if (Id *id = dynamic_cast<Id*>(node.get())) {
+			return std::make_unique<AssignNode>(std::move(node), std::move(value));
+		}
+	}
+
+//	consume(TokenType::SEMICOL);
 
 	return node;
 }
 
+/// Build a node representing a function declaration statement
+std::unique_ptr<FunNode> Parser::function() {
+	// Read the function identifier
+	consume(TokenType::ID);
+	auto name = std::move(_previous);
+
+	consume(TokenType::LPAREN);
+
+	std::vector<std::unique_ptr<Variable>> params;
+	// Check if parameters are present
+	if (!check(TokenType::RPAREN)) {
+		do {
+			// Read parameter type
+			consume(TokenType::TYPE);
+			auto type = ValueType::getType(previous());
+
+			// Read parameter name
+			consume(TokenType::ID);
+			auto identifier = std::move(_previous);
+
+			auto variable = std::make_unique<Variable>(std::move(identifier), type);
+			params.push_back(std::move(variable));
+		} while (match(TokenType::COMMA));
+	}
+
+	// Read the parameters closing parenthesis
+	consume(TokenType::RPAREN);
+
+	// The function returns nothing by default
+	ValueType returnType = ValueType::VAL_NULL;
+
+	// Search for the function return type
+	if (match(TokenType::COLON)) {
+		consume(TokenType::TYPE);
+		returnType = ValueType::getType(previous());
+	}
+
+	// Raise an error if no function body is found
+	if (!check(TokenType::LBRACE))
+		error("Expected function body", peek());
+
+	// Read the function body
+	std::unique_ptr<BlockNode> body = block();
+
+	return std::make_unique<FunNode>(std::move(name), returnType, std::move(params), std::move(body));
+}
+
+/// Build a node representing a return statement
+std::unique_ptr<ReturnNode> Parser::returnStmt() {
+	auto token = std::move(_previous);
+	std::unique_ptr<ExprNode> value;
+
+	if (!check(TokenType::SEMICOL))
+		value = expr();
+
+	consume(TokenType::SEMICOL);
+	return std::make_unique<ReturnNode>(std::move(token), std::move(value));
+}
+
 /// Build a node representing an if/else statement
-std::unique_ptr<StmtNode> Parser::conditionalStmt() {
+std::unique_ptr<ConditionalNode> Parser::conditionalStmt() {
     consume(TokenType::LPAREN, ErrorMode::REPAIR);
     std::unique_ptr<ExprNode> condition = Parser::expr();
     consume(TokenType::RPAREN, ErrorMode::REPAIR);
@@ -246,7 +325,7 @@ std::unique_ptr<StmtNode> Parser::conditionalStmt() {
 }
 
 /// Build a node representing a print statement
-std::unique_ptr<StmtNode> Parser::printStmt() {
+std::unique_ptr<StmtPrintNode> Parser::printStmt() {
 	std::unique_ptr<ExprNode> expr = Parser::expr();
 	consume(TokenType::SEMICOL);
 
@@ -254,17 +333,16 @@ std::unique_ptr<StmtNode> Parser::printStmt() {
 }
 
 /// Build a node representing an expression statement
-std::unique_ptr<StmtNode> Parser::expressionStmt() {
+std::unique_ptr<StmtExpressionNode> Parser::expressionStmt() {
 	std::unique_ptr<ExprNode> expr = Parser::expr();
 	consume(TokenType::SEMICOL);
 
 	return std::make_unique<StmtExpressionNode>(std::move(expr));
 }
 
-
 /// Build a node representing an expression
 std::unique_ptr<ExprNode> Parser::expr() {
-	return logic();
+	return varAssignStmt();
 }
 
 /// Build a node representing a logical OR expression
@@ -336,7 +414,18 @@ std::unique_ptr<ExprNode> Parser::unary() {
 		return std::make_unique<UnaryNode>(std::move(op), unary());
 	}
 
-	return factor();
+	return call();
+}
+
+std::unique_ptr<ExprNode> Parser::call() {
+	std::unique_ptr<ExprNode> expr = factor();
+
+	// While in a function call chain
+	while (match(TokenType::LPAREN)) {
+		expr = arguments(std::move(expr));
+	}
+
+	return expr;
 }
 
 /// Build a node representing a factor
@@ -354,15 +443,26 @@ std::unique_ptr<ExprNode> Parser::factor() {
 			break;
 		}
 		case TokenType::NUM: {
-			expr = std::make_unique<LiteralNode>(std::move(_previous), Type::INT);
+			Value value = INT_VAL(std::stoi(_previous->toString()));
+
+			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
+
+//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::VAL_INT);
 			break;
 		}
-		case TokenType::STRING:
-			expr = std::make_unique<LiteralNode>(std::move(_previous), Type::STRING);
+		case TokenType::STRING: {
+			Value value = OBJ_VAL(new ObjString(_previous->toString()));
+
+			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
+			//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::STRING);
 			break;
+		}
 		case TokenType::TRUE:
 		case TokenType::FALSE: {
-			expr = std::make_unique<LiteralNode>(std::move(_previous), Type::BOOL);
+			Value value = BOOL_VAL(previous()->getType() == TokenType::TRUE);
+
+			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
+//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::VAL_BOOL);
 			break;
 		}
 		case TokenType::ID: {
@@ -378,4 +478,21 @@ std::unique_ptr<ExprNode> Parser::factor() {
 	}
 
 	return expr;
+}
+
+std::unique_ptr<ExprNode> Parser::arguments(std::unique_ptr<ExprNode> callee) {
+	std::vector<std::unique_ptr<ExprNode>> args;
+
+	if (!check(TokenType::RPAREN)) {
+		do {
+			if (args.size() >= 255)
+				error("Arguments count can't exceed 255", peek());
+
+			args.push_back(expr());
+		} while (match(TokenType::COMMA));
+	}
+
+	consume(TokenType::RPAREN, ErrorMode::NON_PANIC);
+
+	return std::make_unique<CallNode>(std::move(callee), std::move(_previous), std::move(args));
 }

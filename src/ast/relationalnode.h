@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include "astvisitor.h"
 #include "logicalnode.h"
-#include "interpreter/astvisitor.h"
 #include "tokens/token.h"
 
 /**

@@ -8,10 +8,9 @@
 #include <unordered_map>
 
 #include "lexerror.h"
-#include "tokens/token.h"
-#include "tokens/num.h"
-#include "tokens/type.h"
 #include "memento.h"
+#include "common/valuetype.h"
+#include "tokens/token.h"
 
 /**
  * Lexical analyzer for the Lax language

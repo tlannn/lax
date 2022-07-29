@@ -1,12 +1,12 @@
 #include "assignnode.h"
 
 /// Class constructor
-AssignNode::AssignNode(std::unique_ptr<Token> id, std::unique_ptr<ExprNode> expr) : StmtNode(),
-	_id(std::move(id)), _expr(std::move(expr)) {}
+AssignNode::AssignNode(std::unique_ptr<ExprNode> identifier, std::unique_ptr<ExprNode> expr) :
+						ExprNode(identifier->getToken()), _identifier(std::move(identifier)), _expr(std::move(expr)) {}
 
 /// Getter for the token of the variable
-Token* AssignNode::getToken() {
-    return _id.get();
+std::string AssignNode::getName() {
+    return _identifier->getToken()->toString();
 }
 
 /// Getter for the new expression assigned

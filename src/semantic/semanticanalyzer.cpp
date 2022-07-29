@@ -2,8 +2,9 @@
 
 /// Class constructor
 SemanticAnalyzer::SemanticAnalyzer(ASTNode *ast) :
-	_ast(ast), _env(new Env()), _resultType(Type::NONE), _errors(false) {}
+		_ast(ast), _env(new Env()), _resultType(ValueType::VAL_NULL), _errors(false) {}
 
+/// Class destructor
 SemanticAnalyzer::~SemanticAnalyzer() {
 	delete _env;
 }
@@ -39,78 +40,109 @@ void SemanticAnalyzer::visit(ExprNode *node) {
 /// Visit a BinOpNode and determine the type of the result computed by the
 /// operation represented by the node
 void SemanticAnalyzer::visit(BinOpNode *node) {
-	Token* op = node->getToken();
+	Token* op = node->getOperator();
 
 	visit(node->getLeft());
-	Type typeLeft = _resultType;
+	ValueType typeLeft = _resultType;
 
 	visit(node->getRight());
-	Type typeRight = _resultType;
+	ValueType typeRight = _resultType;
 
-	_resultType = Type::max(typeLeft, *op, typeRight);
+	_resultType = ValueType::max(typeLeft, *op, typeRight);
 
-	if (_resultType == Type::NONE)
+	if (_resultType == ValueType::VAL_NULL)
 		report(error(node->getRight()->getToken(),
-					"Incompatible type '" + typeRight.toString() + "' with type '" + typeLeft.toString() + "'",
+					"Incompatible type '" + ValueType::toString(typeRight) + "' with type '" + ValueType::toString(typeLeft) +
+					"'",
 					"Bad Operand"));
 }
 
 /// Visit a LogicalNode and set the type of the expression as boolean
 void SemanticAnalyzer::visit(LogicalNode *node) {
-	_resultType = Type::BOOL;
+	_resultType = ValueType::VAL_BOOL;
 }
 
 /// Visit a RelationalNode and set the type of the expression as boolean
 void SemanticAnalyzer::visit(RelationalNode *node) {
 	visit(node->getLeft());
-	Type typeLeft = _resultType;
+	ValueType typeLeft = _resultType;
 
 	visit(node->getRight());
-	Type typeRight = _resultType;
+	ValueType typeRight = _resultType;
 
-	if (Type::numeric(typeLeft) && Type::numeric(typeRight) ||
-		typeLeft == Type::BOOL && typeRight == Type::BOOL)
-		_resultType = Type::BOOL;
+	if (ValueType::isNumeric(typeLeft) && ValueType::isNumeric(typeRight) ||
+		typeLeft == ValueType::VAL_BOOL && typeRight == ValueType::VAL_BOOL)
+		_resultType = ValueType::VAL_BOOL;
 
 	else report(error(node->getRight()->getToken(),
-					 "Cannot compare type '" + typeRight.toString() + "' with type '" + typeLeft.toString() + "'",
+					 "Cannot compare type '" + ValueType::toString(typeRight) + "' with type '" + ValueType::toString
+					 (typeLeft)
+					 + "'",
 					 "Bad Operand"));
 }
 
 /// Visit a LiteralNode and determine the type of the literal
 void SemanticAnalyzer::visit(LiteralNode *node) {
-	_resultType = node->getType();
+	_resultType = node->getValue().type;
 }
 
 /// Visit an Id and determine the type of the value associated
 void SemanticAnalyzer::visit(Id *node) {
-	std::string varName = node->getToken()->toString();
-	VarSymbol *varSym = dynamic_cast<VarSymbol *>(_env->get(varName));
+	std::string name = node->getName()->toString();
+	Symbol* sym = _env->get(name);
 
-	if (!varSym) {
-		report(error(node->getToken(),
-					 "'" + varName + "' was not declared in this scope",
+	if (!sym) {
+		report(error(node->getName(),
+					 "'" + name + "' was not declared in this scope",
 					 "Undefined symbol"));
 
-		_resultType = Type::NONE;
+		_resultType = ValueType::VAL_NULL;
 	}
 
 	else
-		_resultType = varSym->getType();
+		_resultType = sym->getType();
+}
+
+void SemanticAnalyzer::visit(CallNode *node) {
+	std::string funName = node->getCallee()->getToken()->toString();
+	FunSymbol *fun = dynamic_cast<FunSymbol *>(_env->get(funName));
+
+	if (!fun) {
+		report(error(node->getCallee()->getToken(),
+					 "'" + funName + "' was not declared in this scope", "Undefined symbol"));
+		return;
+	}
+
+	if (node->getArgs().size() != fun->getArgs().size())
+		report(error(node->getCallee()->getToken(),
+			  "Function '" + node->getCallee()->getToken()->toString() + "()' expected " +
+			  std::to_string(fun->getArgs().size()) + " arguments but got " +
+			  std::to_string(node->getArgs().size()),
+			  "Error"));
+
+//	for (int i = 0; i < fun->getArgs().size(); ++i) {
+//		visit(node->getArgs()[i].get());
+//
+//		if (_resultType != fun->getArgs()[i]->getType())
+//			report(error(node->getArgs()[i]->getToken(),
+//						 "Expected type '" + ValueType::toString(fun->getArgs()[i]->getType()) +
+//						 "' but got '" + ValueType::toString(_resultType) + "'",
+//						 "TypeMismatch"));
+//	}
 }
 
 /// Visit an UnaryNode and determine the type of the literal
 void SemanticAnalyzer::visit(UnaryNode *node) {
 	visit(node->getExpr());
-	TokenType operatorType = node->getToken()->getType();
+	TokenType operatorType = node->getOperator()->getType();
 
 	if (operatorType == TokenType::BANG)
-		_resultType = Type::BOOL;
-	else if ((operatorType == TokenType::PLUS || operatorType == TokenType::MINUS) && Type::numeric(_resultType))
+		_resultType = ValueType::VAL_BOOL;
+	else if ((operatorType == TokenType::PLUS || operatorType == TokenType::MINUS) && ValueType::isNumeric(_resultType))
 		_resultType = _resultType;
 	else
-		report(error(node->getToken(),
-					 "Expected numeric value after '" + node->getToken()->toString(),
+		report(error(node->getOperator(),
+					 "Expected numeric value after '" + node->getOperator()->toString(),
 					 "Unexpected symbol"));
 }
 
@@ -139,7 +171,7 @@ void SemanticAnalyzer::visit(SeqNode *node) {
 /// to keep track of its type
 void SemanticAnalyzer::visit(DeclNode *node) {
 	std::string varName = node->getId()->toString();
-	Type varType = node->getType();
+	ValueType varType = node->getType();
 
 	// Check if variable is already declared in the scope
 	if (_env->get(varName)) {
@@ -154,15 +186,16 @@ void SemanticAnalyzer::visit(DeclNode *node) {
 	// Evaluate assigned expression, if any
 	if (node->getRValue() != nullptr) {
 		visit(node->getRValue());
-		Type assignType = _resultType;
+		ValueType assignType = _resultType;
 
-		if (varType == Type::NONE) {
+		if (varType == ValueType::VAL_NULL) {
 			varType = assignType;
 		}
 
 		else if (assignType != varType)
 			report(error(node->getRValue()->getToken(),
-				  "Cannot convert type '" + assignType.toString() + "' to '" + varType.toString() + "'",
+				  "Cannot convert type '" + ValueType::toString(assignType) + "' to '" + ValueType::toString(varType)
+				  + "'",
 				  "TypeError"));
 	}
 
@@ -183,18 +216,48 @@ void SemanticAnalyzer::visit(AssignNode *node) {
 		return;
 	}
 
-	Type varType = var->getType();
+	ValueType varType = var->getType();
 	visit(node->getExpr());
 
-	Type assignType = _resultType;
+	ValueType assignType = _resultType;
 
-	if (varType == Type::NONE)
+	if (varType == ValueType::VAL_NULL)
 		var->setType(assignType);
 
 	else if (assignType != varType)
 		report(error(node->getExpr()->getToken(),
-					 "Cannot convert '" + assignType.toString() + "' to '" + varType.toString() + "'",
+					 "Cannot convert '" + ValueType::toString(assignType) + "' to '" + ValueType::toString(varType) +
+					 "'",
 					 "TypeError"));
+}
+
+void SemanticAnalyzer::visit(FunNode *node) {
+	std::string funName = node->getName()->toString();
+
+	// Check if function does not already exist
+	if (_env->get(funName)) {
+		report(error(node->getName(),
+					 "Redefinition of function '" + funName + "()'",
+					 "Error"));
+	}
+
+	_env = new Env(_env);
+
+	std::vector<std::unique_ptr<VarSymbol>> params;
+	for (auto& param : node->getParams()) {
+		auto varName = param->getVarName()->toString();
+		auto varType = param->getType();
+
+		params.push_back(std::make_unique<VarSymbol>(varName, varType));
+		_env->put(std::make_unique<VarSymbol>(varName, varType));
+	}
+
+	visit(node->getBody());
+
+	_env = _env->getPreviousEnv();
+
+	if (!_env->get(funName))
+		_env->put(std::make_unique<FunSymbol>(funName, std::move(params), node->getType()));
 }
 
 /// Visit a ConditionalNode and check symbols in both branches 'then' and 'else'
@@ -211,6 +274,8 @@ void SemanticAnalyzer::visit(ConditionalNode *node) {
 		_env = _env->getPreviousEnv();
 	}
 }
+
+void SemanticAnalyzer::visit(ReturnNode *node) {}
 
 /// Visit a StmtPrintNode and check semantics in the expression to print
 void SemanticAnalyzer::visit(StmtPrintNode *node) {
