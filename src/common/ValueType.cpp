@@ -1,14 +1,14 @@
 #include "common/ValueType.h"
 
-/// Class constructor
+/// Class constructor.
 ValueType::ValueType(ValueType::Type type) : _type(type) {}
 
-/// Check whether a type is numeric or not
+/// Check whether a type is numeric or not.
 bool ValueType::isNumeric(const ValueType::Type &t) {
 	return t == ValueType::VAL_INT;
 }
 
-/// Determine the wider type in a binary operation
+/// Determine the wider type in a binary operation.
 ValueType::Type ValueType::max(const ValueType::Type &t1, const Token &op, const ValueType::Type &t2) {
 	if (!isNumeric(t1) || !isNumeric(t2)) return ValueType::VAL_NULL;
 
@@ -38,7 +38,7 @@ ValueType::Type ValueType::max(const ValueType::Type &t1, const Token &op, const
 	}
 }
 
-/// Return the type from a token representing a type keyword
+/// Return the type from a token representing a type keyword.
 ValueType::Type ValueType::getType(Token *tok) {
 	if (tok->toString() == ValueType::toString(ValueType::VAL_INT))
 		return ValueType::VAL_INT;
@@ -48,7 +48,7 @@ ValueType::Type ValueType::getType(Token *tok) {
 		return ValueType::VAL_NULL;
 }
 
-/// Return a string representation of a type
+/// Return a string representation of a type.
 std::string ValueType::toString(const ValueType &t) {
 	switch (t) {
 		case ValueType::VAL_NULL:
@@ -64,13 +64,13 @@ std::string ValueType::toString(const ValueType &t) {
 	return "";
 }
 
-/// Allow the use the type in a switch statement
+/// Allow the use the type in a switch statement.
 ValueType::operator Type() const {
 	return _type;
 }
 
 /// Overload the behavior of the assign operator when the assigned value is
-/// a type object
+/// a type object.
 ValueType& ValueType::operator=(const ValueType &t) {
 	if (this == &t)
 		return *this;
@@ -81,24 +81,24 @@ ValueType& ValueType::operator=(const ValueType &t) {
 }
 
 /// Overload the behavior of the assign operator when the assigned value is
-/// an enumeration type value
+/// an enumeration type value.
 ValueType& ValueType::operator=(const ValueType::Type &t) {
 	_type = t;
 
 	return *this;
 }
 
-/// Overload the behavior of the equality operator
+/// Overload the behavior of the equality operator.
 bool operator==(ValueType t1, ValueType::Type t2) {
 	return t1._type == t2;
 }
 
-/// Overload the behavior of the non-equality operator
+/// Overload the behavior of the non-equality operator.
 bool operator!=(ValueType t1, ValueType::Type t2) {
 	return t1._type != t2;
 }
 
-/// Lookup tables for operations
+/// Lookup tables for operations.
 ValueType::Type ValueType::addOpLookup[3][3] = {
 	/*					null			bool 		int */
 	/* null */ { VAL_NULL, VAL_NULL, VAL_NULL },

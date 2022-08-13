@@ -5,25 +5,24 @@
 
 #include "SemanticError.h"
 #include "ast/ASTVisitor.h"
-#include "ast/ASTNode.h"
-#include "ast/ExprNode.h"
-#include "ast/AssignNode.h"
-#include "ast/BinOpNode.h"
-#include "ast/CallNode.h"
-#include "ast/FunNode.h"
-#include "ast/LiteralNode.h"
-#include "ast/Id.h"
-#include "ast/DeclNode.h"
-#include "ast/LogicalNode.h"
-#include "ast/RelationalNode.h"
-#include "ast/ConditionalNode.h"
-#include "ast/StmtNode.h"
-#include "ast/BlockNode.h"
-#include "ast/SeqNode.h"
-#include "ast/ReturnNode.h"
-#include "ast/StmtExpressionNode.h"
-#include "ast/StmtPrintNode.h"
-#include "ast/UnaryNode.h"
+#include "ast/nodes/ASTNode.h"
+#include "ast/nodes/ExprNode.h"
+#include "ast/nodes/AssignNode.h"
+#include "ast/nodes/BinOpNode.h"
+#include "ast/nodes/CallNode.h"
+#include "ast/nodes/FunNode.h"
+#include "ast/nodes/LiteralNode.h"
+#include "ast/nodes/IdNode.h"
+#include "ast/nodes/DeclNode.h"
+#include "ast/nodes/LogicalNode.h"
+#include "ast/nodes/RelationalNode.h"
+#include "ast/nodes/ConditionalNode.h"
+#include "ast/nodes/StmtNode.h"
+#include "ast/nodes/BlockNode.h"
+#include "ast/nodes/SeqNode.h"
+#include "ast/nodes/ReturnNode.h"
+#include "ast/nodes/StmtExpressionNode.h"
+#include "ast/nodes/UnaryNode.h"
 #include "lexer/Lexer.h"
 #include "objects/Object.h"
 #include "symbols/Env.h"
@@ -78,6 +77,12 @@ public:
      */
 	void visit(ExprNode *node) override;
 
+	/**
+	 * Visit an AssignNode and check that the new value is type-consistent, and
+	 * if needed, update the type of the variable symbol
+	 */
+	void visit(AssignNode *node) override;
+
     /**
      * Visit a BinOpNode and determine the type of the result computed by the
      * operation represented by the node
@@ -95,14 +100,9 @@ public:
 	void visit(RelationalNode *node) override;
 
 	/**
-	 * Visit a LiteralNode and determine the type of the literal
+	 * Visit an UnaryNode and determine the type of the literal
 	 */
-	void visit(LiteralNode *node) override;
-
-	/**
-	 * Visit an Id and determine the type of the value associated
-	 */
-	void visit(Id *node) override;
+	void visit(UnaryNode *node) override;
 
 	/**
      * Visit a CallNode and check if the function called is defined
@@ -110,9 +110,14 @@ public:
 	void visit(CallNode *node) override;
 
 	/**
-	 * Visit an UnaryNode and determine the type of the literal
+	 * Visit a LiteralNode and determine the type of the literal
 	 */
-	void visit(UnaryNode *node) override;
+	void visit(LiteralNode *node) override;
+
+	/**
+	 * Visit an IdNode and determine the type of the value associated
+	 */
+	void visit(IdNode *node) override;
 
 	/**
 	 * Visit a StmtNode and check semantics inside it
@@ -137,10 +142,10 @@ public:
 	void visit(DeclNode *node) override;
 
 	/**
-	 * Visit an AssignNode and check that the new value is type-consistent, and
-	 * if needed, update the type of the variable symbol
+	 * Visit a ConditionalNode and check symbols in both branches 'then'
+	 * and 'else'
 	 */
-	void visit(AssignNode *node) override;
+	void visit(ConditionalNode *node) override;
 
 	/**
      * Visit a FunNode and define a function in the environment
@@ -148,20 +153,9 @@ public:
 	void visit(FunNode *node) override;
 
 	/**
-	 * Visit a ConditionalNode and check symbols in both branches 'then'
-	 * and 'else'
-	 */
-	void visit(ConditionalNode *node) override;
-
-	/**
 	 * Visit a ReturnNode and exit a function call by returning a value
 	 */
 	void visit(ReturnNode *node) override;
-
-    /**
-     * Visit a StmtPrintNode and check semantics in the expression to print
-     */
-    void visit(StmtPrintNode *node) override;
 
 	/**
      * Visit a StmtExpressionNode and check semantics in the expression

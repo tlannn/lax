@@ -67,7 +67,7 @@ parenthesis would be bolded, or to regroup multiple symbols to apply a repetitio
 ### Literals and identifiers
 
 Identifiers can begin with an ASCII letter or an underscore, and can be followed by any number of letters, 
-underscores or digits. The regular expression defining an identifier is : `(_[a-zA-Z])([_a-zA-Z0-9])*`
+underscores or digits. The regular expression defining an copyIdentifier is : `(_[a-zA-Z])([_a-zA-Z0-9])*`
 
 Literals are atomic values in Lax. They are defined as following :
 
@@ -113,7 +113,6 @@ _Statement_:
 &emsp;&emsp; _FunctionDefinitionStatement_  
 &emsp;&emsp; _ReturnStatement_  
 &emsp;&emsp; _ConditionalStatement_  
-&emsp;&emsp; _PrintStatement_  
 &emsp;&emsp; _ExpressionStatement_
 
 _IncludeStatement_:  
@@ -139,9 +138,6 @@ _AssignmentStatement_:
 _ConditionalStatement_:  
 &emsp;&emsp; **if** **(** _Expression_ **)** (_Statement_ | _Block_)  
 &emsp;&emsp; **if** **(** _Expression_ **)** (_Statement_ | _Block_) **else** (_Statement_ | _Block_)
-
-_PrintStatement_:  
-&emsp;&emsp; **print** _Expression_ **;**
 
 _ExpressionStatement_:  
 &emsp;&emsp; _Expression_ **;**
@@ -224,4 +220,21 @@ More over, inline and block comments are supported as following :
     as the number of stars are not
     the same
 **/
+```
+
+## Native functions
+
+In addition to the core of Lax, the interpreter provides one native function to
+print an output in the console. The function `print()` takes any value as
+parameter and prints it to the output standard stream.
+
+Example of usage:  
+```
+fun f() {
+    int a = 10;
+    return a * 20;
+}
+
+print("Hello world");
+print(f());
 ```

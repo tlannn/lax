@@ -1,4 +1,6 @@
 #include "lexer/Lexer.h"
+#include "lexer/LexError.h"
+#include "tokens/Token.h"
 
 std::string Lexer::currentFile;
 
@@ -18,7 +20,6 @@ Lexer::Lexer(const std::string &filename) : _source(std::make_unique<std::ifstre
 	reserve("var", TokenType::VAR);
 	reserve("fun", TokenType::FUN);
 	reserve("return", TokenType::RETURN);
-	reserve("print", TokenType::PRINT);
 	reserve("include", TokenType::INCLUDE);
 
 	openFile(filename);
@@ -139,7 +140,7 @@ std::unique_ptr<Token> Lexer::nextToken() {
 	return createToken(TokenType::UNKNOWN, std::string(1, static_cast<char>(c)));
 }
 
-/// Reserve a word, meaning it cannot be used as an identifier (for variables,
+/// Reserve a word, meaning it cannot be used as an copyIdentifier (for variables,
 /// functions, classes, etc.)
 void Lexer::reserve(const std::string &word, TokenType type) {
     _words[word] = type;
@@ -219,7 +220,7 @@ std::unique_ptr<Token> Lexer::number(int d) {
 	return createToken(TokenType::NUM, std::to_string(n));
 }
 
-/// Read an identifier in the source code
+/// Read an copyIdentifier in the source code
 std::unique_ptr<Token> Lexer::identifier(int c) {
 	// Read in a buffer all following letters
 	std::string buffer;

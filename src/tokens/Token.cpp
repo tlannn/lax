@@ -39,7 +39,6 @@ std::string Token::lexeme(TokenType type) {
 		case TokenType::IF: return "if";
 		case TokenType::ELSE: return "else";
 		case TokenType::INCLUDE: return "include";
-		case TokenType::PRINT: return "print";
 		default: return "";
 	}
 }

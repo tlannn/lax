@@ -1,11 +1,17 @@
 #include "parser/Parser.h"
+#include "common/AST.h"
+#include "lexer/Lexer.h"
+#include "objects/ObjString.h"
+#include "objects/Variable.h"
+#include "parser/ParseError.h"
+#include "utils/Logger.h"
 
 /// Class constructor
 Parser::Parser(Lexer &lex) : _lex(lex), _previous(nullptr), _lookahead(nullptr), _errors(false) {}
 
 /// Parse the source code until the end of file is reached. The resulting
 /// program is represented by an Abstract Syntax Tree
-std::unique_ptr<ASTNode> Parser::parse() {
+UASTNode Parser::parse() {
 	move();
 	return program();
 }
@@ -122,8 +128,8 @@ void Parser::synchronize() {
 			case TokenType::VAR:
 			case TokenType::TYPE:
 			case TokenType::ID:
-			case TokenType::PRINT:
 				return;
+			default: break;
 		}
 
 		move();
@@ -131,8 +137,8 @@ void Parser::synchronize() {
 }
 
 /// Build a node representing the program
-std::unique_ptr<StmtNode> Parser::program() {
-	std::vector<std::unique_ptr<StmtNode>> stmts;
+UStmtNode Parser::program() {
+	std::vector<UStmtNode> stmts;
 
 	while (!isAtEnd())
 		stmts.push_back(stmt());
@@ -141,9 +147,9 @@ std::unique_ptr<StmtNode> Parser::program() {
 }
 
 /// Build a node representing a block of statements
-std::unique_ptr<BlockNode> Parser::block() {
+UBlockNode Parser::block() {
 	consume(TokenType::LBRACE, ErrorMode::REPAIR);
-	std::vector<std::unique_ptr<StmtNode>> stmts;
+	std::vector<UStmtNode> stmts;
 
 	while (!check(TokenType::RBRACE) && !isAtEnd())
 		stmts.push_back(stmt());
@@ -154,7 +160,7 @@ std::unique_ptr<BlockNode> Parser::block() {
 }
 
 /// Build a node representing a statement
-std::unique_ptr<StmtNode> Parser::stmt() {
+UStmtNode Parser::stmt() {
 	try {
 		if (match(TokenType::VAR) || match(TokenType::TYPE)) return declaration();
 //		else if (match(TokenType::ID)) return varAssignStmt();
@@ -162,7 +168,8 @@ std::unique_ptr<StmtNode> Parser::stmt() {
 		else if (match(TokenType::RETURN)) return returnStmt();
 		else if (match(TokenType::IF)) return conditionalStmt();
 		else if (match(TokenType::INCLUDE)) return includeStmt();
-		else if (match(TokenType::PRINT)) return printStmt();
+//		else if (match(TokenType::PRINT)) return printStmt();
+		else if (check(TokenType::LBRACE)) return block();
 		else return expressionStmt();
 	}
 
@@ -175,7 +182,7 @@ std::unique_ptr<StmtNode> Parser::stmt() {
 }
 
 /// Build a node representing an include statement
-std::unique_ptr<StmtNode> Parser::includeStmt() {
+UStmtNode Parser::includeStmt() {
 	consume(TokenType::STRING, "Expected string");
 	std::string filename = previous()->toString();
 
@@ -186,7 +193,7 @@ std::unique_ptr<StmtNode> Parser::includeStmt() {
 	move(); // Read the first token
 
 	// Parse the new file
-	std::unique_ptr<StmtNode> include = program();
+	UStmtNode include = program();
 
 	// Recover the previous file state
 	_lex.popFile();
@@ -196,13 +203,13 @@ std::unique_ptr<StmtNode> Parser::includeStmt() {
 }
 
 /// Build a node representing a variable declaration statement
-std::unique_ptr<DeclNode> Parser::declaration() {
+UDeclNode Parser::declaration() {
 	// Determine the variable type based on the keyword
 	ValueType type = previous()->getType() == TokenType::VAR ? ValueType::VAL_NULL : ValueType::getType(previous());
 	move();
 	std::shared_ptr<Token> identifier = std::move(_previous);
 
-	std::unique_ptr<ExprNode> assignment = match(TokenType::SIMEQ) ? expr() : nullptr;
+	UExprNode assignment = match(TokenType::SIMEQ) ? expr() : nullptr;
 
 	consume(TokenType::SEMICOL);
 
@@ -210,7 +217,7 @@ std::unique_ptr<DeclNode> Parser::declaration() {
 }
 
 /// Build a node representing a variable assignment statement
-std::unique_ptr<ExprNode> Parser::varAssignStmt() {
+UExprNode Parser::varAssignStmt() {
 	/*if (match(TokenType::ID)) {
 		consume(TokenType::ID);
 
@@ -226,13 +233,13 @@ std::unique_ptr<ExprNode> Parser::varAssignStmt() {
 	return logic();*/
 
 
-	std::unique_ptr<ExprNode> node = logic();
+	UExprNode node = logic();
 
 	if (match(TokenType::SIMEQ)) {
-		std::unique_ptr<Token> equals = std::move(_previous);
-		std::unique_ptr<ExprNode> value = varAssignStmt();
+		UToken equals = std::move(_previous);
+		UExprNode value = varAssignStmt();
 
-		if (Id *id = dynamic_cast<Id*>(node.get())) {
+		if (IdNode *id = dynamic_cast<IdNode*>(node.get())) {
 			return std::make_unique<AssignNode>(std::move(node), std::move(value));
 		}
 	}
@@ -243,7 +250,7 @@ std::unique_ptr<ExprNode> Parser::varAssignStmt() {
 }
 
 /// Build a node representing a function declaration statement
-std::unique_ptr<FunNode> Parser::function() {
+UFunNode Parser::function() {
 	// Read the function identifier
 	consume(TokenType::ID);
 	auto name = std::move(_previous);
@@ -284,15 +291,15 @@ std::unique_ptr<FunNode> Parser::function() {
 		error("Expected function body", peek());
 
 	// Read the function body
-	std::unique_ptr<BlockNode> body = block();
+	UBlockNode body = block();
 
 	return std::make_unique<FunNode>(std::move(name), returnType, std::move(params), std::move(body));
 }
 
 /// Build a node representing a return statement
-std::unique_ptr<ReturnNode> Parser::returnStmt() {
+UReturnNode Parser::returnStmt() {
 	auto token = std::move(_previous);
-	std::unique_ptr<ExprNode> value;
+	UExprNode value;
 
 	if (!check(TokenType::SEMICOL))
 		value = expr();
@@ -302,15 +309,15 @@ std::unique_ptr<ReturnNode> Parser::returnStmt() {
 }
 
 /// Build a node representing an if/else statement
-std::unique_ptr<ConditionalNode> Parser::conditionalStmt() {
+UConditionalNode Parser::conditionalStmt() {
     consume(TokenType::LPAREN, ErrorMode::REPAIR);
-    std::unique_ptr<ExprNode> condition = Parser::expr();
+    UExprNode condition = Parser::expr();
     consume(TokenType::RPAREN, ErrorMode::REPAIR);
 
-    std::unique_ptr<StmtNode> thenStmt = check(TokenType::LBRACE) ? block() : stmt();
+    UStmtNode thenStmt = check(TokenType::LBRACE) ? block() : stmt();
 
     if (match(TokenType::ELSE)) {
-        std::unique_ptr<StmtNode> elseStmt;
+        UStmtNode elseStmt;
 
         if (match(TokenType::IF))
             elseStmt = Parser::conditionalStmt();
@@ -324,33 +331,25 @@ std::unique_ptr<ConditionalNode> Parser::conditionalStmt() {
         return std::make_unique<ConditionalNode>(std::move(condition), std::move(thenStmt), nullptr);
 }
 
-/// Build a node representing a print statement
-std::unique_ptr<StmtPrintNode> Parser::printStmt() {
-	std::unique_ptr<ExprNode> expr = Parser::expr();
-	consume(TokenType::SEMICOL);
-
-	return std::make_unique<StmtPrintNode>(std::move(expr));
-}
-
 /// Build a node representing an expression statement
-std::unique_ptr<StmtExpressionNode> Parser::expressionStmt() {
-	std::unique_ptr<ExprNode> expr = Parser::expr();
+UStmtExpressionNode Parser::expressionStmt() {
+	UExprNode expr = Parser::expr();
 	consume(TokenType::SEMICOL);
 
 	return std::make_unique<StmtExpressionNode>(std::move(expr));
 }
 
 /// Build a node representing an expression
-std::unique_ptr<ExprNode> Parser::expr() {
+UExprNode Parser::expr() {
 	return varAssignStmt();
 }
 
 /// Build a node representing a logical OR expression
-std::unique_ptr<ExprNode> Parser::logic() {
-	std::unique_ptr<ExprNode> expr = join();
+UExprNode Parser::logic() {
+	UExprNode expr = join();
 
 	while (match(TokenType::OR)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		expr = std::make_unique<LogicalNode>(std::move(expr), std::move(op), join());
 	}
 
@@ -358,11 +357,11 @@ std::unique_ptr<ExprNode> Parser::logic() {
 }
 
 /// Build a node representing a logical AND expression
-std::unique_ptr<ExprNode> Parser::join() {
-	std::unique_ptr<ExprNode> expr = rel();
+UExprNode Parser::join() {
+	UExprNode expr = rel();
 
 	while (match(TokenType::AND)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		expr = std::make_unique<LogicalNode>(std::move(expr), std::move(op), rel());
 	}
 
@@ -370,13 +369,13 @@ std::unique_ptr<ExprNode> Parser::join() {
 }
 
 /// Build a node representing an equality or inequality expression
-std::unique_ptr<ExprNode> Parser::rel() {
-	std::unique_ptr<ExprNode> expr = binop();
+UExprNode Parser::rel() {
+	UExprNode expr = binop();
 
 	while (match(TokenType::EQ) || match(TokenType::NEQ) ||
 			match(TokenType::SL) || match(TokenType::LE) ||
 			match(TokenType::SG) || match(TokenType::GE)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		expr = std::make_unique<RelationalNode>(std::move(expr), std::move(op), binop());
 	}
 
@@ -384,11 +383,11 @@ std::unique_ptr<ExprNode> Parser::rel() {
 }
 
 /// Build a node representing a binary operation
-std::unique_ptr<ExprNode> Parser::binop() {
-	std::unique_ptr<ExprNode> expr = term();
+UExprNode Parser::binop() {
+	UExprNode expr = term();
 
 	while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		expr = std::make_unique<BinOpNode>(std::move(expr), std::move(op), term());
 	}
 
@@ -396,11 +395,11 @@ std::unique_ptr<ExprNode> Parser::binop() {
 }
 
 /// Build a node representing a term
-std::unique_ptr<ExprNode> Parser::term() {
-	std::unique_ptr<ExprNode> expr = unary();
+UExprNode Parser::term() {
+	UExprNode expr = unary();
 
 	while (match(TokenType::STAR) || match(TokenType::SLASH)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		expr = std::make_unique<BinOpNode>(std::move(expr), std::move(op), unary());
 	}
 
@@ -408,29 +407,28 @@ std::unique_ptr<ExprNode> Parser::term() {
 }
 
 /// Build a node representing an unary
-std::unique_ptr<ExprNode> Parser::unary() {
+UExprNode Parser::unary() {
 	if (match(TokenType::PLUS) || match(TokenType::MINUS) || match(TokenType::BANG)) {
-		std::unique_ptr<Token> op = std::move(_previous);
+		UToken op = std::move(_previous);
 		return std::make_unique<UnaryNode>(std::move(op), unary());
 	}
 
 	return call();
 }
 
-std::unique_ptr<ExprNode> Parser::call() {
-	std::unique_ptr<ExprNode> expr = factor();
+UExprNode Parser::call() {
+	UExprNode expr = factor();
 
 	// While in a function call chain
-	while (match(TokenType::LPAREN)) {
+	while (match(TokenType::LPAREN))
 		expr = arguments(std::move(expr));
-	}
 
 	return expr;
 }
 
 /// Build a node representing a factor
-std::unique_ptr<ExprNode> Parser::factor() {
-	std::unique_ptr<ExprNode> expr = nullptr;
+UExprNode Parser::factor() {
+	UExprNode expr = nullptr;
 
 	// Read the next token
 	move();
@@ -451,9 +449,9 @@ std::unique_ptr<ExprNode> Parser::factor() {
 			break;
 		}
 		case TokenType::STRING: {
-			Value value = OBJ_VAL(new ObjString(_previous->toString()));
+			ObjString *string = ObjString::copyString(_previous->toString());
 
-			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
+			expr = std::make_unique<LiteralNode>(std::move(_previous), OBJ_VAL(string));
 			//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::STRING);
 			break;
 		}
@@ -466,7 +464,7 @@ std::unique_ptr<ExprNode> Parser::factor() {
 			break;
 		}
 		case TokenType::ID: {
-			expr = std::make_unique<Id>(std::move(_previous));
+			expr = std::make_unique<IdNode>(std::move(_previous));
 			break;
 		}
 		case TokenType::SEMICOL:
@@ -480,8 +478,8 @@ std::unique_ptr<ExprNode> Parser::factor() {
 	return expr;
 }
 
-std::unique_ptr<ExprNode> Parser::arguments(std::unique_ptr<ExprNode> callee) {
-	std::vector<std::unique_ptr<ExprNode>> args;
+UExprNode Parser::arguments(UExprNode callee) {
+	std::vector<UExprNode> args;
 
 	if (!check(TokenType::RPAREN)) {
 		do {

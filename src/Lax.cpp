@@ -1,10 +1,15 @@
 #include "Lax.h"
+#include "common/Debug.h"
+#include "common/BytecodeEncoder.h"
+#include "compiler/Compiler.h"
+#include "lexer/Lexer.h"
+#include "parser/Parser.h"
+#include "semantic/SemanticAnalyzer.h"
+#include "utils/Logger.h"
+#include "vm/VM.h"
 
-/// Run a source file with the Lax interpreter
-void Lax::run(const std::string &filepath) {
-	// Read the source code from the file
-	const std::string source = readFile(filepath);
-
+/// Interpret a source file with the Lax interpreter
+void Lax::interpret(const std::string &filepath) {
 	try {
 		// Create the lexical analyser for the file
 		Lexer lexer(filepath);
@@ -25,31 +30,10 @@ void Lax::run(const std::string &filepath) {
 		if (analyzer.hadErrors())
 			return;
 
-		// Interpret the program
-		Interpreter interpreter(ast.get());
-		interpreter.interpret();
+		VM vm;
+		vm.interpret(ast.get());
 	} catch (std::exception &e) {
 		Logger::error(e.what());
 		exit(EXIT_FAILURE);
 	}
-}
-
-/// Read a source file
-std::string Lax::readFile(const std::string &filepath) {
-	std::string source;
-	std::string line;
-	std::ifstream file;
-	file.open(filepath);
-
-	if (file.is_open()) {
-		while (getline(file, line))
-			source += line + '\n';
-
-		file.close();
-	}
-
-	else
-		Logger::error("Unable to open file " + filepath);
-
-	return source;
 }

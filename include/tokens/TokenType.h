@@ -44,8 +44,7 @@ enum TokenType {
     WHILE = 294, // While keyword
     FOR = 295, // For keyword
     INCLUDE = 296, // Include keyword
-    PRINT = 297, // Print keyword
-    END = 298 // End of file
+    END = 297 // End of file
 };
 
 #endif // LAX_TOKENTYPE_H

@@ -7,10 +7,11 @@
 #include <string>
 #include <unordered_map>
 
-#include "LexError.h"
-#include "Memento.h"
-#include "common/ValueType.h"
-#include "tokens/Token.h"
+#include "lexer/Memento.h"
+#include "tokens/TokenType.h"
+
+// Forward declarations
+class Token;
 
 /**
  * Lexical analyzer for the Lax language
@@ -62,7 +63,7 @@ public:
 
 private:
     /**
-     * Reserve a word, meaning it cannot be used as an identifier (for variables,
+     * Reserve a word, meaning it cannot be used as an copyIdentifier (for variables,
      * functions, classes, etc.)
      *
      * @param word the word to reserve
@@ -143,10 +144,10 @@ private:
 	std::unique_ptr<Token> number(int d);
 
 	/**
-	 * Read an identifier in the source code
+	 * Read an copyIdentifier in the source code
 	 *
-	 * @param d the first letter of the identifier
-	 * @return the token representing the identifier
+	 * @param d the first letter of the copyIdentifier
+	 * @return the token representing the copyIdentifier
 	 */
 	std::unique_ptr<Token> identifier(int c);
 

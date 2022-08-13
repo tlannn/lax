@@ -1,29 +1,25 @@
 #ifndef LAX_ASTVISITOR_H
 #define LAX_ASTVISITOR_H
 
-/*
- * Forward declarations to avoid cyclic dependencies
- */
+// Forward declarations
 class ASTNode;
-class ExprNode;
+class AssignNode;
 class BinOpNode;
+class BlockNode;
 class CallNode;
-class Id;
+class ConditionalNode;
+class DeclNode;
+class ExprNode;
+class FunNode;
+class IdNode;
 class LiteralNode;
 class LogicalNode;
 class RelationalNode;
-class UnaryNode;
-
-class AssignNode;
-class BlockNode;
-class ConditionalNode;
-class DeclNode;
-class FunNode;
 class ReturnNode;
 class SeqNode;
-class StmtNode;
 class StmtExpressionNode;
-class StmtPrintNode;
+class StmtNode;
+class UnaryNode;
 
 /**
  * Visitor interface
@@ -38,11 +34,11 @@ public:
 	virtual void visit(ExprNode *node) = 0;
 
 	/**
-	 * Visit a BinOpNode
-	 *
-	 * @param node the node to visit
-	 */
-	virtual void visit(BinOpNode *node) = 0;
+     * Visit an AssignNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(AssignNode *node) = 0;
 
 	/**
 	 * Visit a LogicalNode
@@ -59,18 +55,18 @@ public:
 	virtual void visit(RelationalNode *node) = 0;
 
 	/**
-     * Visit a LiteralNode
-     *
-     * @param node the node to visit
-     */
-	virtual void visit(LiteralNode *node) = 0;
+	 * Visit a BinOpNode
+	 *
+	 * @param node the node to visit
+	 */
+	virtual void visit(BinOpNode *node) = 0;
 
 	/**
-     * Visit an Id
+     * Visit an UnaryNode
      *
      * @param node the node to visit
      */
-	virtual void visit(Id *node) = 0;
+	virtual void visit(UnaryNode *node) = 0;
 
 	/**
      * Visit a CallNode
@@ -80,11 +76,18 @@ public:
 	virtual void visit(CallNode *node) = 0;
 
 	/**
-     * Visit an UnaryNode
+     * Visit a LiteralNode
      *
      * @param node the node to visit
      */
-	virtual void visit(UnaryNode *node) = 0;
+	virtual void visit(LiteralNode *node) = 0;
+
+	/**
+     * Visit an IdNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(IdNode *node) = 0;
 
 	/**
      * Visit a StmtNode
@@ -115,11 +118,11 @@ public:
 	virtual void visit(DeclNode *node) = 0;
 
 	/**
-     * Visit an AssignNode
+     * Visit an ConditionalNode
      *
      * @param node the node to visit
      */
-	virtual void visit(AssignNode *node) = 0;
+	virtual void visit(ConditionalNode *node) = 0;
 
 	/**
      * Visit a FunNode
@@ -129,25 +132,11 @@ public:
 	virtual void visit(FunNode *node) = 0;
 
 	/**
-     * Visit an ConditionalNode
-     *
-     * @param node the node to visit
-     */
-	virtual void visit(ConditionalNode *node) = 0;
-
-	/**
      * Visit a ReturnNode
      *
      * @param node the node to visit
      */
 	virtual void visit(ReturnNode *node) = 0;
-
-	/**
-	 * Visit a StmtPrintNode
-	 *
-	 * @param node the node to visit
-	 */
-	virtual void visit(StmtPrintNode *node) = 0;
 
 	/**
      * Visit a StmtExpressionNode

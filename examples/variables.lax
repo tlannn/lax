@@ -19,4 +19,4 @@ c = 5;
 // Since all variables are int, variable d will be an int
 var d = a + b + c;
 
-print d; // Print 10
+print(d); // Print 10

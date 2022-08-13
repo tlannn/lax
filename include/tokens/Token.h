@@ -2,7 +2,7 @@
 #define LAX_TOKEN_H
 
 #include <iostream>
-
+#include <memory>
 #include <string>
 
 #include "TokenType.h"
@@ -74,5 +74,7 @@ protected:
 	int _line;
 	int _col;
 };
+
+typedef std::unique_ptr<Token> UToken;
 
 #endif // LAX_TOKEN_H

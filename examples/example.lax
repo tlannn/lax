@@ -1,6 +1,6 @@
 fun f(string s, int i) : int {
 	fun g() {
-		print s;
+		print(s);
 	}
 	g();
 
@@ -9,14 +9,14 @@ fun f(string s, int i) : int {
 
 // Print 'test'
 var str = "test";
-print str;
+print(str);
 
 // Call 'f()'
 var func = f("bonsoir", 1);
-print func;
+print(func);
 func();
 
 // Print '3'
 int test;
 test = 3;
-print test;
+print(test);

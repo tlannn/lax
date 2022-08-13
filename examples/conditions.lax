@@ -15,13 +15,13 @@ var b = 3;
 
 // Check if a is less than b
 if (a < b)
-	print "a is smaller than b";
+	print("a is smaller than b");
 
 // If the precedent condition is evaluated to false, check if the two are equals
 else if (a == b) {
-	print "a is equal to b";
+	print("a is equal to b");
 }
 
 // Reached if all conditions are falsy
 else
-	print "a is greater than b";
+	print("a is greater than b");

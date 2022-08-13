@@ -14,7 +14,7 @@ public:
 	 * @param name the name of the variable
 	 * @param type the type of the variable
 	 */
-    VarSymbol(std::string name, ValueType &type);
+    VarSymbol(std::string name, ValueType type);
 
 	/**
 	 * Class destructor

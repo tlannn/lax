@@ -9,38 +9,42 @@ include_directories(include)
 set(SOURCE_FILES
         src/main.cpp
         src/Lax.cpp
-        src/ast/AssignNode.cpp
-        src/ast/BinOpNode.cpp
-        src/ast/BlockNode.cpp
-        src/ast/CallNode.cpp
-        src/ast/ConditionalNode.cpp
-        src/ast/DeclNode.cpp
-        src/ast/ExprNode.cpp
-        src/ast/Id.cpp
-        src/ast/FunNode.cpp
-        src/ast/LiteralNode.cpp
-        src/ast/LogicalNode.cpp
-        src/ast/RelationalNode.cpp
-        src/ast/ReturnNode.cpp
-        src/ast/SeqNode.cpp
-        src/ast/StmtExpressionNode.cpp
-        src/ast/StmtNode.cpp
-        src/ast/StmtPrintNode.cpp
-        src/ast/UnaryNode.cpp
+        src/ast/nodes/AssignNode.cpp
+        src/ast/nodes/BinOpNode.cpp
+        src/ast/nodes/BlockNode.cpp
+        src/ast/nodes/CallNode.cpp
+        src/ast/nodes/ConditionalNode.cpp
+        src/ast/nodes/DeclNode.cpp
+        src/ast/nodes/ExprNode.cpp
+        src/ast/nodes/IdNode.cpp
+        src/ast/nodes/FunNode.cpp
+        src/ast/nodes/LiteralNode.cpp
+        src/ast/nodes/LogicalNode.cpp
+        src/ast/nodes/RelationalNode.cpp
+        src/ast/nodes/ReturnNode.cpp
+        src/ast/nodes/SeqNode.cpp
+        src/ast/nodes/StmtExpressionNode.cpp
+        src/ast/nodes/StmtNode.cpp
+        src/ast/nodes/UnaryNode.cpp
+        src/common/Chunk.cpp
         src/common/CompileTimeException.cpp
+        src/common/Debug.cpp
         src/common/Exception.cpp
+        src/common/Memory.cpp
+        src/common/StringTable.cpp
+        src/common/Value.cpp
         src/common/ValueType.cpp
-        src/interpreter/Callframe.cpp
-        src/interpreter/Interpreter.cpp
-        src/interpreter/Return.cpp
-        src/interpreter/RuntimeError.cpp
+        src/compiler/Compiler.cpp
         src/lexer/Lexer.cpp
         src/lexer/LexError.cpp
         src/lexer/Memento.cpp
+        src/natives/NativeFunctions.cpp
         src/objects/ObjClosure.cpp
         src/objects/Object.cpp
         src/objects/ObjFunction.cpp
+        src/objects/ObjNative.cpp
         src/objects/ObjString.cpp
+        src/objects/ObjUpvalue.cpp
         src/objects/Variable.cpp
         src/parser/ParseError.cpp
         src/parser/Parser.cpp
@@ -52,7 +56,14 @@ set(SOURCE_FILES
         src/symbols/SymbolTable.cpp
         src/symbols/VarSymbol.cpp
         src/tokens/Token.cpp
-        src/utils/Logger.cpp)
+        src/utils/Logger.cpp
+        src/vm/Table.cpp
+        src/vm/VM.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})
+
+if (DEBUG)
+    add_definitions(-DDEBUG_TRACE_EXECUTION)
+    add_definitions(-DDEBUG_PRINT_CODE)
+endif (DEBUG)

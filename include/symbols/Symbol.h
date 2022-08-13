@@ -6,7 +6,7 @@
 #include "common/ValueType.h"
 
 /**
- * Represent an identifier (aka symbol) and carries information with it, that
+ * Represent an copyIdentifier (aka symbol) and carries information with it, that
  * may be its type, its scope, etc.
  */
 class Symbol {

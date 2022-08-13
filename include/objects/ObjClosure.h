@@ -1,39 +1,57 @@
 #ifndef LAX_OBJCLOSURE_H
 #define LAX_OBJCLOSURE_H
 
-#include "Object.h"
+#include "objects/Object.h"
 
+// Forward declarations
 class ObjFunction;
+class ObjUpvalue;
 
 /**
- * Closure object in Lax
+ * Closure object in Lax.
  *
  * A closure is an overlay to function objects. It tracks non-local variables
- * used in functions in a separate environment, so that the function still have
- * access to these variables even if they go out of the scope where the
- * function is called
+ * called upvalues used in the function, but that belong to surrounding scopes.
+ * Thus these variables can always be used in the function, even if they go
+ * out of scope.
  */
 class ObjClosure : public Object {
 public:
 	/**
-	 * Class constructor
-	 * @param function the function object that the closure references
+	 * Class constructor.
+	 *
+	 * @param function the function object that the closure references.
 	 */
 	explicit ObjClosure(ObjFunction *function);
 
 	/**
-	 * Getter for the function referenced
-	 * @return the function referenced
+	 * Getter for the function referenced.
+	 *
+	 * @return the function referenced.
 	 */
 	ObjFunction* getFunction();
 
 	/**
-	 * Return a string representation of the closure
+	 * Getter for the upvalues captured by the closure.
+	 *
+	 * @return the upvalues used in the function.
 	 */
+	ObjUpvalue** getUpvalues() const;
+
+	/**
+	 * Return the number of upvalues captured by the closure.
+	 *
+	 * @return the number of upvalues captured.
+	 */
+	int getUpvalueCount() const;
+
+	/// Return a string representation of the closure.
 	std::string toString() override;
 
 private:
 	ObjFunction *_function;
+	ObjUpvalue **_upvalues;
+	int _upvalueCount;
 };
 
 #define AS_CLOSURE(value)	((dynamic_cast<ObjClosure*>(AS_OBJ(value))))

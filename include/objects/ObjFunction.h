@@ -2,56 +2,70 @@
 #define LAX_OBJFUNCTION_H
 
 #include <memory>
+#include <string>
 #include <vector>
 
-#include "Callable.h"
-#include "ast/FunNode.h"
-#include "common/Value.h"
-#include "interpreter/Callframe.h"
-#include "interpreter/Interpreter.h"
+#include "common/Chunk.h"
+#include "objects/Object.h"
+
+// Forward declarations
+class ObjString;
 
 /**
- * Function object in Lax
+ * Function object in Lax.
  *
- * A function is a block or reusable code. It can take input data called
+ * A function is a block of reusable code. It can take input data called
  * parameters or arguments, and use them to accomplish a specific task.
  * The task performed is specified by the body of the function ; it is a
  * sequence of instructions.
+ *
  * Finally, a function can return a value. If no value is explicitly returned,
  * then the null value is automatically returned.
  */
-class ObjFunction : public Object, Callable {
+class ObjFunction : public Object {
 public:
 	/**
-	 * Class constructor
-	 * @param declaration the node representing the function declaration
+	 * Class constructor.
+	 *
+	 * @param name the name of the function
+	 * @param arity the number of parameters that the function takes
 	 */
-	explicit ObjFunction(FunNode *declaration);
+	explicit ObjFunction(ObjString *name, int arity = 0);
 
 	/**
-	 * Getter for the number of parameters of the function
-	 * @return the number of parameters
+	 * Getter for the number of parameters of the function.
+	 *
+	 * @return the number of parameters.
 	 */
-	int arity() override;
+	int arity() const;
+
+	/// Increment the number of upvalues used in the function.
+	void incrementUpvalueCount();
 
 	/**
-	 * Call the object and execute its body
-	 * @param interpreter
-	 * @param env
-	 * @param args
-	 * @return
+	 * Return the number of upvalues used in the function.
+	 *
+	 * @return the number of upvalues used.
 	 */
-	Value call(Interpreter *interpreter, CallFrame *env, std::vector<Value> args) override;
+	int getUpvalueCount() const;
 
 	/**
-	 * Return a string representation of the function
+	 * Return a pointer to the chunk of bytecode that depicts the function.
+	 *
+	 * @return a pointer to the function bytecode chunk.
 	 */
+	Chunk* getChunk();
+
+	/// Return a string representation of the function.
 	std::string toString() override;
 
 private:
-	FunNode *_declaration;
+	ObjString *_name;
+	int _arity;
+	int _upvalueCount;
+	Chunk _chunk;
 };
 
-#define AS_FUNCTION(value)	((dynamic_cast<Function*>(AS_OBJ(value))))
+#define AS_FUNCTION(value)	((dynamic_cast<ObjFunction*>(AS_OBJ(value))))
 
 #endif // LAX_OBJFUNCTION_H

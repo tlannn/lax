@@ -7,28 +7,13 @@
 #include <string>
 #include <vector>
 
-#include "ParseError.h"
-#include "ast/ExprNode.h"
-#include "ast/AssignNode.h"
-#include "ast/BinOpNode.h"
-#include "ast/BlockNode.h"
-#include "ast/CallNode.h"
-#include "ast/LiteralNode.h"
-#include "ast/DeclNode.h"
-#include "ast/Id.h"
-#include "ast/LogicalNode.h"
-#include "ast/RelationalNode.h"
-#include "ast/ConditionalNode.h"
-#include "ast/StmtNode.h"
-#include "ast/StmtExpressionNode.h"
-#include "ast/StmtPrintNode.h"
-#include "ast/FunNode.h"
-#include "ast/ReturnNode.h"
-#include "ast/UnaryNode.h"
-#include "lexer/Lexer.h"
-#include "objects/ObjString.h"
-#include "tokens/Token.h"
-#include "utils/Logger.h"
+#include "ast/NodeTypes.h"
+#include "tokens/TokenType.h"
+
+// Forward declarations
+class Lexer;
+class ParseError;
+class Token;
 
 /**
  * Parser for the Lax language
@@ -50,7 +35,7 @@ public:
      *
      * @return the root of the AST created
      */
-    std::unique_ptr<ASTNode> parse();
+    UASTNode parse();
 
 	/**
 	 * Return whether errors occurred during parsing
@@ -165,140 +150,133 @@ private:
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> program();
+	UStmtNode program();
 
 	/**
      * Build a node representing a block of statements
      *
      * @return the node created
      */
-	std::unique_ptr<BlockNode> block();
+	UBlockNode block();
 
 	/**
 	 * Build a node representing a statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> stmt();
+	UStmtNode stmt();
 
 	/**
 	 * Build a node representing an include statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtNode> includeStmt();
+	UStmtNode includeStmt();
 
 	/**
      * Build a node representing a variable declaration statement
      *
      * @return the node created
      */
-	std::unique_ptr<DeclNode> declaration();
+	UDeclNode declaration();
 
 	/**
      * Build a node representing a variable assignment statement
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> varAssignStmt();
+	UExprNode varAssignStmt();
 
 	/**
      * Build a node representing a function declaration statement
      *
      * @return the node created
      */
-	std::unique_ptr<FunNode> function();
+	UFunNode function();
 
 	/**
      * Build a node representing a return statement
      *
      * @return the node created
      */
-	std::unique_ptr<ReturnNode> returnStmt();
+	UReturnNode returnStmt();
 
 	/**
 	 * Build a node representing an if/else statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<ConditionalNode> conditionalStmt();
-
-	/**
-	 * Build a node representing a print statement
-	 *
-	 * @return the node created
-	 */
-	std::unique_ptr<StmtPrintNode> printStmt();
+	UConditionalNode conditionalStmt();
 
 	/**
 	 * Build a node representing an expression statement
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<StmtExpressionNode> expressionStmt();
+	UStmtExpressionNode expressionStmt();
 
 	/**
      * Build a node representing an expression
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> expr();
+	UExprNode expr();
 
     /**
      * Build a node representing a logical OR expression
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> logic();
+	UExprNode logic();
 
     /**
      * Build a node representing a logical AND expression
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> join();
+	UExprNode join();
 
     /**
      * Build a node representing an equality or inequality expression
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> rel();
+	UExprNode rel();
 
     /**
      * Build a node representing a binary operation
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> binop();
+	UExprNode binop();
 
     /**
      * Build a node representing a term
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> term();
+	UExprNode term();
 
 	/**
      * Build a node representing an unary
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> unary();
+	UExprNode unary();
 
 	/**
 	 * Build a node representing a function call
 	 *
 	 * @return the node created
 	 */
-	std::unique_ptr<ExprNode> call();
+	UExprNode call();
 
     /**
      * Build a node representing a factor
      *
      * @return the node created
      */
-	std::unique_ptr<ExprNode> factor();
+	UExprNode factor();
 
 	/**
 	 * Parse arguments for a function call and return a node representation of it
@@ -306,7 +284,7 @@ private:
 	 * @param callee the callee called
 	 * @return the node created
 	 */
-	std::unique_ptr<ExprNode> arguments(std::unique_ptr<ExprNode> callee);
+	UExprNode arguments(UExprNode callee);
 
     Lexer &_lex; // The lexical analyzer
 	std::unique_ptr<Token> _previous; // The last token consumed
