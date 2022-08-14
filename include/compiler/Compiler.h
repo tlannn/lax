@@ -313,6 +313,9 @@ private:
 	/// Compile an IdNode to bytecode
 	void visit(IdNode *node) override;
 
+	/// Compile a whileNode to bytecode
+	void visit(WhileNode *node) override;
+
 	/// Compile a ForNode to bytecode
 	void visit(ForNode *node) override;
 

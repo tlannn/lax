@@ -148,7 +148,12 @@ public:
 	void visit(ConditionalNode *node) override;
 
 	/**
-	 * Visit a ForNode and check symbols in the header of the loop
+	 * Visit a WhileNode and check symbols in the condition and body of the loop
+	 */
+	void visit(WhileNode *node) override;
+
+	/**
+	 * Visit a ForNode and check symbols in the header and body of the loop
 	 */
 	void visit(ForNode *node) override;
 

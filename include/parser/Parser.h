@@ -209,7 +209,14 @@ private:
 	UConditionalNode conditionalStmt();
 
 	/**
-	 * Build a node representing a for loop statement
+	 * Build a node representing a while-loop statement
+	 *
+	 * @return the node created
+	 */
+	UWhileNode whileStmt();
+
+	/**
+	 * Build a node representing a for-loop statement
 	 *
 	 * @return the node created
 	 */

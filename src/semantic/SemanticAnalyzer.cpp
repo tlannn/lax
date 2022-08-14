@@ -255,7 +255,10 @@ void SemanticAnalyzer::visit(ConditionalNode *node) {
 	}
 }
 
-/// Visit a ForNode and check symbols in the header of the loop
+/// Visit a WhileNode and check symbols in the condition and body of the loop
+void SemanticAnalyzer::visit(WhileNode *node) {}
+
+/// Visit a ForNode and check symbols in the header and body of the loop
 void SemanticAnalyzer::visit(ForNode *node) {}
 
 /// Visit a FunNode and define a function in the environment

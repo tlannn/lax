@@ -21,6 +21,7 @@ class SeqNode;
 class StmtExpressionNode;
 class StmtNode;
 class UnaryNode;
+class WhileNode;
 
 /**
  * Visitor interface
@@ -124,6 +125,13 @@ public:
      * @param node the node to visit
      */
 	virtual void visit(ConditionalNode *node) = 0;
+
+	/**
+     * Visit a WhileNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(WhileNode *node) = 0;
 
 	/**
      * Visit a ForNode

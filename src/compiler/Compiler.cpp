@@ -562,6 +562,33 @@ void Compiler::visit(IdNode *node) {
 	}
 }
 
+/// Compile a WhileNode to bytecode
+void Compiler::visit(WhileNode *node) {
+	beginLocalScope();
+
+	// Save offset in bytecode to loop back from the end of the for loop
+	int loopStart = currentChunk()->getCount();
+
+	// Compile the condition of the loop
+	visit(node->getConditionExpression());
+
+	// Emit a jump in case the condition is false
+	int exitJump = emitJump(OP_JUMP_FALSE);
+	emitByte(OP_POP); // Pop the condition result
+
+	// Compile the loop body
+	visit(node->getBody());
+
+	// Emit a loop to fall before the loop condition
+	emitLoop(loopStart);
+
+	// Fill the jump code offset in case the condition is evaluated to false
+	patchJump(exitJump);
+	emitByte(OP_POP);
+
+	endLocalScope();
+}
+
 /// Compile a ForNode to bytecode
 void Compiler::visit(ForNode *node) {
 	beginLocalScope();

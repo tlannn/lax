@@ -23,6 +23,7 @@ class SeqNode;
 class StmtExpressionNode;
 class StmtNode;
 class UnaryNode;
+class WhileNode;
 
 // Type definition for unique pointers to AST nodes
 typedef std::unique_ptr<ASTNode> UASTNode;
@@ -44,5 +45,6 @@ typedef std::unique_ptr<SeqNode> USeqNode;
 typedef std::unique_ptr<StmtExpressionNode> UStmtExpressionNode;
 typedef std::unique_ptr<StmtNode> UStmtNode;
 typedef std::unique_ptr<UnaryNode> UUnaryNode;
+typedef std::unique_ptr<WhileNode> UWhileNode;
 
 #endif //LAX_NODETYPES_H

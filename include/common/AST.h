@@ -27,5 +27,6 @@
 #include "ast/nodes/ReturnNode.h"
 #include "ast/nodes/SeqNode.h"
 #include "ast/nodes/StmtExpressionNode.h"
+#include "ast/nodes/WhileNode.h"
 
 #endif //LAX_AST_H

@@ -163,13 +163,12 @@ UBlockNode Parser::block() {
 UStmtNode Parser::stmt() {
 	try {
 		if (match(TokenType::VAR) || match(TokenType::TYPE)) return declaration();
-//		else if (match(TokenType::ID)) return varAssignStmt();
 		else if (match(TokenType::FUN)) return function();
 		else if (match(TokenType::RETURN)) return returnStmt();
 		else if (match(TokenType::IF)) return conditionalStmt();
+		else if (match(TokenType::WHILE)) return whileStmt();
 		else if (match(TokenType::FOR)) return forStmt();
 		else if (match(TokenType::INCLUDE)) return includeStmt();
-//		else if (match(TokenType::PRINT)) return printStmt();
 		else if (check(TokenType::LBRACE)) return block();
 		else return expressionStmt();
 	}
@@ -332,7 +331,19 @@ UConditionalNode Parser::conditionalStmt() {
         return std::make_unique<ConditionalNode>(std::move(condition), std::move(thenStmt), nullptr);
 }
 
-/// Build a node representing a for loop statement
+/// Build a node representing a while-loop statement
+UWhileNode Parser::whileStmt() {
+	consume(TokenType::LPAREN, ErrorMode::REPAIR);
+
+	UExprNode cond = expr();
+	consume(TokenType::RPAREN);
+
+	UStmtNode body = check(TokenType::LBRACE) ?  block() : stmt();
+
+	return std::make_unique<WhileNode>(std::move(cond), std::move(body));
+}
+
+/// Build a node representing a for-loop statement
 UForNode Parser::forStmt() {
 	consume(TokenType::LPAREN, ErrorMode::REPAIR);
 	std::vector<UStmtNode> init;

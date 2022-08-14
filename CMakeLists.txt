@@ -59,7 +59,7 @@ set(SOURCE_FILES
         src/tokens/Token.cpp
         src/utils/Logger.cpp
         src/vm/Table.cpp
-        src/vm/VM.cpp)
+        src/vm/VM.cpp include/ast/nodes/WhileNode.h src/ast/nodes/WhileNode.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})
