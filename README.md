@@ -110,6 +110,8 @@ _Block_:
 _Statement_:  
 &emsp;&emsp; _IncludeStatement_  
 &emsp;&emsp; _DeclarationStatement_  
+&emsp;&emsp; _WhileLoopStatement_  
+&emsp;&emsp; _ForLoopStatement_  
 &emsp;&emsp; _FunctionDefinitionStatement_  
 &emsp;&emsp; _ReturnStatement_  
 &emsp;&emsp; _ConditionalStatement_  
@@ -119,8 +121,29 @@ _IncludeStatement_:
 &emsp;&emsp; **include** _StringLiteral_ **;**
 
 _DeclarationStatement_:  
-&emsp;&emsp; (_Type_ | **var**) _Identifier_ **;**  
-&emsp;&emsp; (_Type_ | **var**) _Identifier_ **=** _Expression_ **;**
+&emsp;&emsp; _VariableDeclaration_ **;**  
+
+_VariableDeclaration_:  
+&emsp;&emsp; (_Type_ | **var**) _Identifier_  
+&emsp;&emsp; (_Type_ | **var**) _Identifier_ **=** _Expression_
+
+_WhileLoopStatement_:  
+&emsp;&emsp; **while** **(** _Expression_ **)** (_Statement_ | _Block_)
+
+_ForLoopStatement_:  
+&emsp;&emsp; **for** **(** _ForInit_? **;** _Expression_? **;** _ExpressionList_? **)** (_Statement_ | _Block_)
+
+_ForInit_:  
+&emsp;&emsp; (_ExpressionList_ | _VariableDeclarationList_)  
+&emsp;&emsp; (_ExpressionList_ | _VariableDeclarationList_) **,** _ForInit_  
+
+_ExpressionList_:  
+&emsp;&emsp; _Expression_  
+&emsp;&emsp; _Expression_ **,** _ExpressionList_  
+
+_VariableDeclarationList_:  
+&emsp;&emsp; _VariableDeclaration_  
+&emsp;&emsp; _VariableDeclaration_ **,** _VariableDeclarationList_
 
 _FunctionDefinitionStatement_:  
 &emsp;&emsp; **fun** _Identifier_ **(** _FunctionParameters_* **)** ( **:** _Type_ )? _Block_
@@ -131,9 +154,6 @@ _FunctionParameters_:
 
 _ReturnStatement_:  
 &emsp;&emsp; **return** _Expression_? **;**
-
-_AssignmentStatement_:  
-&emsp;&emsp; _Identifier_ **=** _Expression_ **;**
 
 _ConditionalStatement_:  
 &emsp;&emsp; **if** **(** _Expression_ **)** (_Statement_ | _Block_)  
