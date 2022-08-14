@@ -22,11 +22,11 @@
 #include "ast/nodes/BlockNode.h"
 #include "ast/nodes/ConditionalNode.h"
 #include "ast/nodes/DeclNode.h"
-#include "ast/nodes/ForNode.h"
+#include "ast/nodes/ForLoopNode.h"
 #include "ast/nodes/FunNode.h"
 #include "ast/nodes/ReturnNode.h"
 #include "ast/nodes/SeqNode.h"
 #include "ast/nodes/StmtExpressionNode.h"
-#include "ast/nodes/WhileNode.h"
+#include "ast/nodes/WhileLoopNode.h"
 
 #endif //LAX_AST_H

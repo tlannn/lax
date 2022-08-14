@@ -12,7 +12,7 @@ class CallNode;
 class ConditionalNode;
 class DeclNode;
 class ExprNode;
-class ForNode;
+class ForLoopNode;
 class FunNode;
 class IdNode;
 class LiteralNode;
@@ -23,7 +23,7 @@ class SeqNode;
 class StmtExpressionNode;
 class StmtNode;
 class UnaryNode;
-class WhileNode;
+class WhileLoopNode;
 
 // Type definition for unique pointers to AST nodes
 typedef std::unique_ptr<ASTNode> UASTNode;
@@ -34,7 +34,7 @@ typedef std::unique_ptr<CallNode> UCallNode;
 typedef std::unique_ptr<ConditionalNode> UConditionalNode;
 typedef std::unique_ptr<DeclNode> UDeclNode;
 typedef std::unique_ptr<ExprNode> UExprNode;
-typedef std::unique_ptr<ForNode> UForNode;
+typedef std::unique_ptr<ForLoopNode> UForNode;
 typedef std::unique_ptr<FunNode> UFunNode;
 typedef std::unique_ptr<IdNode> UIdNode;
 typedef std::unique_ptr<LiteralNode> ULiteralNode;
@@ -45,6 +45,6 @@ typedef std::unique_ptr<SeqNode> USeqNode;
 typedef std::unique_ptr<StmtExpressionNode> UStmtExpressionNode;
 typedef std::unique_ptr<StmtNode> UStmtNode;
 typedef std::unique_ptr<UnaryNode> UUnaryNode;
-typedef std::unique_ptr<WhileNode> UWhileNode;
+typedef std::unique_ptr<WhileLoopNode> UWhileNode;
 
 #endif //LAX_NODETYPES_H

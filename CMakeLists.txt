@@ -17,7 +17,7 @@ set(SOURCE_FILES
         src/ast/nodes/DeclNode.cpp
         src/ast/nodes/ExprNode.cpp
         src/ast/nodes/IdNode.cpp
-        src/ast/nodes/ForNode.cpp
+        src/ast/nodes/ForLoopNode.cpp
         src/ast/nodes/FunNode.cpp
         src/ast/nodes/LiteralNode.cpp
         src/ast/nodes/LogicalNode.cpp
@@ -59,7 +59,7 @@ set(SOURCE_FILES
         src/tokens/Token.cpp
         src/utils/Logger.cpp
         src/vm/Table.cpp
-        src/vm/VM.cpp include/ast/nodes/WhileNode.h src/ast/nodes/WhileNode.cpp)
+        src/vm/VM.cpp include/ast/nodes/WhileLoopNode.h src/ast/nodes/WhileLoopNode.cpp)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})

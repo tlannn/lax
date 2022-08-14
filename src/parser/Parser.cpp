@@ -340,7 +340,7 @@ UWhileNode Parser::whileStmt() {
 
 	UStmtNode body = check(TokenType::LBRACE) ?  block() : stmt();
 
-	return std::make_unique<WhileNode>(std::move(cond), std::move(body));
+	return std::make_unique<WhileLoopNode>(std::move(cond), std::move(body));
 }
 
 /// Build a node representing a for-loop statement
@@ -375,7 +375,7 @@ UForNode Parser::forStmt() {
 
 	body = check(TokenType::LBRACE) ?  block() : stmt();
 
-	return std::make_unique<ForNode>(std::move(init), std::move(cond), std::move(update), std::move(body));
+	return std::make_unique<ForLoopNode>(std::move(init), std::move(cond), std::move(update), std::move(body));
 }
 
 /// Build a node representing an expression statement

@@ -1,5 +1,5 @@
-#ifndef LAX_FORNODE_H
-#define LAX_FORNODE_H
+#ifndef LAX_FORLOOPNODE_H
+#define LAX_FORLOOPNODE_H
 
 #include <vector>
 
@@ -19,7 +19,7 @@ class ASTVisitor;
  * - the condition to check before each iteration of the loop ;
  * - the iteration expression which is executed after every iteration of the loop.
  */
-class ForNode : public StmtNode {
+class ForLoopNode : public StmtNode {
 public:
 	/**
 	 * Class constructor.
@@ -29,7 +29,7 @@ public:
 	 * @param iter the increment expression.
 	 * @param body the body of the loop.
 	 */
-	ForNode(std::vector<UStmtNode> init, UExprNode cond, UExprNode iter, UStmtNode body);
+	ForLoopNode(std::vector<UStmtNode> init, UExprNode cond, UExprNode iter, UStmtNode body);
 
 	/**
 	 * Getter for the statements in the initialization part of the loop header.
@@ -65,4 +65,4 @@ private:
 	UStmtNode _body;
 };
 
-#endif //LAX_FORNODE_H
+#endif //LAX_FORLOOPNODE_H

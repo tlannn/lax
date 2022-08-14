@@ -1,5 +1,5 @@
-#ifndef LAX_WHILENODE_H
-#define LAX_WHILENODE_H
+#ifndef LAX_WHILELOOPNODE_H
+#define LAX_WHILELOOPNODE_H
 
 #include "StmtNode.h"
 #include "ast/NodeTypes.h"
@@ -7,7 +7,12 @@
 // Forward declarations
 class ASTVisitor;
 
-class WhileNode : public StmtNode {
+/**
+ * Node for a while-loop.
+ *
+ * The while-loop executes its body as long as a condition is true.
+ */
+class WhileLoopNode : public StmtNode {
 public:
 	/**
 	 * Class constructor.
@@ -15,7 +20,7 @@ public:
 	 * @param cond the condition expression.
 	 * @param body the body of the loop.
 	 */
-	WhileNode(UExprNode cond, UStmtNode body);
+	WhileLoopNode(UExprNode cond, UStmtNode body);
 
 	/**
 	 * Getter for the expression to evaluate as a condition to continue the loop.
@@ -37,4 +42,4 @@ private:
 	UStmtNode _body;
 };
 
-#endif //LAX_WHILENODE_H
+#endif //LAX_WHILELOOPNODE_H

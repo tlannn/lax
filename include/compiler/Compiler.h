@@ -314,10 +314,10 @@ private:
 	void visit(IdNode *node) override;
 
 	/// Compile a whileNode to bytecode
-	void visit(WhileNode *node) override;
+	void visit(WhileLoopNode *node) override;
 
 	/// Compile a ForNode to bytecode
-	void visit(ForNode *node) override;
+	void visit(ForLoopNode *node) override;
 
 	/// Compile a ConditionalNode to bytecode
 	void visit(ConditionalNode *node) override;

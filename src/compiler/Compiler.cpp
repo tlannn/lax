@@ -563,7 +563,7 @@ void Compiler::visit(IdNode *node) {
 }
 
 /// Compile a WhileNode to bytecode
-void Compiler::visit(WhileNode *node) {
+void Compiler::visit(WhileLoopNode *node) {
 	beginLocalScope();
 
 	// Save offset in bytecode to loop back from the end of the for loop
@@ -590,7 +590,7 @@ void Compiler::visit(WhileNode *node) {
 }
 
 /// Compile a ForNode to bytecode
-void Compiler::visit(ForNode *node) {
+void Compiler::visit(ForLoopNode *node) {
 	beginLocalScope();
 
 	// Compile the initializers, if any

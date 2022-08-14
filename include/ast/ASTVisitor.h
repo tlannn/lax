@@ -10,7 +10,7 @@ class CallNode;
 class ConditionalNode;
 class DeclNode;
 class ExprNode;
-class ForNode;
+class ForLoopNode;
 class FunNode;
 class IdNode;
 class LiteralNode;
@@ -21,7 +21,7 @@ class SeqNode;
 class StmtExpressionNode;
 class StmtNode;
 class UnaryNode;
-class WhileNode;
+class WhileLoopNode;
 
 /**
  * Visitor interface
@@ -131,14 +131,14 @@ public:
      *
      * @param node the node to visit
      */
-	virtual void visit(WhileNode *node) = 0;
+	virtual void visit(WhileLoopNode *node) = 0;
 
 	/**
      * Visit a ForNode
      *
      * @param node the node to visit
      */
-	virtual void visit(ForNode *node) = 0;
+	virtual void visit(ForLoopNode *node) = 0;
 
 	/**
      * Visit a FunNode

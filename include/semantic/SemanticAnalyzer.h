@@ -150,12 +150,12 @@ public:
 	/**
 	 * Visit a WhileNode and check symbols in the condition and body of the loop
 	 */
-	void visit(WhileNode *node) override;
+	void visit(WhileLoopNode *node) override;
 
 	/**
 	 * Visit a ForNode and check symbols in the header and body of the loop
 	 */
-	void visit(ForNode *node) override;
+	void visit(ForLoopNode *node) override;
 
 	/**
      * Visit a FunNode and define a function in the environment
