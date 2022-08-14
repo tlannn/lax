@@ -148,6 +148,11 @@ public:
 	void visit(ConditionalNode *node) override;
 
 	/**
+	 * Visit a ForNode and check symbols in the header of the loop
+	 */
+	void visit(ForNode *node) override;
+
+	/**
      * Visit a FunNode and define a function in the environment
      */
 	void visit(FunNode *node) override;

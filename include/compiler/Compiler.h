@@ -126,6 +126,16 @@ private:
 	void patchJump(int offset);
 
 	/**
+	 * Emit a loop instruction in the current chunk bytecode.
+	 *
+	 * The offset in the bytecode where the loop must go back to is stored as
+	 * an 16-bit OpArg.
+	 *
+	 * @param loopStart the offset in the bytecode where the loop must jump
+	 */
+	void emitLoop(int loopStart);
+
+	/**
 	 * Emit an instruction in the current chunk bytecode.
 	 *
 	 * An instruction is composed of an OpCode and an OpArg.
@@ -302,6 +312,9 @@ private:
 
 	/// Compile an IdNode to bytecode
 	void visit(IdNode *node) override;
+
+	/// Compile a ForNode to bytecode
+	void visit(ForNode *node) override;
 
 	/// Compile a ConditionalNode to bytecode
 	void visit(ConditionalNode *node) override;

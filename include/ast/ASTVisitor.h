@@ -10,6 +10,7 @@ class CallNode;
 class ConditionalNode;
 class DeclNode;
 class ExprNode;
+class ForNode;
 class FunNode;
 class IdNode;
 class LiteralNode;
@@ -118,11 +119,18 @@ public:
 	virtual void visit(DeclNode *node) = 0;
 
 	/**
-     * Visit an ConditionalNode
+     * Visit a ConditionalNode
      *
      * @param node the node to visit
      */
 	virtual void visit(ConditionalNode *node) = 0;
+
+	/**
+     * Visit a ForNode
+     *
+     * @param node the node to visit
+     */
+	virtual void visit(ForNode *node) = 0;
 
 	/**
      * Visit a FunNode

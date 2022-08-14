@@ -255,6 +255,9 @@ void SemanticAnalyzer::visit(ConditionalNode *node) {
 	}
 }
 
+/// Visit a ForNode and check symbols in the header of the loop
+void SemanticAnalyzer::visit(ForNode *node) {}
+
 /// Visit a FunNode and define a function in the environment
 void SemanticAnalyzer::visit(FunNode *node) {
 	std::string funName = node->getName()->toString();

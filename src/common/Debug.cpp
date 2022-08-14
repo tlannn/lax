@@ -173,6 +173,8 @@ int disassembleInstruction(Chunk* chunk, int offset) {
 			return jumpInstruction("OP_JUMP", true, chunk, offset);
 		case OpCode::OP_JUMP_FALSE:
 			return jumpInstruction("OP_JUMP_FALSE", true, chunk, offset);
+		case OpCode::OP_LOOP:
+			return jumpInstruction("OP_LOOP", false, chunk, offset);
 		case OpCode::OP_RETURN:
 			return simpleInstruction("OP_RETURN", offset);
 		default:

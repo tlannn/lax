@@ -167,6 +167,7 @@ UStmtNode Parser::stmt() {
 		else if (match(TokenType::FUN)) return function();
 		else if (match(TokenType::RETURN)) return returnStmt();
 		else if (match(TokenType::IF)) return conditionalStmt();
+		else if (match(TokenType::FOR)) return forStmt();
 		else if (match(TokenType::INCLUDE)) return includeStmt();
 //		else if (match(TokenType::PRINT)) return printStmt();
 		else if (check(TokenType::LBRACE)) return block();
@@ -329,6 +330,41 @@ UConditionalNode Parser::conditionalStmt() {
 
     else
         return std::make_unique<ConditionalNode>(std::move(condition), std::move(thenStmt), nullptr);
+}
+
+/// Build a node representing a for loop statement
+UForNode Parser::forStmt() {
+	consume(TokenType::LPAREN, ErrorMode::REPAIR);
+	std::vector<UStmtNode> init;
+	UExprNode cond;
+	UExprNode update;
+	UStmtNode body;
+
+	// Check for an initialization in the header
+	if (!match(TokenType::SEMICOL)) {
+		do {
+			if (match(TokenType::VAR) || match(TokenType::TYPE))
+				init.push_back(declaration());
+			else
+				init.push_back(expressionStmt());
+		} while (match(TokenType::COMMA));
+	}
+
+	// Check for a condition
+	if (!match(TokenType::SEMICOL)) {
+		cond = expr();
+		consume(TokenType::SEMICOL);
+	}
+
+	// Check for an iteration expression
+	if (!match(TokenType::RPAREN)) {
+		update = expr();
+		consume(TokenType::RPAREN);
+	}
+
+	body = check(TokenType::LBRACE) ?  block() : stmt();
+
+	return std::make_unique<ForNode>(std::move(init), std::move(cond), std::move(update), std::move(body));
 }
 
 /// Build a node representing an expression statement

@@ -139,6 +139,20 @@ void Compiler::patchJump(int offset) {
 	*currentChunk()->getCode(offset + 1) = jump & 0xff;
 }
 
+/// Emit a loop instruction in the current chunk bytecode.
+///
+/// The offset in the bytecode where the loop must go back to is stored as
+/// an 16-bit OpArg.
+void Compiler::emitLoop(int loopStart) {
+	emitByte(OP_LOOP);
+
+	int offset = currentChunk()->getCount() - loopStart + 2;
+	if (offset > UINT16_MAX) error("Loop body too large.");
+
+	emitByte((offset >> 8) & 0xff);
+	emitByte(offset & 0xff);
+}
+
 /// Emit an instruction in the current chunk bytecode.
 ///
 /// An instruction is composed of an OpCode and an OpArg.
@@ -546,6 +560,56 @@ void Compiler::visit(IdNode *node) {
 		arg = identifierConstant(identifier);
 		emitInstruction(OP_GET_GLOBAL, static_cast<uint16_t>(arg));
 	}
+}
+
+/// Compile a ForNode to bytecode
+void Compiler::visit(ForNode *node) {
+	beginLocalScope();
+
+	// Compile the initializers, if any
+	for (auto& init : node->getInitializers())
+		init->accept(this);
+
+	int loopStart = currentChunk()->getCount(); // Save offset in bytecode to loop back from the end of the for loop
+	int exitJump = -1;
+
+	// Compile the condition of the loop, if any
+	if (node->getConditionExpression()) {
+		visit(node->getConditionExpression());
+
+		// Emit a jump in case the condition is false
+		exitJump = emitJump(OP_JUMP_FALSE);
+		emitByte(OP_POP); // Pop the condition result
+	}
+
+	// Compile the increment expression, if any
+	if (node->getIterationExpression()) {
+		// Emit a jump to fall before the loop condition
+		int bodyJump = emitJump(OP_JUMP);
+		int incrementStart = currentChunk()->getCount();
+
+		visit(node->getIterationExpression());
+		emitByte(OP_POP); // Pop the increment result
+
+		// Emit a loop
+		emitLoop(loopStart);
+		loopStart = incrementStart;
+		patchJump(bodyJump);
+	}
+
+	// Compile the loop body
+	visit(node->getBody());
+
+	// Emit a loop to fall before the loop condition by default, or before the increment expression if there is one
+	emitLoop(loopStart);
+
+	// Fill the jump code offset if there is a loop condition to fall before it
+	if (exitJump != -1) {
+		patchJump(exitJump);
+		emitByte(OP_POP);
+	}
+
+	endLocalScope();
 }
 
 /// Compile a ConditionalNode to bytecode

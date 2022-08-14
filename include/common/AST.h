@@ -22,6 +22,7 @@
 #include "ast/nodes/BlockNode.h"
 #include "ast/nodes/ConditionalNode.h"
 #include "ast/nodes/DeclNode.h"
+#include "ast/nodes/ForNode.h"
 #include "ast/nodes/FunNode.h"
 #include "ast/nodes/ReturnNode.h"
 #include "ast/nodes/SeqNode.h"

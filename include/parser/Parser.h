@@ -209,6 +209,13 @@ private:
 	UConditionalNode conditionalStmt();
 
 	/**
+	 * Build a node representing a for loop statement
+	 *
+	 * @return the node created
+	 */
+	UForNode forStmt();
+
+	/**
 	 * Build a node representing an expression statement
 	 *
 	 * @return the node created

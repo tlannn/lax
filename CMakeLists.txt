@@ -17,6 +17,7 @@ set(SOURCE_FILES
         src/ast/nodes/DeclNode.cpp
         src/ast/nodes/ExprNode.cpp
         src/ast/nodes/IdNode.cpp
+        src/ast/nodes/ForNode.cpp
         src/ast/nodes/FunNode.cpp
         src/ast/nodes/LiteralNode.cpp
         src/ast/nodes/LogicalNode.cpp

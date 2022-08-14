@@ -16,6 +16,7 @@ Lexer::Lexer(const std::string &filename) : _source(std::make_unique<std::ifstre
 	reserve("true", TokenType::TRUE);
 	reserve("false", TokenType::FALSE);
 	reserve("if", TokenType::IF);
+	reserve("for", TokenType::FOR);
 	reserve("else", TokenType::ELSE);
 	reserve("var", TokenType::VAR);
 	reserve("fun", TokenType::FUN);
