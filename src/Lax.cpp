@@ -1,6 +1,6 @@
 #include "Lax.h"
 #include "common/Debug.h"
-#include "common/BytecodeEncoder.h"
+//#include "common/BytecodeEncoder.h"
 #include "compiler/Compiler.h"
 #include "lexer/Lexer.h"
 #include "parser/Parser.h"
