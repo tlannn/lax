@@ -9,13 +9,13 @@
 Compiler::Compiler() : _currentScope(nullptr), _errors(false) {}
 
 /// Compile an AST to bytecode.
-ObjFunction* Compiler::compile(ASTNode *ast) {
+ObjFunction* Compiler::compile(AST &ast) {
 	// Create a scope for the top-level
 	Scope scope;
 	initScope(&scope, TYPE_SCRIPT);
 
 	// Compile the abstract syntax tree to bytecode
-	ast->accept(this);
+	ast.traverse(*this);
 
 	// End compilation
 	ObjFunction *script = endCurrentScope();
@@ -392,12 +392,12 @@ void Compiler::endLocalScope() {
 	}
 }
 /// Compile a StmtNode to bytecode
-void Compiler::visit(StmtNode *node) {
+void Compiler::visit(StmtNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_STMTNODE
 	Logger::warning("StmtNode");
 #endif
 
-	node->accept(this);
+	node.accept(*this);
 
 #ifdef DEBUG_PRINT_COMPILATION_STMTNODE
 	Logger::warning("StmtNode - end");
@@ -405,12 +405,12 @@ void Compiler::visit(StmtNode *node) {
 }
 
 /// Compile an ExprNode to bytecode
-void Compiler::visit(ExprNode *node) {
+void Compiler::visit(ExprNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_EXPRNODE
 	Logger::warning("ExprNode");
 #endif
 
-	node->accept(this);
+	node.accept(*this);
 
 #ifdef DEBUG_PRINT_COMPILATION_EXPRNODE
 	Logger::warning("ExprNode - end");
@@ -418,12 +418,12 @@ void Compiler::visit(ExprNode *node) {
 }
 
 /// Compile a StmtExpressionNode to bytecode
-void Compiler::visit(StmtExpressionNode *node) {
+void Compiler::visit(StmtExpressionNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_STMTEXPRESSIONNODE
 	Logger::warning("StmtExpressionNode");
 #endif
 
-	visit(node->getExpr()); // Compile the expression
+	visit(*node.getExpr()); // Compile the expression
 	emitByte(OP_POP); // Pop the result from the runtime stack
 
 #ifdef DEBUG_PRINT_COMPILATION_STMTEXPRESSIONNODE
@@ -432,14 +432,14 @@ void Compiler::visit(StmtExpressionNode *node) {
 }
 
 /// Compile a BlockNode to bytecode
-void Compiler::visit(BlockNode *node) {
+void Compiler::visit(BlockNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_BLOCKNODE
 	Logger::warning("BlockNode");
 #endif
 
 	beginLocalScope(); // Begin a new scope at each block
 
-	visit(node->getSequence());
+	visit(*node.getSequence());
 
 	endLocalScope(); // End the previously opened scope
 
@@ -449,15 +449,15 @@ void Compiler::visit(BlockNode *node) {
 }
 
 /// Compile a SeqNode to bytecode
-void Compiler::visit(SeqNode *node) {
+void Compiler::visit(SeqNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_SEQNODE
 	Logger::warning("SeqNode");
 #endif
-	auto& stmts = node->getStatements();
+	auto& stmts = node.getStatements();
 
 	// Compile each statement in the sequence
-	for (int i = 0; i < stmts.size(); ++i)
-		visit(stmts[i].get());
+	for (const auto & stmt : stmts)
+		visit(*stmt);
 
 #ifdef DEBUG_PRINT_COMPILATION_SEQNODE
 	Logger::warning("SeqNode - end");
@@ -465,17 +465,17 @@ void Compiler::visit(SeqNode *node) {
 }
 
 /// Compile a DeclNode to bytecode
-void Compiler::visit(DeclNode *node) {
+void Compiler::visit(DeclNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_DECLNODE
 	Logger::warning("DeclNode: " + node->getId()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node->getId()->toString());
+	ObjString *identifier = copyIdentifier(node.getId()->toString());
 	declareVariable(identifier);
 
 	// Compile the assigned value, if any
-	if (node->getRValue())
-		visit(node->getRValue());
+	if (node.getRValue())
+		visit(*node.getRValue());
 	else emitByte(OP_NULL); // Or assign null to the variable by default
 
 	defineVariable(identifierConstant(identifier));
@@ -486,30 +486,30 @@ void Compiler::visit(DeclNode *node) {
 }
 
 /// Compile an AssignNode to bytecode
-void Compiler::visit(AssignNode *node) {
+void Compiler::visit(AssignNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_ASSIGNNODE
 	Logger::warning("AssignNode " + node->getName());
 #endif
 
-	ObjString *identifier = copyIdentifier(node->getName());
+	ObjString *identifier = copyIdentifier(node.getName());
 
 	// Search the identifier among declared local variables
 	int arg = resolveLocal(_currentScope, identifier);
 
 	// Compile the assigned expression
-	visit(node->getExpr());
+	visit(*node.getExpr());
 
 	// Assign the value to the local variable found
 	if (arg != -1)
 		emitInstruction(OP_SET_LOCAL, static_cast<uint16_t>(arg));
 
-		// Assign the value to the upvalue found
+    // Assign the value to the upvalue found
 	else if ((arg = resolveUpvalue(_currentScope, identifier)) != -1) {
 		emitInstruction(OP_SET_UPVALUE, static_cast<uint16_t>(arg));
 	}
 
-		// Assume that the variable is global and assign it the value
-		// Note that the global variable might not exist depending on the runtime state
+    // Assume that the variable is global and assign it the value
+    // Note that the global variable might not exist depending on the runtime state
 	else {
 		arg = identifierConstant(identifier);
 		emitInstruction(OP_SET_GLOBAL, static_cast<uint16_t>(arg));
@@ -521,12 +521,12 @@ void Compiler::visit(AssignNode *node) {
 }
 
 /// Compile an IdNode to bytecode
-void Compiler::visit(IdNode *node) {
+void Compiler::visit(IdNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_ID
 	Logger::warning("Id: " + node->getName()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node->getName()->toString());
+	ObjString *identifier = copyIdentifier(node.getName()->toString());
 
 	// Search the identifier among declared local variables
 	int arg = resolveLocal(_currentScope, identifier);
@@ -549,20 +549,20 @@ void Compiler::visit(IdNode *node) {
 }
 
 /// Compile a ConditionalNode to bytecode
-void Compiler::visit(ConditionalNode *node) {
+void Compiler::visit(ConditionalNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_CONDITIONALNODE
 	Logger::warning("ConditionalNode");
 #endif
 
 	// Compile the conditional expression
-	visit(node->getConditionExpression());
+	visit(*node.getConditionExpression());
 
 	// Emit a jump over the then branch in case the condition is false
 	int thenJump = emitJump(OP_JUMP_FALSE);
 	emitByte(OP_POP); // Pop the condition result value from the runtime stack
 
 	// Compile the statement executed if the condition is true
-	visit(node->getThenStatement());
+	visit(*node.getThenStatement());
 
 	// Emit a jump over the bytecode for the else branch
 	int elseJump = emitJump(OP_JUMP);
@@ -571,8 +571,8 @@ void Compiler::visit(ConditionalNode *node) {
 	emitByte(OP_POP); // Pop the condition result value from the runtime stack (the previous pop didn't occur)
 
 	// Compile the else branch, if any
-	if (node->getElseStatement())
-		visit(node->getElseStatement());
+	if (node.getElseStatement())
+		visit(*node.getElseStatement());
 
 	patchJump(elseJump); // Fill the first jump so that it knows where to jump to overfly the else branch
 
@@ -582,16 +582,16 @@ void Compiler::visit(ConditionalNode *node) {
 }
 
 /// Compile a LogicalNode to bytecode
-void Compiler::visit(LogicalNode *node) {
+void Compiler::visit(LogicalNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_LOGICALNODE
 	Logger::warning("LogicalNode");
 #endif
 
-	TokenType operatorType = node->getOperator()->getType();
+	TokenType operatorType = node.getOperator()->getType();
 
 	// Compile the left operand
 	// The right operand is not compiled yet to enable short-circuit
-	visit(node->getLeft());
+	visit(*node.getLeft());
 
 	switch (operatorType) {
 		case TokenType::AND: {
@@ -603,7 +603,7 @@ void Compiler::visit(LogicalNode *node) {
 			//
 
 			emitByte(OP_POP); // Pop the operand result from the runtime stack
-			visit(node->getRight()); // Compile the right operand
+			visit(*node.getRight()); // Compile the right operand
 
 			//
 			// End of bytecode for case true
@@ -627,7 +627,7 @@ void Compiler::visit(LogicalNode *node) {
 			patchJump(elseJump); // Fill the first jump so that it knows where to jump if the operand was false
 			emitByte(OP_POP); // Pop the operand result from the runtime stack
 
-			visit(node->getRight()); // Compile the right operand
+			visit(*node.getRight()); // Compile the right operand
 			patchJump(endJump); // Fill the second jump so that it knows where to jump if the operand was true
 
 			//
@@ -644,16 +644,16 @@ void Compiler::visit(LogicalNode *node) {
 }
 
 /// Compile a RelationalNode to bytecode
-void Compiler::visit(RelationalNode *node) {
+void Compiler::visit(RelationalNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_RELATIONALNODE
 	Logger::warning("RelationalNode");
 #endif
 
-	TokenType operatorType = node->getOperator()->getType();
+	TokenType operatorType = node.getOperator()->getType();
 
 	// Compile both operands
-	visit(node->getLeft());
-	visit(node->getRight());
+	visit(*node.getLeft());
+	visit(*node.getRight());
 
 	// Emit the operation instruction
 	switch (operatorType) {
@@ -672,12 +672,12 @@ void Compiler::visit(RelationalNode *node) {
 }
 
 /// Compile a FunNode to bytecode
-void Compiler::visit(FunNode *node) {
+void Compiler::visit(FunNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_FUNNODE
 	Logger::warning("FunNode: " + node->getName()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node->getName()->toString());
+	ObjString *identifier = copyIdentifier(node.getName()->toString());
 	declareVariable(identifier);
 
 	// Mark the function initialized so that it can be called inside itself
@@ -692,8 +692,8 @@ void Compiler::visit(FunNode *node) {
 	int paramCount = 0;
 
 	// Declare all parameters as local variables in the function scope
-	for (int i = 0; i < node->getParams().size(); ++i) {
-		ObjString *paramIdentifier = copyIdentifier((node->getParams()[i]->getVarName()->toString()));
+	for (int i = 0; i < node.getParams().size(); ++i) {
+		ObjString *paramIdentifier = copyIdentifier((node.getParams()[i]->getVarName()->toString()));
 		declareVariable(paramIdentifier);
 		defineVariable(identifierConstant(paramIdentifier));
 		++paramCount;
@@ -702,7 +702,7 @@ void Compiler::visit(FunNode *node) {
 	scope.function = new ObjFunction(identifier, paramCount);
 
 	// Compile the function body
-	visit(node->getBody());
+	visit(*node.getBody());
 
 	// Close the function scope and wrap the function in a function object
 	ObjFunction *function = endCurrentScope();
@@ -725,19 +725,19 @@ void Compiler::visit(FunNode *node) {
 }
 
 /// Compile a CallNode to bytecode
-void Compiler::visit(CallNode *node) {
+void Compiler::visit(CallNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_CALLNODE
 	Logger::warning("CallNode");
 #endif
 
 	// Compile the callee
-	visit(node->getCallee());
+	visit(*node.getCallee());
 
 	// Counter for the number of arguments passed to the call
 	uint8_t argCount = 0;
 
-	for (int i = 0; i < node->getArgs().size(); ++i) {
-		visit(node->getArgs()[i].get()); // Compile the argument
+	for (int i = 0; i < node.getArgs().size(); ++i) {
+		visit(*node.getArgs()[i].get()); // Compile the argument
 		++argCount;
 	}
 
@@ -750,7 +750,7 @@ void Compiler::visit(CallNode *node) {
 }
 
 /// Compile a ReturnNode to bytecode
-void Compiler::visit(ReturnNode *node) {
+void Compiler::visit(ReturnNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_RETURNNODE
 	Logger::warning("ReturnNode");
 #endif
@@ -760,8 +760,8 @@ void Compiler::visit(ReturnNode *node) {
 		error("Can't return from top-level code");
 
 	// Compile the value returned, if any
-	if (node->getValue()) {
-		visit(node->getValue());
+	if (node.getValue()) {
+		visit(*node.getValue());
 		emitByte(OP_RETURN);
 	} else emitReturn(); // Or simply return null by default
 
@@ -771,16 +771,16 @@ void Compiler::visit(ReturnNode *node) {
 }
 
 /// Compile a BinOpNode to bytecode
-void Compiler::visit(BinOpNode *node) {
+void Compiler::visit(BinOpNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_BINOPNODE
 	Logger::warning("BinOpNode");
 #endif
 
-	TokenType operatorType = node->getOperator()->getType();
+	TokenType operatorType = node.getOperator()->getType();
 
 	// Compile both operands
-	visit(node->getLeft());
-	visit(node->getRight());
+	visit(*node.getLeft());
+	visit(*node.getRight());
 
 	// Emit the operation instruction
 	switch (operatorType) {
@@ -797,15 +797,15 @@ void Compiler::visit(BinOpNode *node) {
 }
 
 /// Compile an UnaryNode to bytecode
-void Compiler::visit(UnaryNode *node) {
+void Compiler::visit(UnaryNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_UNARYNODE
 	Logger::warning("UnaryNode");
 #endif
 
-	TokenType operatorType = node->getOperator()->getType();
+	TokenType operatorType = node.getOperator()->getType();
 
 	// Compile the operand
-	visit(node->getExpr());
+	visit(*node.getExpr());
 
 	// Emit the operation instruction
 	switch (operatorType) {
@@ -820,11 +820,11 @@ void Compiler::visit(UnaryNode *node) {
 }
 
 /// Compile a LiteralNode to bytecode
-void Compiler::visit(LiteralNode *node) {
+void Compiler::visit(LiteralNode &node) {
 #ifdef DEBUG_PRINT_COMPILATION_LITERALNODE
 	Value v = node->getValue();
 	Logger::warning("LiteralNode: " + Value::toString(v));
 #endif
 
-	emitConstant(node->getValue());
+	emitConstant(node.getValue());
 }

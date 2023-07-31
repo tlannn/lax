@@ -17,6 +17,6 @@ ExprNode* AssignNode::getExpr() {
 }
 
 /// Accept method for the visitor pattern
-void AssignNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void AssignNode::accept(ASTVisitor &visitor) {
+	visitor.visit(*this);
 }

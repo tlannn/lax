@@ -16,7 +16,7 @@ VM::VM() : _frameCount(0), _openUpvalues(nullptr), _frames{} {
 
 /// Compile an Abstract Syntax Tree to bytecode and then run the bytecode
 /// generated.
-InterpretResult VM::interpret(ASTNode *ast) {
+InterpretResult VM::interpret(AST &ast) {
 	// Compile the AST to bytecode
 	Compiler compiler;
 	ObjFunction *function = compiler.compile(ast);

@@ -1,5 +1,6 @@
 #include "parser/Parser.h"
-#include "common/AST.h"
+#include "ast/AST.h"
+#include "ast/ASTIncludes.h"
 #include "lexer/Lexer.h"
 #include "objects/ObjString.h"
 #include "objects/Variable.h"
@@ -11,9 +12,9 @@ Parser::Parser(Lexer &lex) : _lex(lex), _previous(nullptr), _lookahead(nullptr),
 
 /// Parse the source code until the end of file is reached. The resulting
 /// program is represented by an Abstract Syntax Tree
-UASTNode Parser::parse() {
+std::unique_ptr<AST> Parser::parse() {
 	move();
-	return program();
+	return std::make_unique<AST>(std::move(program()));
 }
 
 /// Return whether errors occurred during parsing

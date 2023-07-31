@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "StmtNode.h"
-#include "ast/NodeTypes.h"
+#include "ast/ASTFwdDecl.h"
 #include "common/ValueType.h"
 #include "tokens/Token.h"
 
@@ -67,7 +67,7 @@ public:
 	/**
 	 * Accept method for the visitor pattern
 	 */
-	void accept(ASTVisitor *visitor) override;
+	void accept(ASTVisitor &visitor) override;
 
 private:
 	ValueType _type;

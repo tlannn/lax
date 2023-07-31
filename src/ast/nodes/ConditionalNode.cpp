@@ -22,6 +22,6 @@ StmtNode* ConditionalNode::getElseStatement() {
 }
 
 /// Accept method for the visitor pattern
-void ConditionalNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void ConditionalNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

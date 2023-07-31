@@ -10,6 +10,6 @@ Token* ExprNode::getToken() {
 }
 
 /// Abstract accept method for the visitor pattern
-void ExprNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void ExprNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

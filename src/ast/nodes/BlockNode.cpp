@@ -1,6 +1,6 @@
 #include "ast/nodes/BlockNode.h"
-#include "ast/ASTVisitor.h"
 #include "ast/nodes/SeqNode.h"
+#include "ast/ASTVisitor.h"
 
 /// Class constructor
 BlockNode::BlockNode(USeqNode seq) : _seq(std::move(seq)) {}
@@ -11,6 +11,6 @@ SeqNode* BlockNode::getSequence() {
 }
 
 /// Accept method for the visitor pattern
-void BlockNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void BlockNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

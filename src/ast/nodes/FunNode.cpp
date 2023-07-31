@@ -1,7 +1,7 @@
 #include "ast/nodes/FunNode.h"
-#include "ast/ASTVisitor.h"
 #include "ast/nodes/BlockNode.h"
 #include "ast/nodes/SeqNode.h"
+#include "ast/ASTVisitor.h"
 #include "objects/Variable.h"
 
 /// Class constructor
@@ -30,6 +30,6 @@ const std::vector<UVariable>& FunNode::getParams() {
 }
 
 /// Accept method for the visitor pattern
-void FunNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void FunNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

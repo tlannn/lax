@@ -28,6 +28,7 @@ set(SOURCE_FILES
         src/ast/nodes/StmtExpressionNode.cpp
         src/ast/nodes/StmtNode.cpp
         src/ast/nodes/UnaryNode.cpp
+        src/ast/AST.cpp
         src/common/Chunk.cpp
         src/common/CompileTimeException.cpp
         src/common/Debug.cpp

@@ -22,6 +22,6 @@ ExprNode* DeclNode::getRValue() {
 }
 
 /// Accept method for the visitor pattern
-void DeclNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void DeclNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

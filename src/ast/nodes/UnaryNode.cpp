@@ -17,6 +17,6 @@ Token* UnaryNode::getOperator() const {
 }
 
 /// Accept method for the visitor pattern
-void UnaryNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void UnaryNode::accept(ASTVisitor &visitor) {
+	visitor.visit(*this);
 }

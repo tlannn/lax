@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "StmtNode.h"
-#include "ast/NodeTypes.h"
+#include "ast/ASTFwdDecl.h"
 #include "common/ValueType.h"
 
 // Forward declarations
@@ -54,7 +54,7 @@ public:
 	/**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 
 private:
 	std::shared_ptr<Token> _id;

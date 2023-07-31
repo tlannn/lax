@@ -12,6 +12,6 @@ Value LiteralNode::getValue() {
 }
 
 /// Accept method for the visitor pattern
-void LiteralNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void LiteralNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

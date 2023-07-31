@@ -18,6 +18,6 @@ const std::vector<UExprNode>& CallNode::getArgs() {
 }
 
 /// Accept method for the visitor pattern
-void CallNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void CallNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

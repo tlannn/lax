@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "StmtNode.h"
-#include "ast/NodeTypes.h"
+#include "ast/ASTFwdDecl.h"
 
 // Forward declarations
 class ASTVisitor;
@@ -33,7 +33,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 
 protected:
 	UExprNode _expr;

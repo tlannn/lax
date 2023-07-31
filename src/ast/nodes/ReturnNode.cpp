@@ -18,6 +18,6 @@ ExprNode* ReturnNode::getValue() {
 }
 
 /// Accept method for the visitor pattern
-void ReturnNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void ReturnNode::accept(ASTVisitor &visitor) {
+	visitor.visit(*this);
 }

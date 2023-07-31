@@ -7,10 +7,11 @@
 #include <string>
 #include <vector>
 
-#include "ast/NodeTypes.h"
+#include "ast/ASTFwdDecl.h"
 #include "tokens/TokenType.h"
 
 // Forward declarations
+class AST;
 class Lexer;
 class ParseError;
 class Token;
@@ -35,7 +36,7 @@ public:
      *
      * @return the root of the AST created
      */
-    UASTNode parse();
+    std::unique_ptr<AST> parse();
 
 	/**
 	 * Return whether errors occurred during parsing

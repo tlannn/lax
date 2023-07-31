@@ -31,7 +31,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 
 protected:
 	Token *_token;

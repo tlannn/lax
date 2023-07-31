@@ -1,7 +1,6 @@
 #include "Lax.h"
+#include "ast/AST.h"
 #include "common/Debug.h"
-//#include "common/BytecodeEncoder.h"
-#include "compiler/Compiler.h"
 #include "lexer/Lexer.h"
 #include "parser/Parser.h"
 #include "semantic/SemanticAnalyzer.h"
@@ -16,22 +15,22 @@ void Lax::interpret(const std::string &filepath) {
 
 		// Parse the file
 		Parser parser(lexer);
-		std::unique_ptr<ASTNode> ast = parser.parse();
+		std::unique_ptr<AST> ast = parser.parse();
 
-		// Stop here if there is syntax errors
-		if (parser.hadErrors())
-			return;
+        // Stop here if there is syntax errors
+        if (parser.hadErrors())
+            return;
 
-		// Start semantic analysis
-		SemanticAnalyzer analyzer(ast.get());
-		analyzer.analyze();
+        // Start semantic analysis
+        SemanticAnalyzer analyzer(*ast);
+        analyzer.analyze();
 
 		// Stop here if there is semantic errors
 		if (analyzer.hadErrors())
 			return;
 
 		VM vm;
-		vm.interpret(ast.get());
+		vm.interpret(*ast);
 	} catch (std::exception &e) {
 		Logger::error(e.what());
 		exit(EXIT_FAILURE);

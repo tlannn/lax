@@ -1,5 +1,5 @@
-#ifndef LAX_NODETYPES_H
-#define LAX_NODETYPES_H
+#ifndef LAX_ASTFWDDECL_H
+#define LAX_ASTFWDDECL_H
 
 #include <memory>
 
@@ -43,4 +43,4 @@ typedef std::unique_ptr<StmtExpressionNode> UStmtExpressionNode;
 typedef std::unique_ptr<StmtNode> UStmtNode;
 typedef std::unique_ptr<UnaryNode> UUnaryNode;
 
-#endif //LAX_NODETYPES_H
+#endif //LAX_ASTFWDDECL_H

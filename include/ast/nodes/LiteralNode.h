@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "ExprNode.h"
+#include "ast/ASTFwdDecl.h"
 #include "common/Value.h"
 
 // Forward declarations
@@ -36,7 +37,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-	void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 
 private:
 	UToken _token;

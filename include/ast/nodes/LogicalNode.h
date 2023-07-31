@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "BinOpNode.h"
-#include "ast/NodeTypes.h"
+#include "ast/ASTFwdDecl.h"
 
 // Forward declarations
 class ASTVisitor;
@@ -32,7 +32,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-	void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 };
 
 #endif // LAX_LOGICALNODE_H

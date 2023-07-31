@@ -11,6 +11,6 @@ Token *IdNode::getName() {
 }
 
 /// Accept method for the visitor pattern
-void IdNode::accept(ASTVisitor *visitor) {
-	visitor->visit(this);
+void IdNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

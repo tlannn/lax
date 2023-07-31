@@ -25,7 +25,7 @@ public:
      *
      * @param visitor the visitor that wants to visit the node
 	 */
-	virtual void accept(ASTVisitor *visitor) = 0;
+	virtual void accept(ASTVisitor &visitor) = 0;
 };
 
 #endif // LAX_ASTNODE_H

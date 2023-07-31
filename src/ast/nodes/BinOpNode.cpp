@@ -22,6 +22,6 @@ Token* BinOpNode::getOperator() {
 }
 
 /// Accept method for the visitor pattern
-void BinOpNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void BinOpNode::accept(ASTVisitor &visitor) {
+	visitor.visit(*this);
 }

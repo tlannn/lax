@@ -37,7 +37,7 @@ public:
 	/**
 	 * Accept method for the visitor pattern
 	 */
-	void accept(ASTVisitor *visitor) override;
+    void accept(ASTVisitor &visitor) override;
 
 private:
 	UToken _name;

@@ -8,15 +8,16 @@
 #endif
 
 #include "ast/ASTVisitor.h"
-#include "common/AST.h"
+#include "ast/ASTIncludes.h"
 
 // Forward declarations
+class AST;
 class Chunk;
 class ObjFunction;
 class ObjString;
 
 /**
- * Compiler that traverse an Abstract Syntax Tree to convert it to bytecode
+ * Compiler that traverse an Abstract Syntax Tree to convert it to bytecode.
  */
 class Compiler : public ASTVisitor {
 public:
@@ -30,7 +31,7 @@ public:
 	 * @return the function object representing the script, and containing the
 	 * bytecode.
 	 */
-	ObjFunction* compile(ASTNode *ast);
+	ObjFunction* compile(AST &ast);
 
 	bool writeBytecode(Chunk *chunk);
 
@@ -279,56 +280,56 @@ private:
 	 */
 	void endLocalScope();
 
-	/// Compile a StmtNode to bytecode
-	void visit(StmtNode *node) override;
+	/// Compile a StmtNode to bytecode.
+	void visit(StmtNode &node) override;
 
-	/// Compile an ExprNode to bytecode
-	void visit(ExprNode *node) override;
+	/// Compile an ExprNode to bytecode.
+	void visit(ExprNode &node) override;
 
-	/// Compile a StmtExpressionNode to bytecode
-	void visit(StmtExpressionNode *node) override;
+	/// Compile a StmtExpressionNode to bytecode.
+	void visit(StmtExpressionNode &node) override;
 
-	/// Compile a BlockNode to bytecode
-	void visit(BlockNode *node) override;
+	/// Compile a BlockNode to bytecode.
+	void visit(BlockNode &node) override;
 
-	/// Compile a SeqNode to bytecode
-	void visit(SeqNode *node) override;
+	/// Compile a SeqNode to bytecode.
+	void visit(SeqNode &node) override;
 
-	/// Compile a DeclNode to bytecode
-	void visit(DeclNode *node) override;
+	/// Compile a DeclNode to bytecode.
+	void visit(DeclNode &node) override;
 
-	/// Compile an AssignNode to bytecode
-	void visit(AssignNode *node) override;
+	/// Compile an AssignNode to bytecode.
+	void visit(AssignNode &node) override;
 
-	/// Compile an IdNode to bytecode
-	void visit(IdNode *node) override;
+	/// Compile an IdNode to bytecode.
+	void visit(IdNode &node) override;
 
-	/// Compile a ConditionalNode to bytecode
-	void visit(ConditionalNode *node) override;
+	/// Compile a ConditionalNode to bytecode.
+	void visit(ConditionalNode &node) override;
 
-	/// Compile a LogicalNode to bytecode
-	void visit(LogicalNode *node) override;
+	/// Compile a LogicalNode to bytecode.
+	void visit(LogicalNode &node) override;
 
-	/// Compile a RelationalNode to bytecode
-	void visit(RelationalNode *node) override;
+	/// Compile a RelationalNode to bytecode.
+	void visit(RelationalNode &node) override;
 
-	/// Compile a FunNode to bytecode
-	void visit(FunNode *node) override;
+	/// Compile a FunNode to bytecode.
+	void visit(FunNode &node) override;
 
-	/// Compile a CallNode to bytecode
-	void visit(CallNode *node) override;
+	/// Compile a CallNode to bytecode.
+	void visit(CallNode &node) override;
 
-	/// Compile a ReturnNode to bytecode
-	void visit(ReturnNode *node) override;
+	/// Compile a ReturnNode to bytecode.
+	void visit(ReturnNode &node) override;
 
-	/// Compile a BinOpNode to bytecode
-	void visit(BinOpNode *node) override;
+	/// Compile a BinOpNode to bytecode.
+	void visit(BinOpNode &node) override;
 
-	/// Compile an UnaryNode to bytecode
-	void visit(UnaryNode *node) override;
+	/// Compile an UnaryNode to bytecode.
+	void visit(UnaryNode &node) override;
 
-	/// Compile a LiteralNode to bytecode
-	void visit(LiteralNode *node) override;
+	/// Compile a LiteralNode to bytecode.
+	void visit(LiteralNode &node) override;
 
 	/*
 	 * Private members

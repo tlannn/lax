@@ -11,6 +11,6 @@ ExprNode* StmtExpressionNode::getExpr() {
 }
 
 /// Accept method for the visitor pattern
-void StmtExpressionNode::accept(ASTVisitor *visitor) {
-    visitor->visit(this);
+void StmtExpressionNode::accept(ASTVisitor &visitor) {
+    visitor.visit(*this);
 }

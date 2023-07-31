@@ -1,5 +1,5 @@
-#ifndef LAX_AST_H
-#define LAX_AST_H
+#ifndef LAX_ASTINCLUDES_H
+#define LAX_ASTINCLUDES_H
 
 #include <memory>
 
@@ -27,4 +27,8 @@
 #include "ast/nodes/SeqNode.h"
 #include "ast/nodes/StmtExpressionNode.h"
 
-#endif //LAX_AST_H
+/// Include other AST-related headers.
+#include "ast/AST.h"
+#include "ast/ASTVisitor.h"
+
+#endif //LAX_ASTINCLUDES_H

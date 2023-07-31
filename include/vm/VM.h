@@ -13,7 +13,7 @@
 #define STACK_MAX	(FRAMES_MAX * UINT8_MAX)
 
 // Forward declarations
-class ASTNode;
+class AST;
 class ObjClosure;
 class ObjUpvalue;
 
@@ -46,7 +46,7 @@ public:
 	 * @param ast the AST to interpret.
 	 * @return the interpretation result code.
 	 */
-	InterpretResult interpret(ASTNode *ast);
+	InterpretResult interpret(AST &ast);
 
 private:
 	/**
