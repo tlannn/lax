@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.18)    # CMake version check
 project(lax)                            # Create project "lax"
 set(CMAKE_CXX_STANDARD 14)              # Enable c++14 standard
 
+option(DEBUG "Enable debug mode" OFF)
+
 # Add the src/ directory as a search path for include files
 include_directories(include)
 
@@ -64,6 +66,7 @@ set(SOURCE_FILES
 add_executable(lax ${SOURCE_FILES})
 
 if (DEBUG)
+    message("Debug mode activated")
     add_definitions(-DDEBUG_TRACE_EXECUTION)
     add_definitions(-DDEBUG_PRINT_CODE)
 endif (DEBUG)
