@@ -50,7 +50,7 @@ bool Table::remove(ObjString *key) {
 	// Place a tombstone in the entry
 	// This allows hash collisions to work even if the entry is now empty
 	entry->key = nullptr;
-	entry->value = BOOL_VAL(true);
+	entry->value = Value::boolean(true);
 	return true;
 }
 
@@ -90,7 +90,7 @@ void Table::adjustCapacity(int capacity) {
 	// Initialize all new entries
 	for (int i = 0; i < capacity; ++i) {
 		entries[i].key = nullptr;
-		entries[i].value = NULL_VAL;
+		entries[i].value = Value::null();
 	}
 
 	_count = 0;

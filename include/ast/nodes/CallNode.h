@@ -9,9 +9,10 @@
 
 // Forward declarations
 class ASTVisitor;
+class Symbol;
 class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for a function call
@@ -27,10 +28,10 @@ public:
 	 * Class constructor
 	 *
 	 * @param callee the expression that is called
-	 * @param tok the closing parenthesis token
+	 * @param token the closing parenthesis token
 	 * @param args the list of arguments
 	 */
-	CallNode(UExprNode callee, UToken tok, std::vector<UExprNode> args);
+	CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args);
 
 	/**
 	 * Getter for the callee
@@ -46,6 +47,18 @@ public:
 	 */
 	const std::vector<UExprNode>& getArgs();
 
+    /**
+     * Getter for the symbol representing the function called
+     * @return a pointer to the symbol
+     */
+    Symbol* getSymbol() const;
+
+    /**
+     * Setter for the symbol representing the function called
+     * @param symbol a pointer to the symbol
+     */
+    void setSymbol(Symbol *symbol);
+
 	/**
 	 * Accept method for the visitor pattern
 	 */
@@ -53,8 +66,8 @@ public:
 
 private:
 	UExprNode _callee;
-	UToken _paren;
 	std::vector<UExprNode> _args;
+    Symbol *_symbol;
 };
 
 #endif // LAX_CALLNODE_H

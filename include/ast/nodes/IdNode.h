@@ -7,9 +7,11 @@
 
 // Forward declarations
 class ASTVisitor;
+class Symbol;
 class Token;
+class ObjString;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for an identifier
@@ -23,16 +25,28 @@ public:
 	/**
 	 * Class constructor
 	 *
-	 * @param name the name defining the identifier
+	 * @param id the identifier name token
 	 */
-    explicit IdNode(UToken name);
+    explicit IdNode(SToken id);
 
 	/**
 	 * Getter for the name of the identifier
 	 *
 	 * @return the name
 	 */
-	Token* getName();
+	ObjString* getName();
+
+    /**
+     * Getter for the symbol representing the variable referred to
+     * @return a pointer to the symbol
+     */
+    Symbol* getSymbol() const;
+
+    /**
+     * Setter for the symbol representing the variable referred to
+     * @param symbol a pointer to the symbol
+     */
+    void setSymbol(Symbol *symbol);
 
 	/**
 	 * Accept method for the visitor pattern
@@ -40,7 +54,8 @@ public:
     void accept(ASTVisitor &visitor) override;
 
 private:
-	UToken _name;
+	ObjString* _name;
+    Symbol* _symbol;
 };
 
 #endif // LAX_IDNODE_H

@@ -9,5 +9,5 @@ Value printNative(int argCount, Value *args) {
 
 	std::cout << std::endl;
 
-	return NULL_VAL;
+	return Value::null();
 }

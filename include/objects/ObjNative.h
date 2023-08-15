@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "common/Value.h"
 #include "objects/Object.h"
+#include "values/Value.h"
 
 /// Type for native functions.
 typedef Value (*NativeFn)(int argCount, Value *args);

@@ -3,8 +3,9 @@
 #include "tokens/Token.h"
 
 /// Class constructor
-LiteralNode::LiteralNode(UToken tok, Value value) :
-						ExprNode(tok.get()), _token(std::move(tok)), _value(value) {}
+LiteralNode::LiteralNode(SToken token, Value value) :
+    ExprNode(std::move(token)),
+    _value(value) {}
 
 /// Getter for the value of the literal
 Value LiteralNode::getValue() {

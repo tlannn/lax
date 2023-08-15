@@ -5,18 +5,25 @@
 #include "objects/Variable.h"
 
 /// Class constructor
-FunNode::FunNode(UToken name, ValueType type,
-				 std::vector<UVariable> params, UBlockNode body) : StmtNode(),
-				 _name(std::move(name)), _type(type), _params(std::move(params)), _body(std::move(body)) {}
+FunNode::FunNode(UToken token, ObjString *name, LaxType *returnType,
+				 std::vector<UVariable> params, UBlockNode body) :
+				 StmtNode(), _token(std::move(token)), _name(name),
+				 _returnType(returnType), _params(std::move(params)),
+				 _body(std::move(body)) {}
 
-/// Getter for the return type of the function
-ValueType FunNode::getType() {
-	return _type;
+/// Getter for the function token
+Token* FunNode::getToken() {
+	return _token.get();
 }
 
 /// Getter for the function name
-Token* FunNode::getName() {
-	return _name.get();
+ObjString* FunNode::getName() {
+	return _name;
+}
+
+/// Getter for the return type of the function
+LaxType* FunNode::getReturnType() {
+	return _returnType;
 }
 
 /// Getter for the function body
@@ -27,6 +34,16 @@ BlockNode* FunNode::getBody() {
 /// Getter for the function parameters
 const std::vector<UVariable>& FunNode::getParams() {
 	return _params;
+}
+
+/// Getter for the symbol representing the function
+FunSymbol *FunNode::getSymbol() {
+	return _symbol;
+}
+
+/// Setter for the symbol representing the function
+void FunNode::setSymbol(FunSymbol *symbol) {
+	_symbol = symbol;
 }
 
 /// Accept method for the visitor pattern

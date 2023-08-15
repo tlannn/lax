@@ -3,44 +3,52 @@
 
 #include <string>
 
-#include "common/ValueType.h"
+// Forward declarations
+class LaxType;
+class ObjString;
 
 /**
- * Represent an copyIdentifier (aka symbol) and carries information with it, that
- * may be its type, its scope, etc.
+ * Represent an identifier (aka symbol) and carries information with it,
+ * that may be its type, its scope, etc.
+ * Symbols are used during the semantic analysis of programs.
  */
 class Symbol {
 public:
+    /// Enumeration for the type of symbols.
+    enum Type {
+        BUILTIN,
+        VARIABLE,
+        FUNCTION
+    };
+
 	/**
-	 * Class constructor
-	 *
-	 * @param name the name of the symbol
+	 * Class constructor.
+	 * @param name the name of the identifier represented by the symbol.
 	 * @param type the type of the symbol
 	 */
-    Symbol(std::string name, ValueType type);
+    Symbol(ObjString *name, LaxType *type);
 
 	/**
-	 * Class destructor
+	 * Getter for the name of the identifier represented by the symbol.
+	 * @return the name of the identifier.
 	 */
-	virtual ~Symbol() = default;
+    ObjString *getName();
 
 	/**
-	 * Getter for the name of the symbol
-	 *
-	 * @return the name
+	 * Getter for the runtime type of the symbol.
+	 * @return the runtime type.
 	 */
-    std::string getName();
+    LaxType* getType();
 
-	/**
-	 * Getter for the type of the symbol
-	 *
-	 * @return the type
-	 */
-    ValueType getType();
+    /**
+     * Getter for the type of the symbol.
+     * @return the type of the symbol.
+     */
+    virtual Type getSymbolType() = 0;
 
 protected:
-    std::string _name;
-    ValueType _type;
+    ObjString *_name;
+    LaxType *_type;
 };
 
 #endif // LAX_SYMBOL_H

@@ -8,9 +8,9 @@
 
 // Forward declarations
 class ASTVisitor;
-class token;
+class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for an equality or inequality expression
@@ -27,7 +27,7 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    RelationalNode(UExprNode left, UToken op, UExprNode right);
+    RelationalNode(UExprNode left, SToken op, UExprNode right);
 
     /**
      * Accept method for the visitor pattern

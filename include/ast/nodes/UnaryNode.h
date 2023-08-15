@@ -10,7 +10,7 @@
 class ASTVisitor;
 class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for unary expressions
@@ -26,7 +26,7 @@ public:
 	 * @param op the prefix operator
 	 * @param expr the expression associated (the operand)
 	 */
-	UnaryNode(UToken op, UExprNode expr);
+	UnaryNode(SToken op, UExprNode expr);
 
 	/**
 	 * Getter for the expression of the operation
@@ -35,8 +35,6 @@ public:
 	 */
 	ExprNode* getExpr() const;
 
-	Token* getOperator() const;
-
 	/**
 	 * Accept method for the visitor pattern
 	 */
@@ -44,7 +42,6 @@ public:
 
 private:
 	UExprNode _expr;
-	UToken _op;
 };
 
 #endif //LAX_UNARYNODE_H

@@ -5,7 +5,9 @@
 #include "objects/ObjString.h"
 #include "objects/Variable.h"
 #include "parser/ParseError.h"
+#include "symbols/SymbolTable.h"
 #include "utils/Logger.h"
+#include "values/PrimitiveType.h"
 
 /// Class constructor
 Parser::Parser(Lexer &lex) : _lex(lex), _previous(nullptr), _lookahead(nullptr), _errors(false) {}
@@ -137,6 +139,10 @@ void Parser::synchronize() {
 	}
 }
 
+ObjString* Parser::identifier(const std::string &name) {
+    return ObjString::copyString(name);
+}
+
 /// Build a node representing the program
 UStmtNode Parser::program() {
 	std::vector<UStmtNode> stmts;
@@ -160,17 +166,22 @@ UBlockNode Parser::block() {
 	return std::make_unique<BlockNode>(std::make_unique<SeqNode>(std::move(stmts)));
 }
 
+/// Build a node representing a scoped block of statements
+UBlockNode Parser::scopedBlock() {
+    auto block = this->block();
+
+    return std::move(block);
+}
+
 /// Build a node representing a statement
 UStmtNode Parser::stmt() {
 	try {
 		if (match(TokenType::VAR) || match(TokenType::TYPE)) return declaration();
-//		else if (match(TokenType::ID)) return varAssignStmt();
 		else if (match(TokenType::FUN)) return function();
 		else if (match(TokenType::RETURN)) return returnStmt();
 		else if (match(TokenType::IF)) return conditionalStmt();
 		else if (match(TokenType::INCLUDE)) return includeStmt();
-//		else if (match(TokenType::PRINT)) return printStmt();
-		else if (check(TokenType::LBRACE)) return block();
+		else if (check(TokenType::LBRACE)) return scopedBlock();
 		else return expressionStmt();
 	}
 
@@ -184,7 +195,7 @@ UStmtNode Parser::stmt() {
 
 /// Build a node representing an include statement
 UStmtNode Parser::includeStmt() {
-	consume(TokenType::STRING, "Expected string");
+	consume(TokenType::STR, "Expected string");
 	std::string filename = previous()->toString();
 
 	consume(TokenType::SEMICOL);
@@ -206,34 +217,27 @@ UStmtNode Parser::includeStmt() {
 /// Build a node representing a variable declaration statement
 UDeclNode Parser::declaration() {
 	// Determine the variable type based on the keyword
-	ValueType type = previous()->getType() == TokenType::VAR ? ValueType::VAL_NULL : ValueType::getType(previous());
+    LaxType *type = nullptr;
+    if (previous()->getType() != TokenType::VAR)
+        type = PrimitiveType::getType(previous());
+
 	move();
-	std::shared_ptr<Token> identifier = std::move(_previous);
+	ObjString *name = identifier(_previous->toString());
+    auto token = std::move(_previous);
 
 	UExprNode assignment = match(TokenType::SIMEQ) ? expr() : nullptr;
 
 	consume(TokenType::SEMICOL);
 
-	return std::make_unique<DeclNode>(identifier, type, std::move(assignment));
+	auto node = std::make_unique<DeclNode>(
+        std::move(token), name, type, std::move(assignment)
+    );
+    node->setScope(&SymbolTable::instance()->currentScope());
+    return std::move(node);
 }
 
 /// Build a node representing a variable assignment statement
 UExprNode Parser::varAssignStmt() {
-	/*if (match(TokenType::ID)) {
-		consume(TokenType::ID);
-
-		consume(TokenType::SIMEQ);
-
-		auto node = std::make_unique<AssignNode>(std::move(_previous), expr());
-
-		consume(TokenType::SEMICOL);
-
-		return node;
-	}
-
-	return logic();*/
-
-
 	UExprNode node = logic();
 
 	if (match(TokenType::SIMEQ)) {
@@ -241,11 +245,11 @@ UExprNode Parser::varAssignStmt() {
 		UExprNode value = varAssignStmt();
 
 		if (IdNode *id = dynamic_cast<IdNode*>(node.get())) {
-			return std::make_unique<AssignNode>(std::move(node), std::move(value));
+			return std::make_unique<AssignNode>(
+                id->getName(), std::move(equals), std::move(value)
+            );
 		}
 	}
-
-//	consume(TokenType::SEMICOL);
 
 	return node;
 }
@@ -254,7 +258,8 @@ UExprNode Parser::varAssignStmt() {
 UFunNode Parser::function() {
 	// Read the function identifier
 	consume(TokenType::ID);
-	auto name = std::move(_previous);
+    ObjString *name = identifier(_previous->toString());
+	auto token = std::move(_previous);
 
 	consume(TokenType::LPAREN);
 
@@ -264,13 +269,15 @@ UFunNode Parser::function() {
 		do {
 			// Read parameter type
 			consume(TokenType::TYPE);
-			auto type = ValueType::getType(previous());
+			LaxType *type = PrimitiveType::getType(previous());
 
 			// Read parameter name
 			consume(TokenType::ID);
 			auto identifier = std::move(_previous);
 
-			auto variable = std::make_unique<Variable>(std::move(identifier), type);
+			auto variable = std::make_unique<Variable>(
+                std::move(identifier), type
+            );
 			params.push_back(std::move(variable));
 		} while (match(TokenType::COMMA));
 	}
@@ -279,12 +286,12 @@ UFunNode Parser::function() {
 	consume(TokenType::RPAREN);
 
 	// The function returns nothing by default
-	ValueType returnType = ValueType::VAL_NULL;
+    LaxType *returnType = &PrimitiveType::VOID;
 
 	// Search for the function return type
 	if (match(TokenType::COLON)) {
 		consume(TokenType::TYPE);
-		returnType = ValueType::getType(previous());
+		returnType = PrimitiveType::getType(previous());
 	}
 
 	// Raise an error if no function body is found
@@ -294,7 +301,9 @@ UFunNode Parser::function() {
 	// Read the function body
 	UBlockNode body = block();
 
-	return std::make_unique<FunNode>(std::move(name), returnType, std::move(params), std::move(body));
+	return std::make_unique<FunNode>(
+        std::move(token), name, returnType, std::move(params), std::move(body)
+    );
 }
 
 /// Build a node representing a return statement
@@ -323,7 +332,8 @@ UConditionalNode Parser::conditionalStmt() {
         if (match(TokenType::IF))
             elseStmt = Parser::conditionalStmt();
 
-        else elseStmt = check(TokenType::LBRACE) ? block() : stmt();
+        else
+            elseStmt = check(TokenType::LBRACE) ? block() : stmt();
 
         return std::make_unique<ConditionalNode>(std::move(condition), std::move(thenStmt), std::move(elseStmt));
     }
@@ -442,26 +452,22 @@ UExprNode Parser::factor() {
 			break;
 		}
 		case TokenType::NUM: {
-			Value value = INT_VAL(std::stoi(_previous->toString()));
+			Value value = Value::integer(std::stoi(_previous->toString()));
 
 			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
-
-//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::VAL_INT);
 			break;
 		}
-		case TokenType::STRING: {
+		case TokenType::STR: {
 			ObjString *string = ObjString::copyString(_previous->toString());
 
-			expr = std::make_unique<LiteralNode>(std::move(_previous), OBJ_VAL(string));
-			//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::STRING);
+			expr = std::make_unique<LiteralNode>(std::move(_previous), Value::object(string));
 			break;
 		}
 		case TokenType::TRUE:
 		case TokenType::FALSE: {
-			Value value = BOOL_VAL(previous()->getType() == TokenType::TRUE);
+			Value value = Value::boolean(previous()->getType() == TokenType::TRUE);
 
 			expr = std::make_unique<LiteralNode>(std::move(_previous), value);
-//			expr = std::make_unique<LiteralNode>(std::move(_previous), ValueType::VAL_BOOL);
 			break;
 		}
 		case TokenType::ID: {
@@ -481,6 +487,7 @@ UExprNode Parser::factor() {
 
 UExprNode Parser::arguments(UExprNode callee) {
 	std::vector<UExprNode> args;
+    UToken paren = std::move(_previous);
 
 	if (!check(TokenType::RPAREN)) {
 		do {
@@ -493,5 +500,9 @@ UExprNode Parser::arguments(UExprNode callee) {
 
 	consume(TokenType::RPAREN, ErrorMode::NON_PANIC);
 
-	return std::make_unique<CallNode>(std::move(callee), std::move(_previous), std::move(args));
+	return std::make_unique<CallNode>(
+        std::move(callee),
+        std::move(paren),
+        std::move(args)
+    );
 }

@@ -1,7 +1,9 @@
 #ifndef LAX_NATIVEFUNCTIONS_H
 #define LAX_NATIVEFUNCTIONS_H
 
-#include "common/Value.h"
+#include <iostream>
+
+#include "values/Value.h"
 
 /**
  * Native function that prints a Lax value followed by an newline in the

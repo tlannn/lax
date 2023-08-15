@@ -1,7 +1,10 @@
 #include "objects/ObjUpvalue.h"
 
-ObjUpvalue::ObjUpvalue(Value *slot) : Object(ObjType::OBJ_UPVALUE), _location(slot), _closed(NULL_VAL),
-									  _next(nullptr) {}
+ObjUpvalue::ObjUpvalue(Value *slot) :
+    Object(ObjType::OBJ_UPVALUE),
+    _location(slot),
+    _closed(Value::null()),
+    _next(nullptr) {}
 
 Value* ObjUpvalue::getLocation() const {
 	return _location;

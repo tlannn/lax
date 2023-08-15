@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "common/Value.h"
-#include "interpreter/Callframe.h"
+#include "values/Value.h"
+#include "vm/VM.h"
 
 class Interpreter;
 

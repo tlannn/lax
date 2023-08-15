@@ -1,19 +1,31 @@
 #include "ast/nodes/AssignNode.h"
 #include "ast/ASTVisitor.h"
-#include "tokens/Token.h"
 
 /// Class constructor
-AssignNode::AssignNode(UExprNode identifier, UExprNode expr) :
-						ExprNode(identifier->getToken()), _identifier(std::move(identifier)), _expr(std::move(expr)) {}
+AssignNode::AssignNode(ObjString *identifier, SToken assignToken, UExprNode expr) :
+	ExprNode(std::move(assignToken)),
+	_identifier(identifier),
+	_expr(std::move(expr)),
+    _symbol(nullptr) {}
 
 /// Getter for the token of the variable
-std::string AssignNode::getName() {
-    return _identifier->getToken()->toString();
+ObjString* AssignNode::getName() {
+    return _identifier;
 }
 
 /// Getter for the new expression assigned
 ExprNode* AssignNode::getExpr() {
     return _expr.get();
+}
+
+/// Getter for the symbol representing the variable assigned
+VarSymbol *AssignNode::getSymbol() const {
+    return _symbol;
+}
+
+/// Setter for the symbol representing the variable assigned
+void AssignNode::setSymbol(VarSymbol *symbol) {
+    _symbol = symbol;
 }
 
 /// Accept method for the visitor pattern

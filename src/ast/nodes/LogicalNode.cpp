@@ -3,7 +3,7 @@
 #include "tokens/Token.h"
 
 /// Class constructor
-LogicalNode::LogicalNode(UExprNode left, UToken op, UExprNode right) :
+LogicalNode::LogicalNode(UExprNode left, SToken op, UExprNode right) :
 	BinOpNode(std::move(left), std::move(op), std::move(right)) {}
 
 /// Accept method for the visitor pattern

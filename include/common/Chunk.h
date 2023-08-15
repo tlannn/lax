@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include "Value.h"
+#include "values/Value.h"
+#include "values/ValueArray.h"
 
 /// Enumeration of the operation codes in bytecode
 enum OpCode {

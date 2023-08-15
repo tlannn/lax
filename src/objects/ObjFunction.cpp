@@ -1,4 +1,6 @@
 #include "objects/ObjFunction.h"
+
+#include <utility>
 #include "objects/ObjString.h"
 
 /// Class constructor.

@@ -1,7 +1,7 @@
 #include "objects/Variable.h"
 
 /// Class constructor
-Variable::Variable(std::unique_ptr<Token> varName, ValueType type) : _name(std::move(varName)), _type(type) {}
+Variable::Variable(std::unique_ptr<Token> varName, LaxType *type) : _name(std::move(varName)), _type(type) {}
 
 /// Getter for the variable name
 Token* Variable::getVarName() const {
@@ -9,6 +9,6 @@ Token* Variable::getVarName() const {
 }
 
 /// Getter for the variable type
-ValueType Variable::getType() const {
+LaxType* Variable::getType() const {
 	return _type;
 }

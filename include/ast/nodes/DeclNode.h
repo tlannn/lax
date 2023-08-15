@@ -5,11 +5,13 @@
 
 #include "StmtNode.h"
 #include "ast/ASTFwdDecl.h"
-#include "common/ValueType.h"
 
 // Forward declarations
 class ASTVisitor;
+class LaxType;
+class ObjString;
 class Token;
+class VarSymbol;
 
 /**
  * Node for variable declaration statements
@@ -27,21 +29,23 @@ public:
 	 * @param type the type of the variable
 	 * @param expr the expression associated to the variable (if any)
 	 */
-    DeclNode(std::shared_ptr<Token> id, ValueType type, UExprNode expr);
+    DeclNode(std::shared_ptr<Token> token, ObjString *name, LaxType *type, UExprNode expr);
+
+    Token* getToken();
 
 	/**
      * Getter for the name of the variable declared
      *
      * @return the name of the variable
      */
-	std::shared_ptr<Token> getId();
+	ObjString* getName();
 
 	/**
      * Getter for the type of the variable declared
      *
      * @return the type of the variable
      */
-    ValueType getType();
+    LaxType* getType();
 
 	/**
      * Getter for the expression associated to the variable at declaration
@@ -51,6 +55,18 @@ public:
      */
 	ExprNode* getRValue();
 
+    /**
+     * Getter for the symbol representing the variable
+     * @return a pointer to the symbol
+     */
+    VarSymbol* getSymbol();
+
+    /**
+     * Setter for the symbol representing the variable
+     * @param symbol a pointer to the symbol
+     */
+    void setSymbol(VarSymbol* symbol);
+
 	/**
      * Accept method for the visitor pattern
      */
@@ -58,8 +74,10 @@ public:
 
 private:
 	std::shared_ptr<Token> _id;
-    ValueType _type;
+	ObjString *_name;
+    LaxType *_type;
 	UExprNode _rvalue;
+    VarSymbol *_symbol;
 };
 
 #endif // LAX_DECLNODE_H

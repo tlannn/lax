@@ -10,7 +10,7 @@
 class ASTVisitor;
 class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for a logical expression
@@ -27,7 +27,7 @@ public:
      * @param op the token representing the boolean operator
      * @param right the expression to the right of the boolean operator
      */
-    LogicalNode(UExprNode left, UToken op, UExprNode right);
+    LogicalNode(UExprNode left, SToken op, UExprNode right);
 
     /**
      * Accept method for the visitor pattern

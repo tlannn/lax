@@ -3,6 +3,10 @@
 
 #include "Symbol.h"
 
+// Forward declarations
+class LaxType;
+class ObjString;
+
 /**
  * Symbol representing a variable
  */
@@ -14,18 +18,15 @@ public:
 	 * @param name the name of the variable
 	 * @param type the type of the variable
 	 */
-    VarSymbol(std::string name, ValueType type);
-
-	/**
-	 * Class destructor
-	 */
-	~VarSymbol() override = default;
+    VarSymbol(ObjString *name, LaxType *type);
 
 	/**
 	 * Change the type of the variable
 	 * @param type the new type
 	 */
-	void setType(ValueType type);
+	void setType(LaxType *type);
+
+    Type getSymbolType() override;
 };
 
 #endif // LAX_VARSYMBOL_H

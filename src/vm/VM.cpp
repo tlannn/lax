@@ -26,7 +26,7 @@ InterpretResult VM::interpret(AST &ast) {
 
 	// Wrap the function in a closure and push it onto the stack
 	auto *closure = new ObjClosure(function);
-	push(OBJ_VAL(closure));
+	push(Value::object(closure));
 	call(closure, 0);
 
 	// Execute the bytecode
@@ -81,9 +81,9 @@ InterpretResult VM::run() {
 				push(constant);
 				break;
 			}
-			case OP_NULL: 			push(NULL_VAL); break;
-			case OP_TRUE: 			push(BOOL_VAL(true)); break;
-			case OP_FALSE: 			push(BOOL_VAL(false)); break;
+            case OP_NULL: 			push(Value::null()); break;
+            case OP_TRUE: 			push(Value::boolean(true)); break;
+            case OP_FALSE: 			push(Value::boolean(false)); break;
 			case OP_POP:			pop(); break;
 			case OP_DEFINE_GLOBAL: {
 				ObjString *name = READ_STRING();
@@ -145,24 +145,24 @@ InterpretResult VM::run() {
 			case OP_EQUAL: {
 				Value b = pop();
 				Value a = pop();
-				push(BOOL_VAL(Value::equals(a, b)));
+				push(Value::boolean(Value::equals(a, b)));
 				break;
 			}
 			case OP_NOT_EQUAL:{
 				Value b = pop();
 				Value a = pop();
-				push(BOOL_VAL(!Value::equals(a, b)));
+				push(Value::boolean(!Value::equals(a, b)));
 				break;
 			}
-			case OP_LESS:			BINARY_OP(BOOL_VAL, <); break;
-			case OP_LESS_EQUAL:		BINARY_OP(BOOL_VAL, <=); break;
-			case OP_GREATER:		BINARY_OP(BOOL_VAL, >); break;
-			case OP_GREATER_EQUAL:	BINARY_OP(BOOL_VAL, >=); break;
-			case OP_ADD:			BINARY_OP(INT_VAL, +); break;
-			case OP_SUBTRACT:		BINARY_OP(INT_VAL, -); break;
-			case OP_MULTIPLY:		BINARY_OP(INT_VAL, *); break;
-			case OP_DIVIDE:			BINARY_OP(INT_VAL, /); break;
-			case OP_NOT:			push(BOOL_VAL(Value::isFalsy(pop()))); break;
+            case OP_LESS:			BINARY_OP(Value::boolean, <); break;
+			case OP_LESS_EQUAL:		BINARY_OP(Value::boolean, <=); break;
+			case OP_GREATER:		BINARY_OP(Value::boolean, >); break;
+			case OP_GREATER_EQUAL:	BINARY_OP(Value::boolean, >=); break;
+			case OP_ADD:			BINARY_OP(Value::integer, +); break;
+			case OP_SUBTRACT:		BINARY_OP(Value::integer, -); break;
+			case OP_MULTIPLY:		BINARY_OP(Value::integer, *); break;
+			case OP_DIVIDE:			BINARY_OP(Value::integer, /); break;
+			case OP_NOT:			push(Value::boolean(Value::isFalsy(pop()))); break;
 			case OP_NEGATE: {
 				// Only numbers can be negated
 				if (!IS_INT(peek(0))) {
@@ -170,7 +170,7 @@ InterpretResult VM::run() {
 					return INTERPRET_RUNTIME_ERROR;
 				}
 
-				push(INT_VAL(-AS_INT(pop())));
+				push(Value::integer(-AS_INT(pop())));
 				break;
 			}
 			case OP_CALL: {
@@ -188,7 +188,7 @@ InterpretResult VM::run() {
 				// Create a closure out of the function and push it into the stack
 				ObjFunction *function = AS_FUNCTION(READ_CONSTANT());
 				auto *closure = new ObjClosure(function);
-				push(OBJ_VAL(closure));
+				push(Value::object(closure));
 
 				// Save all upvalues in the closure
 				for (int i = 0; i < closure->getUpvalueCount(); ++i) {
@@ -375,8 +375,8 @@ bool VM::call(ObjClosure *closure, int argCount) {
 
 /// Register a native function in the global scope.
 void VM::defineNative(const char *name, NativeFn function) {
-	push(OBJ_VAL(ObjString::copyString(name)));
-	push(OBJ_VAL(new ObjNative(function)));
+	push(Value::object(ObjString::copyString(name)));
+	push(Value::object(new ObjNative(function)));
 	_globals.set(AS_STRING(_stack[0]), _stack[1]);
 	pop();
 	pop();

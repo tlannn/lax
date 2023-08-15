@@ -1,9 +1,7 @@
 #include "Lax.h"
 #include "ast/AST.h"
-#include "common/Debug.h"
 #include "lexer/Lexer.h"
 #include "parser/Parser.h"
-#include "semantic/SemanticAnalyzer.h"
 #include "utils/Logger.h"
 #include "vm/VM.h"
 
@@ -20,14 +18,6 @@ void Lax::interpret(const std::string &filepath) {
         // Stop here if there is syntax errors
         if (parser.hadErrors())
             return;
-
-        // Start semantic analysis
-        SemanticAnalyzer analyzer(*ast);
-        analyzer.analyze();
-
-		// Stop here if there is semantic errors
-		if (analyzer.hadErrors())
-			return;
 
 		VM vm;
 		vm.interpret(*ast);

@@ -5,13 +5,13 @@
 
 #include "ExprNode.h"
 #include "ast/ASTFwdDecl.h"
-#include "common/Value.h"
+#include "values/Value.h"
 
 // Forward declarations
 class ASTVisitor;
 class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for a literal value.
@@ -22,10 +22,10 @@ class LiteralNode : public ExprNode {
 public:
     /**
      * Class constructor
-     * @param tok the expression to the left of the operator
-     * @param type the token representing the operator
+     * @param token the token representing to literal
+     * @param value the value corresponding to the literal
      */
-    LiteralNode(UToken tok, Value value);
+    LiteralNode(SToken token, Value value);
 
     /**
      * Getter for the value of the literal
@@ -40,7 +40,6 @@ public:
     void accept(ASTVisitor &visitor) override;
 
 private:
-	UToken _token;
 	Value _value;
 };
 

@@ -1,14 +1,14 @@
 #include "symbols/Symbol.h"
 
 /// Class constructor
-Symbol::Symbol(std::string name, ValueType type) : _name(std::move(name)), _type(type) {}
+Symbol::Symbol(ObjString *name, LaxType *type) : _name(name), _type(type) {}
 
 /// Getter for the name of the symbol
-std::string Symbol::getName() {
+ObjString *Symbol::getName() {
     return _name;
 }
 
 /// Getter for the type of the symbol
-ValueType Symbol::getType() {
+LaxType* Symbol::getType() {
     return _type;
 }

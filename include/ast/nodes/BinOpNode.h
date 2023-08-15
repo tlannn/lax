@@ -10,7 +10,7 @@
 class ASTVisitor;
 class Token;
 
-typedef std::unique_ptr<Token> UToken;
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for arithmetic expressions in the program, such as basic computes
@@ -27,7 +27,7 @@ public:
      * @param op the token representing the operator
      * @param right the expression to the right of the operator
      */
-    BinOpNode(UExprNode left, std::unique_ptr<Token> op, UExprNode right);
+    BinOpNode(UExprNode left, SToken op, UExprNode right);
 
     /**
      * Getter for the left expression of the operation
@@ -43,13 +43,6 @@ public:
      */
 	ExprNode* getRight();
 
-	/**
-     * Getter for the operator of the operation
-     *
-     * @return the operator
-     */
-	Token* getOperator();
-
     /**
      * Accept method for the visitor pattern
      */
@@ -58,7 +51,6 @@ public:
 protected:
 	UExprNode _left;
 	UExprNode _right;
-	UToken _op;
 };
 
 #endif // LAX_BINOPNODE_H

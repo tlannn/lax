@@ -1,8 +1,8 @@
 #ifndef LAX_OBJUPVALUE_H
 #define LAX_OBJUPVALUE_H
 
-#include "common/Value.h"
 #include "objects/Object.h"
+#include "values/Value.h"
 
 /**
  * Upvalue object in Lax

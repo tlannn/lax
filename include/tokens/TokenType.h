@@ -10,7 +10,7 @@ enum TokenType {
     FALSE = 260, // False constant
     NUM = 261, // Numeric value
     REAL = 262, // Real number
-	STRING = 263, // Character sequence
+	STR = 263, // Character sequence
 	PLUS = 264, // Addition operator
 	MINUS = 265, // Subtraction operator
 	STAR = 266, // Multiplication operator

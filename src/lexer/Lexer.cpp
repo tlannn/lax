@@ -205,7 +205,7 @@ std::unique_ptr<Token> Lexer::string() {
 
 	advance(); // Skip the closing quotation
 
-	return createToken(TokenType::STRING, buffer);
+	return createToken(TokenType::STR, buffer);
 }
 
 /// Read a number in the source code

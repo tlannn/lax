@@ -4,10 +4,13 @@
 #include <memory>
 
 #include "ASTNode.h"
+#include "tokens/Token.h"
 
 // Forward declarations
 class ASTVisitor;
 class Token;
+
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for expressions in the program
@@ -20,7 +23,7 @@ public:
     /**
      * Class constructor
      */
-    explicit ExprNode(Token *token);
+    explicit ExprNode(SToken token);
 
 	/**
 	 * Getter for the token of the node
@@ -34,7 +37,7 @@ public:
     void accept(ASTVisitor &visitor) override;
 
 protected:
-	Token *_token;
+	SToken _token;
 };
 
 #endif // LAX_EXPRNODE_H

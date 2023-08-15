@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common/Value.h"
+#include "values/Value.h"
 
 #define OBJ_TYPE(value)			(AS_OBJ(value)->getType())
 

@@ -5,8 +5,8 @@
 	#include "common/Debug.h"
 #endif
 
-#include "common/Value.h"
 #include "objects/ObjNative.h"
+#include "values/Value.h"
 #include "vm/Table.h"
 
 #define FRAMES_MAX 	64

@@ -190,7 +190,7 @@ uint16_t Compiler::makeConstant(Value value) {
 /// Add a string object representation of an identifier to the constant pool
 /// of the current chunk.
 uint16_t Compiler::identifierConstant(ObjString *identifier) {
-	return makeConstant(OBJ_VAL(identifier));
+	return makeConstant(Value::object(identifier));
 }
 
 /// Convert a string to a Lax string object.
@@ -199,7 +199,7 @@ uint16_t Compiler::identifierConstant(ObjString *identifier) {
 /// for each string. In case the string is already interned, a pointer to the
 /// string object is returned.
 ObjString* Compiler::copyIdentifier(const std::string &identifier) {
-	return AS_STRING(OBJ_VAL(ObjString::copyString(identifier)));
+	return AS_STRING(Value::object(ObjString::copyString(identifier)));
 }
 
 /// Declare a variable in the current scope.
@@ -470,7 +470,7 @@ void Compiler::visit(DeclNode &node) {
 	Logger::warning("DeclNode: " + node->getId()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node.getId()->toString());
+	ObjString *identifier = node.getName();
 	declareVariable(identifier);
 
 	// Compile the assigned value, if any
@@ -491,7 +491,7 @@ void Compiler::visit(AssignNode &node) {
 	Logger::warning("AssignNode " + node->getName());
 #endif
 
-	ObjString *identifier = copyIdentifier(node.getName());
+	ObjString *identifier = node.getName();
 
 	// Search the identifier among declared local variables
 	int arg = resolveLocal(_currentScope, identifier);
@@ -526,7 +526,7 @@ void Compiler::visit(IdNode &node) {
 	Logger::warning("Id: " + node->getName()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node.getName()->toString());
+	ObjString *identifier = node.getName();
 
 	// Search the identifier among declared local variables
 	int arg = resolveLocal(_currentScope, identifier);
@@ -587,7 +587,7 @@ void Compiler::visit(LogicalNode &node) {
 	Logger::warning("LogicalNode");
 #endif
 
-	TokenType operatorType = node.getOperator()->getType();
+	TokenType operatorType = node.getToken()->getType();
 
 	// Compile the left operand
 	// The right operand is not compiled yet to enable short-circuit
@@ -649,7 +649,7 @@ void Compiler::visit(RelationalNode &node) {
 	Logger::warning("RelationalNode");
 #endif
 
-	TokenType operatorType = node.getOperator()->getType();
+	TokenType operatorType = node.getToken()->getType();
 
 	// Compile both operands
 	visit(*node.getLeft());
@@ -677,7 +677,7 @@ void Compiler::visit(FunNode &node) {
 	Logger::warning("FunNode: " + node->getName()->toString());
 #endif
 
-	ObjString *identifier = copyIdentifier(node.getName()->toString());
+	ObjString *identifier = node.getName();
 	declareVariable(identifier);
 
 	// Mark the function initialized so that it can be called inside itself
@@ -708,7 +708,7 @@ void Compiler::visit(FunNode &node) {
 	ObjFunction *function = endCurrentScope();
 
 	// Emit a closure to capture at runtime all local variables from surrounding scopes
-	emitInstruction(OP_CLOSURE, makeConstant(OBJ_VAL(function)));
+	emitInstruction(OP_CLOSURE, makeConstant(Value::object(function)));
 
 	// Capture all upvalues
 	for (int i = 0; i < function->getUpvalueCount(); ++i) {
@@ -776,7 +776,7 @@ void Compiler::visit(BinOpNode &node) {
 	Logger::warning("BinOpNode");
 #endif
 
-	TokenType operatorType = node.getOperator()->getType();
+	TokenType operatorType = node.getToken()->getType();
 
 	// Compile both operands
 	visit(*node.getLeft());
@@ -802,7 +802,7 @@ void Compiler::visit(UnaryNode &node) {
 	Logger::warning("UnaryNode");
 #endif
 
-	TokenType operatorType = node.getOperator()->getType();
+	TokenType operatorType = node.getToken()->getType();
 
 	// Compile the operand
 	visit(*node.getExpr());

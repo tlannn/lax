@@ -3,8 +3,10 @@
 
 #include <memory>
 
-#include "common/ValueType.h"
 #include "tokens/Token.h"
+
+// Forward declarations
+class LaxType;
 
 /**
  * Represent a variable
@@ -16,7 +18,7 @@ public:
 	 * @param varName the name of the variable
 	 * @param type the type of the variable
 	 */
-	Variable(std::unique_ptr<Token> varName, ValueType type);
+	Variable(std::unique_ptr<Token> varName, LaxType *type);
 
 	/**
 	 * Getter for the variable name
@@ -28,11 +30,11 @@ public:
 	 * Getter for the variable type
 	 * @return the variable type
 	 */
-	ValueType getType() const;
+    LaxType* getType() const;
 
 private:
 	std::unique_ptr<Token> _name;
-	ValueType _type;
+    LaxType *_type;
 };
 
 #endif // LAX_VARIABLE_H

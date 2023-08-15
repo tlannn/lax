@@ -6,11 +6,13 @@
 
 #include "StmtNode.h"
 #include "ast/ASTFwdDecl.h"
-#include "common/ValueType.h"
 #include "tokens/Token.h"
 
 // Forward declarations
 class ASTVisitor;
+class FunSymbol;
+class LaxType;
+class ObjString;
 class Token;
 class Variable;
 
@@ -33,22 +35,29 @@ public:
 	 * @param params the function parameters
 	 * @param body the function body
 	 */
-	FunNode(UToken name, ValueType type,
+	FunNode(UToken token, ObjString *name, LaxType *returnType,
 			std::vector<UVariable> params, UBlockNode body);
+
+    /**
+	 * Getter for the function token
+	 *
+	 * @return the token
+	 */
+    Token* getToken();
+
+    /**
+	 * Getter for the function name
+	 *
+	 * @return the function name
+	 */
+    ObjString* getName();
 
 	/**
 	 * Getter for the return type of the function
 	 *
 	 * @return the function return type
 	 */
-	ValueType getType();
-
-	/**
-	 * Getter for the function name
-	 *
-	 * @return the function name
-	 */
-	Token* getName();
+	LaxType* getReturnType();
 
 	/**
 	 * Getter for the function body
@@ -64,16 +73,32 @@ public:
 	 */
 	const std::vector<UVariable>& getParams();
 
+    /**
+	 * Getter for the symbol representing the function
+	 *
+	 * @return a pointer to the symbol
+	 */
+    FunSymbol* getSymbol();
+
+    /**
+     * Setter for the symbol representing the function
+     *
+     * @param symbol a pointer to the symbol
+     */
+    void setSymbol(FunSymbol *symbol);
+
 	/**
 	 * Accept method for the visitor pattern
 	 */
 	void accept(ASTVisitor &visitor) override;
 
 private:
-	ValueType _type;
-	UToken _name;
+	UToken _token;
+	ObjString *_name;
+	LaxType *_returnType;
 	UBlockNode _body;
 	std::vector<UVariable> _params;
+    FunSymbol *_symbol;
 };
 
 #endif // LAX_FUNNODE_H

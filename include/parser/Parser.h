@@ -8,13 +8,14 @@
 #include <vector>
 
 #include "ast/ASTFwdDecl.h"
+#include "tokens/Token.h"
 #include "tokens/TokenType.h"
 
 // Forward declarations
 class AST;
 class Lexer;
 class ParseError;
-class Token;
+class ObjString;
 
 /**
  * Parser for the Lax language
@@ -146,6 +147,8 @@ private:
 	 */
 	void synchronize();
 
+    ObjString* identifier(const std::string &name);
+
 	/**
 	 * Build a node representing the program
 	 *
@@ -159,6 +162,13 @@ private:
      * @return the node created
      */
 	UBlockNode block();
+
+    /**
+     * Build a node representing a scoped block of statements
+     *
+     * @return the block node created
+     */
+    UBlockNode scopedBlock();
 
 	/**
 	 * Build a node representing a statement

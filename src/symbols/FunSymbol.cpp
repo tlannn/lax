@@ -1,10 +1,27 @@
 #include "symbols/FunSymbol.h"
+#include "objects/ObjString.h"
+#include "values/FunctionType.h"
 
 /// Class constructor
-FunSymbol::FunSymbol(std::string name, std::vector<std::unique_ptr<VarSymbol>> args, ValueType returnType) :
-					 Symbol(std::move(name), returnType), _args(std::move(args)) {}
+FunSymbol::FunSymbol(
+    ObjString *name,
+    std::vector<VarSymbol> &args,
+    LaxType *returnType
+) : Symbol(name, nullptr),
+    m_args(std::move(args))
+{
+    std::vector<LaxType*> paramsTypes;
+    for (auto &arg : m_args)
+        paramsTypes.emplace_back(arg.getType());
+
+    _type = new FunctionType(*returnType, paramsTypes);
+}
 
 /// Getter for the function arguments
-const std::vector<std::unique_ptr<VarSymbol>>& FunSymbol::getArgs() {
-	return _args;
+const std::vector<VarSymbol> &FunSymbol::getArgs() {
+    return m_args;
+}
+
+Symbol::Type FunSymbol::getSymbolType() {
+    return FUNCTION;
 }

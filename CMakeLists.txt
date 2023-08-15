@@ -12,6 +12,7 @@ set(SOURCE_FILES
         src/main.cpp
         src/Lax.cpp
         src/ast/nodes/AssignNode.cpp
+        src/ast/nodes/ASTNode.cpp
         src/ast/nodes/BinOpNode.cpp
         src/ast/nodes/BlockNode.cpp
         src/ast/nodes/CallNode.cpp
@@ -35,8 +36,6 @@ set(SOURCE_FILES
         src/common/Exception.cpp
         src/common/Memory.cpp
         src/common/StringTable.cpp
-        src/common/Value.cpp
-        src/common/ValueType.cpp
         src/compiler/Compiler.cpp
         src/lexer/Lexer.cpp
         src/lexer/LexError.cpp
@@ -53,15 +52,23 @@ set(SOURCE_FILES
         src/parser/Parser.cpp
         src/semantic/SemanticAnalyzer.cpp
         src/semantic/SemanticError.cpp
-        src/symbols/Env.cpp
+        src/symbols/BuiltInSymbol.cpp
         src/symbols/FunSymbol.cpp
+        src/symbols/Scope.cpp
         src/symbols/Symbol.cpp
         src/symbols/SymbolTable.cpp
         src/symbols/VarSymbol.cpp
         src/tokens/Token.cpp
         src/utils/Logger.cpp
         src/vm/Table.cpp
-        src/vm/VM.cpp)
+        src/vm/VM.cpp
+        src/values/FunctionType.cpp
+        src/values/LaxType.cpp
+        src/values/ObjectType.cpp
+        src/values/PrimitiveType.cpp
+        src/values/Value.cpp
+        src/values/ValueArray.cpp
+)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(lax ${SOURCE_FILES})

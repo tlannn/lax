@@ -1,8 +1,8 @@
 #include "common/Debug.h"
-#include "common/Value.h"
 #include "common/Chunk.h"
 #include "objects/ObjFunction.h"
 #include "utils/Logger.h"
+#include "values/Value.h"
 
 /**
  * Disassemble a simple instruction containing only one byte.

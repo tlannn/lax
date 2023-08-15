@@ -4,8 +4,8 @@
 #include <cstring>
 
 #include "common/Memory.h"
-#include "common/Value.h"
 #include "objects/ObjString.h"
+#include "values/Value.h"
 
 #define TABLE_MAX_LOAD 0.75
 
@@ -60,7 +60,7 @@ private:
 	/// Structure representing a key-value pair in the table.
 	typedef struct Entry {
 		ObjString *key = nullptr;
-		Value value;
+		Value value = Value::null();
 	} Entry;
 
 	/**

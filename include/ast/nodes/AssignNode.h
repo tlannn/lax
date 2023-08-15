@@ -9,6 +9,11 @@
 
 // Forward declarations
 class ASTVisitor;
+class ObjString;
+class Token;
+class VarSymbol;
+
+typedef std::shared_ptr<Token> SToken;
 
 /**
  * Node for variable assignment statements
@@ -24,16 +29,17 @@ public:
 	/**
 	 * Class constructor
 	 *
-	 * @param id the copyIdentifier to assign a value to
-	 * @param expr the expression to assign to the copyIdentifier
+	 * @param id the identifier of the variable to assign a value to
+	 * @param assignToken the token of the assignment sign
+	 * @param expr the expression to assign to the variable
 	 */
-    AssignNode(UExprNode identifier, UExprNode expr);
+    AssignNode(ObjString *identifier, SToken assignToken, UExprNode expr);
 
 	/**
 	 * Getter for the token of the variable
 	 * @return the variable token
 	 */
-	std::string getName();
+	ObjString* getName();
 
 	/**
 	 * Getter for the new expression assigned
@@ -41,14 +47,27 @@ public:
 	 */
 	ExprNode* getExpr();
 
+    /**
+     * Getter for the symbol representing the variable assigned
+     * @return a pointer to the symbol
+     */
+    VarSymbol* getSymbol() const;
+
+    /**
+     * Setter for the symbol representing the variable assigned
+     * @param symbol a pointer to the symbol
+     */
+    void setSymbol(VarSymbol *symbol);
+
 	/**
 	 * Accept method for the visitor pattern
 	 */
 	void accept(ASTVisitor &visitor) override;
 
 private:
-	UExprNode _identifier;
+	ObjString* _identifier;
     UExprNode _expr;
+    VarSymbol *_symbol;
 };
 
 #endif // LAX_ASSIGNNODE_H
