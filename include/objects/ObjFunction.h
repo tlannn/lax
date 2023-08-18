@@ -24,48 +24,48 @@ class ObjString;
  */
 class ObjFunction : public Object {
 public:
-	/**
-	 * Class constructor.
-	 *
-	 * @param name the name of the function
-	 * @param arity the number of parameters that the function takes
-	 */
-	explicit ObjFunction(ObjString *name, int arity = 0);
+    /**
+     * Class constructor.
+     *
+     * @param name the name of the function
+     * @param arity the number of parameters that the function takes
+     */
+    explicit ObjFunction(ObjString* name, int arity = 0);
 
-	/**
-	 * Getter for the number of parameters of the function.
-	 *
-	 * @return the number of parameters.
-	 */
-	int arity() const;
+    /**
+     * Getter for the number of parameters of the function.
+     *
+     * @return the number of parameters.
+     */
+    int arity() const;
 
-	/// Increment the number of upvalues used in the function.
-	void incrementUpvalueCount();
+    /// Increment the number of upvalues used in the function.
+    void incrementUpvalueCount();
 
-	/**
-	 * Return the number of upvalues used in the function.
-	 *
-	 * @return the number of upvalues used.
-	 */
-	int getUpvalueCount() const;
+    /**
+     * Return the number of upvalues used in the function.
+     *
+     * @return the number of upvalues used.
+     */
+    int getUpvalueCount() const;
 
-	/**
-	 * Return a pointer to the chunk of bytecode that depicts the function.
-	 *
-	 * @return a pointer to the function bytecode chunk.
-	 */
-	Chunk* getChunk();
+    /**
+     * Return a pointer to the chunk of bytecode that depicts the function.
+     *
+     * @return a pointer to the function bytecode chunk.
+     */
+    Chunk* getChunk();
 
-	/// Return a string representation of the function.
-	std::string toString() override;
+    /// Return a string representation of the function.
+    std::string toString() override;
 
 private:
-	ObjString *_name;
-	int _arity;
-	int _upvalueCount;
-	Chunk _chunk;
+    ObjString* m_name;
+    int m_arity;
+    int m_upvalueCount;
+    Chunk m_chunk;
 };
 
-#define AS_FUNCTION(value)	((dynamic_cast<ObjFunction*>(AS_OBJ(value))))
+#define AS_FUNCTION(value)    ((dynamic_cast<ObjFunction*>(AS_OBJ(value))))
 
 #endif // LAX_OBJFUNCTION_H

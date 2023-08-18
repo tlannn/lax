@@ -18,27 +18,27 @@ class SeqNode;
  */
 class BlockNode : public StmtNode {
 public:
-	/**
+    /**
      * Class constructor
      *
      * @param stmts the statements to execute inside the block
      */
     explicit BlockNode(USeqNode seq);
 
-	/**
-	 * Getter for the sequence of statements inside the block
-	 *
-	 * @return the sequence
-	 */
-	SeqNode* getSequence();
+    /**
+     * Getter for the sequence of statements inside the block
+     *
+     * @return the sequence
+     */
+    SeqNode* getSequence();
 
-	/**
+    /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	USeqNode _seq;
+    USeqNode m_seq;
 };
 
 #endif // LAX_BLOCKNODE_H

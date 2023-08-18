@@ -15,27 +15,27 @@ class ASTVisitor;
  */
 class SeqNode : public StmtNode {
 public:
-	/**
-	 * SeqNode constructor
-	 *
-	 * @param stmts the statements to execute
-	 */
-	explicit SeqNode(std::vector<UStmtNode> stmts);
+    /**
+     * SeqNode constructor
+     *
+     * @param stmts the statements to execute
+     */
+    explicit SeqNode(std::vector<UStmtNode> stmts);
 
-	/**
-	 * Getter for the statements to execute
-	 *
-	 * @return the statements
-	 */
-	const std::vector<UStmtNode>& getStatements();
+    /**
+     * Getter for the statements to execute
+     *
+     * @return the statements
+     */
+    const std::vector<UStmtNode>& getStatements();
 
-	/**
+    /**
      * Accept method for the visitor pattern
      */
-	void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	std::vector<UStmtNode> _stmts;
+    std::vector<UStmtNode> m_stmts;
 };
 
 #endif // LAX_SEQNODE_H

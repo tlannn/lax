@@ -27,13 +27,13 @@ public:
      * Traverses the AST starting from root node using the provided visitor.
      * @param visitor Reference to ASTVisitor object.
      */
-    void traverse(ASTVisitor &visitor);
+    void traverse(ASTVisitor& visitor);
 
     /**
      * Provides a reference to root node.
      * @return Reference to root ASTNode.
      */
-    ASTNode &getRoot() const;
+    ASTNode& getRoot() const;
 
 private:
     std::unique_ptr<ASTNode> m_root;

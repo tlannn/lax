@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string>
 
-// Code for white color displays in gray, so instead no code is used to display in white by default
+// Code for white color displays in gray, so instead no code is used to display
+// in white by default
 #define COLOR_WHITE "" // "\u001b[37m"
 #define COLOR_RED "\u001b[31m"
 #define COLOR_YELLOW "\u001b[33m"

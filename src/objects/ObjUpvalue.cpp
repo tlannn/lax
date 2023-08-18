@@ -1,24 +1,23 @@
 #include "objects/ObjUpvalue.h"
 
-ObjUpvalue::ObjUpvalue(Value *slot) :
-    Object(ObjType::OBJ_UPVALUE),
-    _location(slot),
-    _closed(Value::null()),
-    _next(nullptr) {}
+ObjUpvalue::ObjUpvalue(Value* slot) : Object(ObjType::OBJ_UPVALUE),
+    m_location(slot),
+    m_closed(Value::null()),
+    m_next(nullptr) {}
 
 Value* ObjUpvalue::getLocation() const {
-	return _location;
+    return m_location;
 }
 
 ObjUpvalue* ObjUpvalue::getNext() const {
-	return _next;
+    return m_next;
 }
 
-void ObjUpvalue::setNext(ObjUpvalue *nextUpvalue) {
-	_next = nextUpvalue;
+void ObjUpvalue::setNext(ObjUpvalue* nextUpvalue) {
+    m_next = nextUpvalue;
 }
 
 void ObjUpvalue::setClosed(Value value) {
-	_closed = value;
-	_location = &_closed;
+    m_closed = value;
+    m_location = &m_closed;
 }

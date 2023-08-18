@@ -5,90 +5,94 @@
 #include "symbols/SymbolTable.h"
 
 /// Class constructor
-SemanticAnalyzer::SemanticAnalyzer(AST &ast) :
-		_ast(ast), _errors(false), m_symtable(SymbolTable::instance()) {}
+SemanticAnalyzer::SemanticAnalyzer(AST& ast) :
+    m_ast(ast),
+    m_errors(false),
+    m_symtable(SymbolTable::instance()) {}
 
 /// Analyze semantically the code parsed by the parser
 void SemanticAnalyzer::analyze() {
-	_ast.traverse(*this);
+    m_ast.traverse(*this);
 }
 
 /// Return whether errors occurred during semantic analysis
 bool SemanticAnalyzer::hadErrors() const {
-	return _errors;
+    return m_errors;
 }
 
 /// Return an exception on a specific token
 SemanticError SemanticAnalyzer::error(
-		Token *token, const std::string &message, const std::string &type) {
-	_errors = true;
-	return SemanticError(Lexer::currentFile, token->getLine(), token->getColumn(), message, type);
+    Token* token, const std::string& message, const std::string& type) {
+    m_errors = true;
+    return SemanticError(
+        Lexer::currentFile, token->getLine(),token->getColumn(), message, type
+    );
 }
 
 /// Report an error to inform the user
-void SemanticAnalyzer::report(const SemanticError &err) {
-	Logger::error(err.what());
+void SemanticAnalyzer::report(const SemanticError& err) {
+    Logger::error(err.what());
 }
 
-void SemanticAnalyzer::visit(ExprNode &node) {
+void SemanticAnalyzer::visit(ExprNode& node) {
     node.accept(*this);
 }
 
-void SemanticAnalyzer::visit(AssignNode &node) {
+void SemanticAnalyzer::visit(AssignNode& node) {
     visit(*node.getExpr());
 }
 
-void SemanticAnalyzer::visit(LogicalNode &node) {
+void SemanticAnalyzer::visit(LogicalNode& node) {
     visit(*node.getLeft());
     visit(*node.getRight());
 }
 
-void SemanticAnalyzer::visit(RelationalNode &node) {
+void SemanticAnalyzer::visit(RelationalNode& node) {
     visit(*node.getLeft());
     visit(*node.getRight());
 }
 
-void SemanticAnalyzer::visit(BinOpNode &node) {
+void SemanticAnalyzer::visit(BinOpNode& node) {
     visit(*node.getLeft());
     visit(*node.getRight());
 }
 
-void SemanticAnalyzer::visit(UnaryNode &node) {
+void SemanticAnalyzer::visit(UnaryNode& node) {
     visit(*node.getExpr());
 }
 
-void SemanticAnalyzer::visit(CallNode &node) {
+void SemanticAnalyzer::visit(CallNode& node) {
     visit(*node.getCallee());
-    const auto &args = node.getArgs();
+    const auto& args = node.getArgs();
 
-    for (const auto &arg : args)
+    for (const auto& arg : args)
         visit(*arg);
 }
 
-void SemanticAnalyzer::visit(LiteralNode &node) {}
+void SemanticAnalyzer::visit(LiteralNode& node) {}
 
-void SemanticAnalyzer::visit(IdNode &node) {}
+void SemanticAnalyzer::visit(IdNode& node) {}
 
-void SemanticAnalyzer::visit(StmtNode &node) {
+void SemanticAnalyzer::visit(StmtNode& node) {
     node.accept(*this);
 }
 
-void SemanticAnalyzer::visit(BlockNode &node) {
+void SemanticAnalyzer::visit(BlockNode& node) {
     visit(*node.getSequence());
 }
 
-void SemanticAnalyzer::visit(SeqNode &node) {
-    auto &stmts = node.getStatements();
+void SemanticAnalyzer::visit(SeqNode& node) {
+    auto& stmts = node.getStatements();
 
-    for (const auto &stmt : stmts)
+    for (const auto& stmt : stmts)
         visit(*stmt);
 }
 
-void SemanticAnalyzer::visit(DeclNode &node) {
+void SemanticAnalyzer::visit(DeclNode& node) {
     visit(*node.getRValue());
 }
 
-void SemanticAnalyzer::visit(ConditionalNode &node) {
+void SemanticAnalyzer::visit(ConditionalNode& node) {
     visit(*node.getConditionExpression());
     visit(*node.getThenStatement());
 
@@ -96,15 +100,15 @@ void SemanticAnalyzer::visit(ConditionalNode &node) {
         visit(*node.getElseStatement());
 }
 
-void SemanticAnalyzer::visit(FunNode &node) {
+void SemanticAnalyzer::visit(FunNode& node) {
     visit(*node.getBody());
 }
 
-void SemanticAnalyzer::visit(ReturnNode &node) {
+void SemanticAnalyzer::visit(ReturnNode& node) {
     if (node.getValue())
         visit(*node.getValue());
 }
 
-void SemanticAnalyzer::visit(StmtExpressionNode &node) {
+void SemanticAnalyzer::visit(StmtExpressionNode& node) {
     visit(*node.getExpr());
 }

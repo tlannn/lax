@@ -32,7 +32,7 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 };
 
 #endif // LAX_LOGICALNODE_H

@@ -26,26 +26,26 @@ typedef std::shared_ptr<Token> SToken;
  */
 class AssignNode : public ExprNode {
 public:
-	/**
-	 * Class constructor
-	 *
-	 * @param id the identifier of the variable to assign a value to
-	 * @param assignToken the token of the assignment sign
-	 * @param expr the expression to assign to the variable
-	 */
-    AssignNode(ObjString *identifier, SToken assignToken, UExprNode expr);
+    /**
+     * Class constructor
+     *
+     * @param id the identifier of the variable to assign a value to
+     * @param assignToken the token of the assignment sign
+     * @param expr the expression to assign to the variable
+     */
+    AssignNode(ObjString* identifier, SToken assignToken, UExprNode expr);
 
-	/**
-	 * Getter for the token of the variable
-	 * @return the variable token
-	 */
-	ObjString* getName();
+    /**
+     * Getter for the token of the variable
+     * @return the variable token
+     */
+    ObjString* getName();
 
-	/**
-	 * Getter for the new expression assigned
-	 * @return the expression
-	 */
-	ExprNode* getExpr();
+    /**
+     * Getter for the new expression assigned
+     * @return the expression
+     */
+    ExprNode* getExpr();
 
     /**
      * Getter for the symbol representing the variable assigned
@@ -57,17 +57,17 @@ public:
      * Setter for the symbol representing the variable assigned
      * @param symbol a pointer to the symbol
      */
-    void setSymbol(VarSymbol *symbol);
+    void setSymbol(VarSymbol* symbol);
 
-	/**
-	 * Accept method for the visitor pattern
-	 */
-	void accept(ASTVisitor &visitor) override;
+    /**
+     * Accept method for the visitor pattern
+     */
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	ObjString* _identifier;
-    UExprNode _expr;
-    VarSymbol *_symbol;
+    ObjString* m_identifier;
+    UExprNode  m_expr;
+    VarSymbol* m_symbol;
 };
 
 #endif // LAX_ASSIGNNODE_H

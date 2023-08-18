@@ -9,22 +9,22 @@
  */
 class Exception : public std::exception {
 public:
-	/**
-	 * Class constructor
-	 * @param message the exception message
-	 * @param type the type of exception
-	 */
-	explicit Exception(std::string message, std::string type = "");
+    /**
+     * Class constructor
+     * @param message the exception message
+     * @param type the type of exception
+     */
+    explicit Exception(std::string message, std::string type = "");
 
-	/**
-	 * Get string identifying exception
-	 * @return the string
-	 */
-	const char* what() const noexcept override;
+    /**
+     * Get string identifying exception
+     * @return the string
+     */
+    const char* what() const noexcept override;
 
 protected:
-	const std::string _message;
-	const std::string _type;
+    const std::string m_message;
+    const std::string m_type;
 };
 
 #endif // LAX_EXCEPTION_H

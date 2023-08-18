@@ -7,7 +7,8 @@
 
 class SemanticError : public CompileTimeException {
 public:
-	SemanticError(const std::string &file, int line, int col, const std::string &message, const std::string &type);
+    SemanticError(const std::string& file, int line, int col,
+        const std::string& message, const std::string& type);
 };
 
 #endif // LAX_SEMANTICERROR_H

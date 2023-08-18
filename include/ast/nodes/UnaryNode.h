@@ -41,7 +41,7 @@ public:
 	void accept(ASTVisitor &visitor) override;
 
 private:
-	UExprNode _expr;
+	UExprNode m_expr;
 };
 
 #endif //LAX_UNARYNODE_H

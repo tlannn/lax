@@ -17,43 +17,43 @@ class ObjUpvalue;
  */
 class ObjClosure : public Object {
 public:
-	/**
-	 * Class constructor.
-	 *
-	 * @param function the function object that the closure references.
-	 */
-	explicit ObjClosure(ObjFunction *function);
+    /**
+     * Class constructor.
+     *
+     * @param function the function object that the closure references.
+     */
+    explicit ObjClosure(ObjFunction* function);
 
-	/**
-	 * Getter for the function referenced.
-	 *
-	 * @return the function referenced.
-	 */
-	ObjFunction* getFunction();
+    /**
+     * Getter for the function referenced.
+     *
+     * @return the function referenced.
+     */
+    ObjFunction* getFunction();
 
-	/**
-	 * Getter for the upvalues captured by the closure.
-	 *
-	 * @return the upvalues used in the function.
-	 */
-	ObjUpvalue** getUpvalues() const;
+    /**
+     * Getter for the upvalues captured by the closure.
+     *
+     * @return the upvalues used in the function.
+     */
+    ObjUpvalue** getUpvalues() const;
 
-	/**
-	 * Return the number of upvalues captured by the closure.
-	 *
-	 * @return the number of upvalues captured.
-	 */
-	int getUpvalueCount() const;
+    /**
+     * Return the number of upvalues captured by the closure.
+     *
+     * @return the number of upvalues captured.
+     */
+    int getUpvalueCount() const;
 
-	/// Return a string representation of the closure.
-	std::string toString() override;
+    /// Return a string representation of the closure.
+    std::string toString() override;
 
 private:
-	ObjFunction *_function;
-	ObjUpvalue **_upvalues;
-	int _upvalueCount;
+    ObjFunction* m_function;
+    ObjUpvalue** m_upvalues;
+    int m_upvalueCount;
 };
 
-#define AS_CLOSURE(value)	((dynamic_cast<ObjClosure*>(AS_OBJ(value))))
+#define AS_CLOSURE(value)    ((dynamic_cast<ObjClosure*>(AS_OBJ(value))))
 
 #endif // LAX_OBJCLOSURE_H

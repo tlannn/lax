@@ -48,7 +48,7 @@ public:
      * @param symbol the symbol to add.
      * @return true if the insertion was successful, false otherwise.
      */
-    bool define(Scope &scope, std::unique_ptr<Symbol> symbol);
+    bool define(Scope& scope, std::unique_ptr<Symbol> symbol);
 
     /**
      * Fetch a symbol in the table.
@@ -58,8 +58,8 @@ public:
      * no symbol associated to the name is found.
      * @return a pointer to the symbol if found, or a null pointer.
      */
-    Symbol* lookup(Scope &scope, ObjString *name,
-                   bool lookupEnclosingScopes = true);
+    Symbol* lookup(Scope& scope, ObjString* name,
+        bool lookupEnclosingScopes = true);
 
     /**
      * Fetch a symbol representing a variable in the table.
@@ -69,8 +69,8 @@ public:
      * no symbol associated to the name is found.
      * @return a pointer to the symbol if found, or a null pointer.
      */
-    VarSymbol* lookupVariable(Scope &scope, ObjString *name,
-                              bool lookupEnclosingScopes = true);
+    VarSymbol* lookupVariable(Scope& scope, ObjString* name,
+        bool lookupEnclosingScopes = true);
 
     /**
      * Fetch a symbol representing a function in the table.
@@ -80,8 +80,8 @@ public:
      * no symbol associated to the name is found.
      * @return a pointer to the symbol if found, or a null pointer.
      */
-    FunSymbol* lookupFunction(Scope &scope, ObjString *name,
-                              bool lookupEnclosingScopes = true);
+    FunSymbol* lookupFunction(Scope& scope, ObjString* name,
+        bool lookupEnclosingScopes = true);
 
     /**
      * Return the instance of the symbol table singleton.
@@ -108,7 +108,7 @@ private:
      * @param previous a pointer to the previous scope. May be a null pointer
      * to indicate that this scope has no parent.
      */
-    void createScope(Scope *previous);
+    void createScope(Scope* previous);
 
     /**
      * Lookup a symbol by its name in a scope.
@@ -121,7 +121,7 @@ private:
      * @return a pointer to the symbol if found, or a null pointer.
      */
     template<typename Type>
-    Type* lookup(LookupFn<Type> lookupFunction, Scope &scope, ObjString *name,
+    Type* lookup(LookupFn<Type> lookupFunction, Scope& scope, ObjString* name,
         bool lookupEnclosingScopes);
 
     /**
@@ -133,7 +133,7 @@ private:
      * @return true if the insertion was successful, false otherwise.
      */
     template<typename Type>
-    bool insert(InsertFn<Type> insertFunction, Scope &scope,
+    bool insert(InsertFn<Type> insertFunction, Scope& scope,
         std::unique_ptr<Type> value);
 
     /*

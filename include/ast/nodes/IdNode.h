@@ -22,19 +22,19 @@ typedef std::shared_ptr<Token> SToken;
  */
 class IdNode : public ExprNode {
 public:
-	/**
-	 * Class constructor
-	 *
-	 * @param id the identifier name token
-	 */
+    /**
+     * Class constructor
+     *
+     * @param id the identifier name token
+     */
     explicit IdNode(SToken id);
 
-	/**
-	 * Getter for the name of the identifier
-	 *
-	 * @return the name
-	 */
-	ObjString* getName();
+    /**
+     * Getter for the name of the identifier
+     *
+     * @return the name
+     */
+    ObjString* getName();
 
     /**
      * Getter for the symbol representing the variable referred to
@@ -46,16 +46,16 @@ public:
      * Setter for the symbol representing the variable referred to
      * @param symbol a pointer to the symbol
      */
-    void setSymbol(Symbol *symbol);
+    void setSymbol(Symbol* symbol);
 
-	/**
-	 * Accept method for the visitor pattern
-	 */
-    void accept(ASTVisitor &visitor) override;
+    /**
+     * Accept method for the visitor pattern
+     */
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	ObjString* _name;
-    Symbol* _symbol;
+    ObjString* m_name;
+    Symbol* m_symbol;
 };
 
 #endif // LAX_IDNODE_H

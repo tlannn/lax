@@ -34,9 +34,9 @@ public:
     const Value& getValue(int offset);
 
 private:
-    int _count;
-    int _capacity;
-    Value *_values;
+    int m_count;
+    int m_capacity;
+    Value* m_values;
 };
 
 #endif // LAX_VALUEARRAY_H

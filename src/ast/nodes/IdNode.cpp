@@ -1,30 +1,28 @@
 #include "ast/nodes/IdNode.h"
 #include "ast/ASTVisitor.h"
 #include "objects/ObjString.h"
-#include "tokens/Token.h"
 
 /// Class constructor
-IdNode::IdNode(SToken name) :
-	ExprNode(std::move(name)),
-	_name(ObjString::copyString(ExprNode::getToken()->toString())),
-    _symbol(nullptr) {}
+IdNode::IdNode(SToken name) : ExprNode(std::move(name)),
+    m_name(ObjString::copyString(ExprNode::getToken()->toString())),
+    m_symbol(nullptr) {}
 
 /// Getter for the name of the identifier
 ObjString* IdNode::getName() {
-	return _name;
+    return m_name;
 }
 
 /// Getter for the symbol representing the variable referred to
 Symbol* IdNode::getSymbol() const {
-    return _symbol;
+    return m_symbol;
 }
 
 /// Setter for the symbol representing the variable referred to
-void IdNode::setSymbol(Symbol *symbol) {
-    _symbol = symbol;
+void IdNode::setSymbol(Symbol* symbol) {
+    m_symbol = symbol;
 }
 
 /// Accept method for the visitor pattern
-void IdNode::accept(ASTVisitor &visitor) {
+void IdNode::accept(ASTVisitor& visitor) {
     visitor.visit(*this);
 }

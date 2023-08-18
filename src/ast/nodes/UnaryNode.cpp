@@ -3,16 +3,15 @@
 #include "ast/ASTVisitor.h"
 
 /// Class constructor
-UnaryNode::UnaryNode(SToken op, UExprNode expr) :
-	ExprNode(std::move(op)),
-    _expr(std::move(expr)) {}
+UnaryNode::UnaryNode(SToken op, UExprNode expr) : ExprNode(std::move(op)),
+    m_expr(std::move(expr)) {}
 
 /// Getter for the expression of the operation
 ExprNode* UnaryNode::getExpr() const {
-	return _expr.get();
+    return m_expr.get();
 }
 
 /// Accept method for the visitor pattern
-void UnaryNode::accept(ASTVisitor &visitor) {
-	visitor.visit(*this);
+void UnaryNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
 }

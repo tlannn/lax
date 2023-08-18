@@ -10,11 +10,11 @@
  */
 class Lax {
 public:
-	/**
-	 * Interpret a source file with the Lax interpreter
-	 * @param filepath the path to the source file
-	 */
-	static void interpret(const std::string &filepath);
+    /**
+     * Interpret a source file with the Lax interpreter
+     * @param filepath the path to the source file
+     */
+    static void interpret(const std::string& filepath);
 };
 
 #endif // LAX_LAX_H

@@ -2,6 +2,6 @@
 
 ObjectType::ObjectType() : LaxType(OBJECT) {}
 
-std::string ObjectType::toString() {
+std::string ObjectType::toString() const {
     return "";
 }

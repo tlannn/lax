@@ -6,22 +6,20 @@
 #define NO_ARGUMENT_CODE 1
 
 /// Main
-int main(int argc, char *argv[]) {
-	if (argc < 2) {
-		std::cout << "Please specify a file to run." << std::endl;
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cout << "Please specify a file to run." << std::endl;
         exit(NO_ARGUMENT_CODE);
     }
 
-	// Interpreter mode
-	else if (argc == 2) {
-		std::string filepath = argv[1];
-		Lax::interpret(filepath);
-	}
-
-	else {
-		std::cout << "Too much arguments." << std::endl;
-		exit(EXIT_FAILURE);
-	}
+    // Interpreter mode
+    else if (argc == 2) {
+        std::string filepath = argv[1];
+        Lax::interpret(filepath);
+    } else {
+        std::cout << "Too much arguments." << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
 //	// Compiler mode
 //	else {

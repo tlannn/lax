@@ -20,69 +20,69 @@
  */
 class Table {
 public:
-	/// Class constructor.
-	Table();
+    /// Class constructor.
+    Table();
 
-	/// Class destructor.
-	~Table();
+    /// Class destructor.
+    ~Table();
 
-	/**
-	 * Get a value stored in the table.
-	 *
-	 * @param key the key associated with the value.
-	 * @param value the value object where the value copy must be stored.
-	 * @return true if the key exists, or false otherwise.
-	 */
-	bool get(ObjString *key, Value *value);
+    /**
+     * Get a value stored in the table.
+     *
+     * @param key the key associated with the value.
+     * @param value the value object where the value copy must be stored.
+     * @return true if the key exists, or false otherwise.
+     */
+    bool get(ObjString* key, Value* value);
 
-	/**
-	 * Store a value in the table with the given key.
-	 *
-	 * @param key the key to which the value must be associated.
-	 * @param value the value to store.
-	 * @return true if no value was already associated to the key, false otherwise.
-	 */
-	bool set(ObjString *key, Value value);
+    /**
+     * Store a value in the table with the given key.
+     *
+     * @param key the key to which the value must be associated.
+     * @param value the value to store.
+     * @return true if no value was already associated to the key, false otherwise.
+     */
+    bool set(ObjString* key, Value value);
 
-	/**
-	 * Remove from the table the value associated to the given key.
-	 *
-	 * @param key the key associated with the value.
-	 * @return true if a value has effectively been removed, false otherwise.
-	 */
-	bool remove(ObjString *key);
+    /**
+     * Remove from the table the value associated to the given key.
+     *
+     * @param key the key associated with the value.
+     * @return true if a value has effectively been removed, false otherwise.
+     */
+    bool remove(ObjString* key);
 
-	void copyTable(Table *to);
+    void copyTable(Table* to);
 
-	ObjString* findString(const std::string &chars, int length, uint32_t hash);
+    ObjString* findString(const std::string& chars, int length, uint32_t hash);
 
 private:
-	/// Structure representing a key-value pair in the table.
-	typedef struct Entry {
-		ObjString *key = nullptr;
-		Value value = Value::null();
-	} Entry;
+    /// Structure representing a key-value pair in the table.
+    typedef struct Entry {
+        ObjString* key = nullptr;
+        Value value = Value::null();
+    } Entry;
 
-	/**
-	 * Resize the table to accept a new amount of entries.
-	 *
-	 * @param capacity the new capacity of the table.
-	 */
-	void adjustCapacity(int capacity);
+    /**
+     * Resize the table to accept a new amount of entries.
+     *
+     * @param capacity the new capacity of the table.
+     */
+    void adjustCapacity(int capacity);
 
-	/**
-	 * Find the entry corresponding to a key in an array of entries.
-	 *
-	 * @param entries the array of entries to look up.
-	 * @param capacity the capacity of the array.
-	 * @param key the key to look up.
-	 * @return the entry corresponding to the key.
-	 */
-	static Entry* find(Entry *entries, int capacity, ObjString *key);
+    /**
+     * Find the entry corresponding to a key in an array of entries.
+     *
+     * @param entries the array of entries to look up.
+     * @param capacity the capacity of the array.
+     * @param key the key to look up.
+     * @return the entry corresponding to the key.
+     */
+    static Entry* find(Entry* entries, int capacity, ObjString* key);
 
-	int _count;
-	int _capacity;
-	Entry *_entries;
+    int m_count;
+    int m_capacity;
+    Entry* m_entries;
 };
 
 #endif //LAX_TABLE_H

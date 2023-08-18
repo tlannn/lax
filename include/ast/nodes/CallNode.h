@@ -24,28 +24,28 @@ typedef std::shared_ptr<Token> SToken;
  */
 class CallNode : public ExprNode {
 public:
-	/**
-	 * Class constructor
-	 *
-	 * @param callee the expression that is called
-	 * @param token the closing parenthesis token
-	 * @param args the list of arguments
-	 */
-	CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args);
+    /**
+     * Class constructor
+     *
+     * @param callee the expression that is called
+     * @param token the closing parenthesis token
+     * @param args the list of arguments
+     */
+    CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args);
 
-	/**
-	 * Getter for the callee
-	 *
-	 * @return the callee
-	 */
-	ExprNode* getCallee();
+    /**
+     * Getter for the callee
+     *
+     * @return the callee
+     */
+    ExprNode* getCallee();
 
-	/**
-	 * Getter for the arguments of the call
-	 *
-	 * @return the arguments
-	 */
-	const std::vector<UExprNode>& getArgs();
+    /**
+     * Getter for the arguments of the call
+     *
+     * @return the arguments
+     */
+    const std::vector<UExprNode>& getArgs();
 
     /**
      * Getter for the symbol representing the function called
@@ -57,17 +57,17 @@ public:
      * Setter for the symbol representing the function called
      * @param symbol a pointer to the symbol
      */
-    void setSymbol(Symbol *symbol);
+    void setSymbol(Symbol* symbol);
 
-	/**
-	 * Accept method for the visitor pattern
-	 */
-    void accept(ASTVisitor &visitor) override;
+    /**
+     * Accept method for the visitor pattern
+     */
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	UExprNode _callee;
-	std::vector<UExprNode> _args;
-    Symbol *_symbol;
+    UExprNode m_callee;
+    std::vector<UExprNode> m_args;
+    Symbol* m_symbol;
 };
 
 #endif // LAX_CALLNODE_H

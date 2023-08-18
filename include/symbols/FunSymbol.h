@@ -19,19 +19,19 @@ class ObjString;
  */
 class FunSymbol : public Symbol {
 public:
-	/**
-	 * Class constructor
-	 * @param name the function name
-	 * @param args the arguments expected by the function
-	 * @param returnType the value type returned
-	 */
-	FunSymbol(ObjString *name, ARGS_TYPE &args, LaxType *returnType);
+    /**
+     * Class constructor
+     * @param name the function name
+     * @param args the arguments expected by the function
+     * @param returnType the value type returned
+     */
+    FunSymbol(ObjString* name, ARGS_TYPE& args, LaxType* returnType);
 
-	/**
-	 * Getter for the function arguments
-	 * @return the arguments expected
-	 */
-	const ARGS_TYPE& getArgs();
+    /**
+     * Getter for the function arguments
+     * @return the arguments expected
+     */
+    const ARGS_TYPE& getArgs();
 
     Type getSymbolType() override;
 

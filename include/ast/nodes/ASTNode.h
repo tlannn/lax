@@ -10,15 +10,15 @@ class Scope;
  */
 class ASTNode {
 public:
-	/**
-	 * Class constructor
-	 */
-	ASTNode();
+    /**
+     * Class constructor
+     */
+    ASTNode();
 
-	/**
-	 * Class destructor
-	 */
-	virtual ~ASTNode() = default;
+    /**
+     * Class destructor
+     */
+    virtual ~ASTNode() = default;
 
     /**
      * Getter for the scope of the node
@@ -30,18 +30,18 @@ public:
      * Setter for the scope of the node
      * @param scope the scope
      */
-    void setScope(Scope *scope);
+    void setScope(Scope* scope);
 
-	/**
-	 * Accepts an *ASTVisitor* and call its visit method corresponding to
+    /**
+     * Accepts an *ASTVisitor* and call its visit method corresponding to
      * the type of the node
      *
      * @param visitor the visitor that wants to visit the node
-	 */
-	virtual void accept(ASTVisitor &visitor) = 0;
+     */
+    virtual void accept(ASTVisitor& visitor) = 0;
 
 private:
-    Scope *m_scope;
+    Scope* m_scope;
 };
 
 #endif // LAX_ASTNODE_H

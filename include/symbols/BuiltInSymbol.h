@@ -24,7 +24,7 @@ public:
      * @param args the arguments expected by the function
      * @param returnType the value type returned
      */
-    BuiltInSymbol(ObjString *name, LaxType *type);
+    BuiltInSymbol(ObjString* name, LaxType* type);
 
     Type getSymbolType() override;
 };

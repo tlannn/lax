@@ -13,6 +13,6 @@
  * @param args the arguments of the function.
  * @return the null value.
  */
-Value printNative(int argCount, Value *args);
+Value printNative(int argCount, Value* args);
 
 #endif //LAX_NATIVEFUNCTIONS_H

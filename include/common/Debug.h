@@ -13,7 +13,7 @@ class Chunk;
  * @param chunk the chunk to disassemble.
  * @param name the name of the output representation.
  */
-void disassembleChunk(Chunk* chunk, const std::string &name);
+void disassembleChunk(Chunk* chunk, const std::string& name);
 
 /**
  * Disassemble a bytecode instruction in a chunk.

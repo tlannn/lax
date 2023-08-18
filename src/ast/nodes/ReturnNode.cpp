@@ -5,19 +5,20 @@
 
 /// Class constructor
 ReturnNode::ReturnNode(UToken returnToken, UExprNode value) :
-						StmtNode(), _returnToken(std::move(returnToken)), _value(std::move(value)) {}
+    m_returnToken(std::move(returnToken)),
+    m_value(std::move(value)) {}
 
 /// Getter for the return keyword token
 Token* ReturnNode::getToken() {
-	return _returnToken.get();
+    return m_returnToken.get();
 }
 
 /// Getter for the expression returned
 ExprNode* ReturnNode::getValue() {
-	return _value.get();
+    return m_value.get();
 }
 
 /// Accept method for the visitor pattern
-void ReturnNode::accept(ASTVisitor &visitor) {
-	visitor.visit(*this);
+void ReturnNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
 }

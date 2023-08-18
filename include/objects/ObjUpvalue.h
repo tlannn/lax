@@ -17,20 +17,20 @@
  */
 class ObjUpvalue : public Object {
 public:
-	explicit ObjUpvalue(Value *slot);
+    explicit ObjUpvalue(Value* slot);
 
-	Value* getLocation() const;
+    Value* getLocation() const;
 
-	ObjUpvalue* getNext() const;
+    ObjUpvalue* getNext() const;
 
-	void setNext(ObjUpvalue *nextUpvalue);
+    void setNext(ObjUpvalue* nextUpvalue);
 
-	void setClosed(Value value);
+    void setClosed(Value value);
 
 private:
-	Value *_location;
-	Value _closed;
-	ObjUpvalue *_next;
+    Value* m_location;
+    Value m_closed;
+    ObjUpvalue* m_next;
 };
 
 #endif //LAX_OBJUPVALUE_H

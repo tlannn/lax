@@ -12,7 +12,7 @@ SymbolTable::SymbolTable() {
     initNativeFunctions();
 }
 
-void SymbolTable::createScope(Scope *previous) {
+void SymbolTable::createScope(Scope* previous) {
     auto scope = std::make_unique<Scope>(previous);
 
     m_scopeStack.push(scope.get());
@@ -63,27 +63,27 @@ void SymbolTable::initNativeFunctions() {
     define(currentScope(), std::move(printFn));
 }
 
-bool SymbolTable::define(Scope &scope, std::unique_ptr<Symbol> symbol) {
+bool SymbolTable::define(Scope& scope, std::unique_ptr<Symbol> symbol) {
     return insert(&Scope::insert, scope, std::move(symbol));
 }
 
-Symbol* SymbolTable::lookup(Scope &scope, ObjString *name,
+Symbol* SymbolTable::lookup(Scope& scope, ObjString* name,
     bool lookupEnclosingScopes) {
     return lookup<Symbol>(&Scope::lookup, scope, name, lookupEnclosingScopes);
 }
 
-VarSymbol* SymbolTable::lookupVariable(Scope &scope, ObjString *name,
+VarSymbol* SymbolTable::lookupVariable(Scope& scope, ObjString* name,
     bool lookupEnclosingScopes) {
-    auto *s = lookup<Symbol>(&Scope::lookup, scope, name, lookupEnclosingScopes);
+    auto* s = lookup<Symbol>(&Scope::lookup, scope, name, lookupEnclosingScopes);
 
     return s->getSymbolType() == Symbol::Type::VARIABLE
-        ? static_cast<VarSymbol*>(s)
-        : nullptr;
+           ? static_cast<VarSymbol*>(s)
+           : nullptr;
 }
 
-FunSymbol* SymbolTable::lookupFunction(Scope &scope, ObjString *name,
+FunSymbol* SymbolTable::lookupFunction(Scope& scope, ObjString* name,
     bool lookupEnclosingScopes) {
-    auto *s = lookup<Symbol>(
+    auto* s = lookup<Symbol>(
         &Scope::lookup, scope, name, lookupEnclosingScopes
     );
 
@@ -93,18 +93,18 @@ FunSymbol* SymbolTable::lookupFunction(Scope &scope, ObjString *name,
 }
 
 std::shared_ptr<SymbolTable> SymbolTable::instance() {
-    static std::shared_ptr<SymbolTable> instance { new SymbolTable };
+    static std::shared_ptr<SymbolTable> instance{ new SymbolTable };
     return instance;
 }
 
 template<typename Type>
-Type* SymbolTable::lookup(LookupFn<Type> lookupFunction, Scope &scope,
-    ObjString *name, bool lookupEnclosingScopes) {
+Type* SymbolTable::lookup(LookupFn<Type> lookupFunction, Scope& scope,
+    ObjString* name, bool lookupEnclosingScopes) {
     if (!lookupEnclosingScopes)
         return (scope.*lookupFunction)(name);
 
-    for (Scope *s = &scope; s; s = s->enclosingScope()) {
-        Type *sym = (s->*lookupFunction)(name);
+    for (Scope* s = &scope; s; s = s->enclosingScope()) {
+        Type* sym = (s->*lookupFunction)(name);
         if (sym) return sym;
     }
 
@@ -112,7 +112,7 @@ Type* SymbolTable::lookup(LookupFn<Type> lookupFunction, Scope &scope,
 }
 
 template<typename Type>
-bool SymbolTable::insert(InsertFn<Type> insertFunction, Scope &scope,
+bool SymbolTable::insert(InsertFn<Type> insertFunction, Scope& scope,
     std::unique_ptr<Type> value) {
     auto name = value->getName();
     return (scope.*insertFunction)(name, std::move(value));

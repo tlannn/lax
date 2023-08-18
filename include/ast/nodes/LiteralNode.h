@@ -37,10 +37,10 @@ public:
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	Value _value;
+    Value m_value;
 };
 
 #endif // LAX_LITERALNODE_H

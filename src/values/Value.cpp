@@ -3,21 +3,26 @@
 #include "objects/Object.h"
 #include "objects/ObjFunction.h"
 
-Value::Value() : Value(ValueType::NUL, { .obj = nullptr }) {}
+Value::Value() :
+    Value(ValueType::NUL, { .obj = nullptr }) {}
 
-Value::Value(ValueType type, union value v) : type(type), as(v) {}
+Value::Value(ValueType type, union value v) :
+    type(type),
+    as(v) {}
 
-Value::Value(ValueType type, Object *object) : type(type), as({ .obj = object }) {}
+Value::Value(ValueType type, Object* object) :
+    type(type),
+    as({ .obj = object }) {}
 
 Value Value::null() {
     return { ValueType::NUL, nullptr };
 }
 
-Value Value::function(ObjFunction *function) {
+Value Value::function(ObjFunction* function) {
     return { ValueType::FUNCTION, static_cast<Object*>(function) };
 }
 
-Value Value::object(Object *object) {
+Value Value::object(Object* object) {
     return { ValueType::OBJECT, object };
 }
 
@@ -31,12 +36,14 @@ Value Value::integer(int i) {
 
 /// Check if a value is considered false in Lax.
 bool Value::isFalsy(Value value) {
-	return IS_NULL(value) || (IS_INT(value) && AS_INT(value) == 0) || (IS_BOOL(value) && !AS_BOOL(value));
+    return IS_NULL(value) ||
+           (IS_INT(value) && AS_INT(value) == 0) ||
+           (IS_BOOL(value) && !AS_BOOL(value));
 }
 
 /// Check if two values are considered equal in Lax.
 bool Value::equals(Value a, Value b) {
-	if (a.type != b.type) return false;
+    if (a.type != b.type) return false;
     ValueType type = a.type;
 
     switch (type) {
@@ -52,7 +59,7 @@ bool Value::equals(Value a, Value b) {
 }
 
 /// Return the string representation of a value.
-std::string Value::toString(Value &value) {
+std::string Value::toString(Value& value) {
     if (IS_NULL(value))
         return "null";
 
@@ -65,7 +72,7 @@ std::string Value::toString(Value &value) {
     return AS_OBJ(value)->toString();
 }
 
-Value& Value::operator=(const Value &value) {
+Value& Value::operator=(const Value& value) {
     type = value.type;
     as = value.as;
 

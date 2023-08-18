@@ -26,20 +26,20 @@ public:
      * @return a pointer to the primitive type, or a null pointer if the token
      * doesn't correspond to any type.
      */
-    static PrimitiveType* getType(Token *token);
+    static PrimitiveType* getType(Token* token);
 
     /**
      * Return the string representation of a primitive type.
      * @param type the type to convert to string.
      * @return the string representation.
      */
-    static std::string toString(const PrimitiveType &type);
+    static std::string toString(const PrimitiveType& type);
 
     /**
      * Return the string representation of the primitive type.
      * @return the string representation.
      */
-    std::string toString() override;
+    std::string toString() const override;
 
 private:
     /// Class constructor.

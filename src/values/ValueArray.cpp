@@ -1,31 +1,34 @@
 #include "values/ValueArray.h"
 
 /// Class constructor.
-ValueArray::ValueArray() : _count(0), _capacity(0), _values(nullptr) {}
+ValueArray::ValueArray() :
+    m_count(0),
+    m_capacity(0),
+    m_values(nullptr) {}
 
 /// Class destructor.
 ValueArray::~ValueArray() {
-    FREE_ARRAY(Value, _values, _capacity);
+    FREE_ARRAY(Value, m_values, m_capacity);
 }
 
 /// Append a value to the array.
 void ValueArray::writeValue(Value value) {
-    if (_capacity < _count + 1) {
-        int oldCapacity = _capacity;
-        _capacity = GROW_CAPACITY(oldCapacity);
-        _values = GROW_ARRAY(Value, _values, oldCapacity, _capacity);
+    if (m_capacity < m_count + 1) {
+        int oldCapacity = m_capacity;
+        m_capacity = GROW_CAPACITY(oldCapacity);
+        m_values = GROW_ARRAY(Value, m_values, oldCapacity, m_capacity);
     }
 
-    _values[_count] = value;
-    ++_count;
+    m_values[m_count] = value;
+    ++m_count;
 }
 
 /// Getter for the number of values in the array.
 int ValueArray::getCount() const {
-    return _count;
+    return m_count;
 }
 
 /// Return a value from the array.
 const Value& ValueArray::getValue(int offset) {
-    return _values[offset];
+    return m_values[offset];
 }

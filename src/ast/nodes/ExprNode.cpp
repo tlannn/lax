@@ -4,14 +4,15 @@
 #include "ast/ASTVisitor.h"
 
 /// Class constructor
-ExprNode::ExprNode(SToken token) : _token(std::move(token)) {}
+ExprNode::ExprNode(SToken token) :
+    m_token(std::move(token)) {}
 
 /// Getter for the token of the node
 Token* ExprNode::getToken() {
-	return _token.get();
+    return m_token.get();
 }
 
 /// Abstract accept method for the visitor pattern
-void ExprNode::accept(ASTVisitor &visitor) {
+void ExprNode::accept(ASTVisitor& visitor) {
     visitor.visit(*this);
 }

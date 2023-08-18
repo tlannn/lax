@@ -21,23 +21,23 @@ public:
         FUNCTION
     };
 
-	/**
-	 * Class constructor.
-	 * @param name the name of the identifier represented by the symbol.
-	 * @param type the type of the symbol
-	 */
-    Symbol(ObjString *name, LaxType *type);
+    /**
+     * Class constructor.
+     * @param name the name of the identifier represented by the symbol.
+     * @param type the type of the symbol
+     */
+    Symbol(ObjString* name, LaxType* type);
 
-	/**
-	 * Getter for the name of the identifier represented by the symbol.
-	 * @return the name of the identifier.
-	 */
-    ObjString *getName();
+    /**
+     * Getter for the name of the identifier represented by the symbol.
+     * @return the name of the identifier.
+     */
+    ObjString* getName();
 
-	/**
-	 * Getter for the runtime type of the symbol.
-	 * @return the runtime type.
-	 */
+    /**
+     * Getter for the runtime type of the symbol.
+     * @return the runtime type.
+     */
     LaxType* getType();
 
     /**
@@ -47,8 +47,8 @@ public:
     virtual Type getSymbolType() = 0;
 
 protected:
-    ObjString *_name;
-    LaxType *_type;
+    ObjString* m_name;
+    LaxType* m_type;
 };
 
 #endif // LAX_SYMBOL_H

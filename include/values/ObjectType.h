@@ -9,7 +9,7 @@ public:
 
     ObjectType();
 
-    std::string toString() override;
+    std::string toString() const override;
 };
 
 #endif // LAX_OBJECTTYPE_H

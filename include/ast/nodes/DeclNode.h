@@ -13,6 +13,8 @@ class ObjString;
 class Token;
 class VarSymbol;
 
+typedef std::shared_ptr<Token> SToken;
+
 /**
  * Node for variable declaration statements
  *
@@ -22,38 +24,38 @@ class VarSymbol;
  */
 class DeclNode : public StmtNode {
 public:
-	/**
-	 * Class constructor
-	 *
-	 * @param id the name of the variable declared
-	 * @param type the type of the variable
-	 * @param expr the expression associated to the variable (if any)
-	 */
-    DeclNode(std::shared_ptr<Token> token, ObjString *name, LaxType *type, UExprNode expr);
+    /**
+     * Class constructor
+     *
+     * @param id the name of the variable declared
+     * @param type the type of the variable
+     * @param expr the expression associated to the variable (if any)
+     */
+    DeclNode(SToken token, ObjString* name, LaxType* type, UExprNode expr);
 
     Token* getToken();
 
-	/**
+    /**
      * Getter for the name of the variable declared
      *
      * @return the name of the variable
      */
-	ObjString* getName();
+    ObjString* getName();
 
-	/**
+    /**
      * Getter for the type of the variable declared
      *
      * @return the type of the variable
      */
     LaxType* getType();
 
-	/**
+    /**
      * Getter for the expression associated to the variable at declaration
      *
      * @return the expression associated, or nullptr if the variable is not
      * initialized at declaration
      */
-	ExprNode* getRValue();
+    ExprNode* getRValue();
 
     /**
      * Getter for the symbol representing the variable
@@ -67,17 +69,17 @@ public:
      */
     void setSymbol(VarSymbol* symbol);
 
-	/**
+    /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 private:
-	std::shared_ptr<Token> _id;
-	ObjString *_name;
-    LaxType *_type;
-	UExprNode _rvalue;
-    VarSymbol *_symbol;
+    SToken      m_id;
+    ObjString*  m_name;
+    LaxType*    m_type;
+    UExprNode   m_rvalue;
+    VarSymbol*  m_symbol;
 };
 
 #endif // LAX_DECLNODE_H

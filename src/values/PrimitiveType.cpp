@@ -9,7 +9,7 @@ PrimitiveType PrimitiveType::VOID = PrimitiveType();
 PrimitiveType::PrimitiveType() :
     LaxType(PRIMITIVE) {}
 
-PrimitiveType* PrimitiveType::getType(Token *token) {
+PrimitiveType* PrimitiveType::getType(Token* token) {
     const std::string lexeme = token->toString();
 
     if (lexeme == PrimitiveType::toString(PrimitiveType::BOOLEAN))
@@ -27,7 +27,7 @@ PrimitiveType* PrimitiveType::getType(Token *token) {
     return nullptr;
 }
 
-std::string PrimitiveType::toString(const PrimitiveType &t) {
+std::string PrimitiveType::toString(const PrimitiveType& t) {
     // Compare values address because all types instances are equal, since
     // they have no members to differentiate them
     if (&t == &PrimitiveType::BOOLEAN)
@@ -42,6 +42,6 @@ std::string PrimitiveType::toString(const PrimitiveType &t) {
     return "";
 }
 
-std::string PrimitiveType::toString() {
+std::string PrimitiveType::toString() const {
     return PrimitiveType::toString(*this);
 }

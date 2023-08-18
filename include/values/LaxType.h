@@ -31,7 +31,7 @@ public:
      * @param type the type to check.
      * @return true if the type is primitive, false otherwise.
      */
-    static bool isPrimitive(const LaxType &type);
+    static bool isPrimitive(const LaxType& type);
 
     /**
      * Convert a type to a primitive type. Since no safety check is performed
@@ -40,14 +40,14 @@ public:
      * @param type a reference to the type to convert.
      * @return a reference to converted type.
      */
-    static PrimitiveType& asPrimitive(LaxType &type);
+    static PrimitiveType& asPrimitive(LaxType& type);
 
     /**
      * Check whether a type is a function type.
      * @param type the type to check.
      * @return true if the type is a function type, false otherwise.
      */
-    static bool isFunction(const LaxType &type);
+    static bool isFunction(const LaxType& type);
 
     /**
      * Convert a type to a function type. Since no safety check is performed
@@ -56,14 +56,14 @@ public:
      * @param type a reference to the type to convert.
      * @return a reference to converted type.
      */
-    static FunctionType& asFunction(LaxType &type);
+    static FunctionType& asFunction(LaxType& type);
 
     /**
      * Check whether a type is an object type.
      * @param type the type to check.
      * @return true if the type is an object type, false otherwise.
      */
-    static bool isObject(const LaxType &type);
+    static bool isObject(const LaxType& type);
 
     /**
      * Convert a type to an object type. Since no safety check is performed
@@ -72,7 +72,7 @@ public:
      * @param type a reference to the type to convert.
      * @return a reference to converted type.
      */
-    static ObjectType& asObject(LaxType &type);
+    static ObjectType& asObject(LaxType& type);
 
     /**
      * Getter for the kind of type.
@@ -84,7 +84,7 @@ public:
      * Convert the type to a string representation.
      * @return the string representation for this type.
      */
-    virtual std::string toString() = 0;
+    virtual std::string toString() const = 0;
 
     /**
      * Overload the behavior of the equality operator.
@@ -92,7 +92,7 @@ public:
      * @param t2 a reference the second type to compare.
      * @return true if both types are equal, false otherwise.
      */
-    friend bool operator==(const LaxType &t1, const LaxType &t2);
+    friend bool operator==(const LaxType& t1, const LaxType& t2);
 
     /**
      * Overload the behavior of the non-equality operator.
@@ -100,7 +100,7 @@ public:
      * @param t2 a reference the second type to compare.
      * @return true if both types are not equal, false otherwise.
      */
-    friend bool operator!=(const LaxType &t1, const LaxType &t2);
+    friend bool operator!=(const LaxType& t1, const LaxType& t2);
 
 protected:
     /**
@@ -108,7 +108,7 @@ protected:
      * @param type a reference to the type to compare.
      * @return true if the compared type is equal, false otherwise.
      */
-    virtual bool equals(const LaxType &type) const;
+    virtual bool equals(const LaxType& type) const;
 
 private:
     Kind m_kind;

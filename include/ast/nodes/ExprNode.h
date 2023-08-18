@@ -25,19 +25,19 @@ public:
      */
     explicit ExprNode(SToken token);
 
-	/**
-	 * Getter for the token of the node
-	 * @return the token
-	 */
-	Token* getToken();
+    /**
+     * Getter for the token of the node
+     * @return the token
+     */
+    Token* getToken();
 
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 protected:
-	SToken _token;
+    SToken m_token;
 };
 
 #endif // LAX_EXPRNODE_H

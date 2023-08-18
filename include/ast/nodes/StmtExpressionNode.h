@@ -28,15 +28,15 @@ public:
      *
      * @return the expression
      */
-	ExprNode* getExpr();
+    ExprNode* getExpr();
 
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 protected:
-	UExprNode _expr;
+    UExprNode m_expr;
 };
 
 #endif // LAX_STMTEXPRESSIONNODE_H

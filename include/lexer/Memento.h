@@ -16,52 +16,52 @@
  */
 class Memento {
 public:
-	/**
-	 * Class constructor
-	 * @param previous the previous memento
-	 * @param source the name of the source file
-	 * @param index the current index in the file
-	 * @param line the current line in the file
-	 * @param col the current column in the file
-	 */
-	Memento(Memento *previous, const std::string &source, int index, int line, int col);
+    /**
+     * Class constructor
+     * @param previous the previous memento
+     * @param source the name of the source file
+     * @param index the current index in the file
+     * @param line the current line in the file
+     * @param col the current column in the file
+     */
+    Memento(Memento* previous, std::string source, int index, int line, int col);
 
-	/**
-	 * Getter for the previous memento
-	 * @return the previous memento
-	 */
-	Memento* getPrevious() const;
+    /**
+     * Getter for the previous memento
+     * @return the previous memento
+     */
+    Memento* getPrevious() const;
 
-	/**
-	 * Getter for the source file name
-	 * @return the source file
-	 */
-	const std::string &getSource() const;
+    /**
+     * Getter for the source file name
+     * @return the source file
+     */
+    const std::string& getSource() const;
 
-	/**
-	 * Getter for the current index in the source code
-	 * @return the index
-	 */
-	int getIndex() const;
+    /**
+     * Getter for the current index in the source code
+     * @return the index
+     */
+    int getIndex() const;
 
-	/**
-	 * Getter for the current line in the source code
-	 * @return the line
-	 */
-	int getLine() const;
+    /**
+     * Getter for the current line in the source code
+     * @return the line
+     */
+    int getLine() const;
 
-	/**
-	 * Getter for the current column in the source code
-	 * @return the column
-	 */
-	int getCol() const;
+    /**
+     * Getter for the current column in the source code
+     * @return the column
+     */
+    int getCol() const;
 
 private:
-	Memento *_previous;
-	std::string _source;
-	int _index;
-	int _line;
-	int _col;
+    Memento* m_previous;
+    std::string m_source;
+    int m_index;
+    int m_line;
+    int m_col;
 };
 
 #endif // LAX_MEMENTO_H

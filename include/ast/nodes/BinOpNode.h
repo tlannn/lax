@@ -34,23 +34,23 @@ public:
      *
      * @return the left expression
      */
-	ExprNode* getLeft();
+    ExprNode* getLeft();
 
     /**
      * Getter for the right expression of the operation
      *
      * @return the right expression
      */
-	ExprNode* getRight();
+    ExprNode* getRight();
 
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 protected:
-	UExprNode _left;
-	UExprNode _right;
+    UExprNode m_left;
+    UExprNode m_right;
 };
 
 #endif // LAX_BINOPNODE_H

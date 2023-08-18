@@ -26,41 +26,38 @@ public:
      * @param thenSmt the statement executed if the condition is evaluated to true
      * @param elseStmt the statement executed if the condition is evaluated to false
      */
-    ConditionalNode(
-			UExprNode expr,
-			UStmtNode thenStmt,
-			UStmtNode elseStmt);
+    ConditionalNode(UExprNode expr, UStmtNode thenStmt, UStmtNode elseStmt);
 
     /**
      * Getter for the condition expression
      *
      * @return the conditional expression
      */
-	ExprNode* getConditionExpression();
+    ExprNode* getConditionExpression();
 
     /**
      * Getter for the 'then' statement
      *
      * @return the 'then' statement
      */
-	StmtNode* getThenStatement();
+    StmtNode* getThenStatement();
 
     /**
      * Getter for the 'else' statement
      *
      * @return the 'else' statement
      */
-	StmtNode* getElseStatement();
+    StmtNode* getElseStatement();
 
     /**
      * Accept method for the visitor pattern
      */
-    void accept(ASTVisitor &visitor) override;
+    void accept(ASTVisitor& visitor) override;
 
 protected:
-	UExprNode _expr;
-	UStmtNode _thenStmt;
-	UStmtNode _elseStmt;
+    UExprNode m_expr;
+    UStmtNode m_thenStmt;
+    UStmtNode m_elseStmt;
 };
 
 #endif // LAX_CONDITIONALNODE_H
