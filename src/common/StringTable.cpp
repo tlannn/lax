@@ -1,23 +1,19 @@
 #include "common/StringTable.h"
 
-/// Class constructor.
 StringTable::StringTable() :
     m_count(0),
     m_capacity(0),
     m_interned(nullptr) {}
 
-/// Class destructor.
 StringTable::~StringTable() {
     delete[] m_interned;
 }
 
-/// Return a singleton of the class.
 std::shared_ptr<StringTable> StringTable::instance() {
     static std::shared_ptr<StringTable> instance{ new StringTable };
     return instance;
 }
 
-/// Get a string object stored in the table.
 ObjString* StringTable::get(const std::string& chars, int length, uint32_t hash) {
     if (m_count == 0) return nullptr;
 
@@ -30,7 +26,6 @@ ObjString* StringTable::get(const std::string& chars, int length, uint32_t hash)
     return nullptr;
 }
 
-/// Store a string object in the table.
 bool StringTable::insert(std::unique_ptr<ObjString> key) {
     // Expand the table capacity if the table max load is reached
     if (m_count + 1 > m_capacity * TABLE_MAX_LOAD) {
@@ -49,7 +44,6 @@ bool StringTable::insert(std::unique_ptr<ObjString> key) {
     return isNewKey;
 }
 
-/// Remove a string object from the table.
 bool StringTable::remove(ObjString* key) {
     if (m_count == 0) return false;
 
@@ -63,7 +57,6 @@ bool StringTable::remove(ObjString* key) {
     return true;
 }
 
-/// Resize the table to accept a new amount of entries.
 void StringTable::adjustCapacity(int capacity) {
     auto* entries = new std::unique_ptr<ObjString>[capacity];
     m_count = 0;
@@ -92,16 +85,16 @@ void StringTable::adjustCapacity(int capacity) {
     m_capacity = capacity;
 }
 
-/// Find the entry associated to a string in an array of string objects.
 std::unique_ptr<ObjString>& StringTable::find(std::unique_ptr<ObjString>* entries,
     int capacity, const std::string& chars, int length, uint32_t hash) {
     uint32_t index = hash % capacity;
 
     for (;;) {
         auto& entry = entries[index];
+        bool isSameHash = entry->getHash() == hash;
+        bool isSameLength = entry->getLength() == length;
 
-        if (entry == nullptr ||
-            entry->getLength() == length && entry->getHash() == hash &&
+        if (entry == nullptr || isSameHash && isSameLength &&
             memcmp(entry->getChars(), chars.c_str(), length) == 0) {
             return entry;
         }

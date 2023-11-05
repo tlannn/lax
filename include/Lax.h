@@ -6,13 +6,20 @@
 #include <string>
 
 /**
- * Entry class to handle a Lax source code
+ * @class Lax
+ * @brief The main class of the Lax interpreter.
+ *
+ * This class is the main class of the Lax interpreter. It is responsible for
+ * interpreting a source file.
  */
 class Lax {
 public:
     /**
-     * Interpret a source file with the Lax interpreter
-     * @param filepath the path to the source file
+     * @brief Interprets a source file.
+     *
+     * This takes the path to the source file as a parameter and interprets it.
+     *
+     * @param filepath The path to the source file.
      */
     static void interpret(const std::string& filepath);
 };

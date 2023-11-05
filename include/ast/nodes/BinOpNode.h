@@ -13,38 +13,48 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for arithmetic expressions in the program, such as basic computes
+ * @class BinOpNode
+ * @brief Represents a binary operation node in an Abstract Syntax Tree (AST).
  *
- * Arithmetic expressions supported are the basic operations addition,
- * subtraction, multiplication and division.
+ * The BinOpNode class stores information about a binary operation, such as
+ * arithmetic operations.
+ *
+ * A binary operation is an operation that has two operands, such as addition,
+ * subtraction, multiplication, and division. The operands are represented by
+ * the left and right children of the node.
+ *
+ * @note The binary operators supported are addition (+), subtraction (-),
+ * multiplication (*) and division (/).
  */
 class BinOpNode : public ExprNode {
 public:
     /**
-     * Class constructor
+     * @brief Class constructor.
      *
-     * @param left the expression to the left of the operator
-     * @param op the token representing the operator
-     * @param right the expression to the right of the operator
+     * Constructs a new BinOpNode object with the provided left and right
+     * operands and the operator token. Both operands are represented by
+     * expression nodes, which are stored as children of the current node.
+     *
+     * @param left The left operand of the operation.
+     * @param op The token representing the operator.
+     * @param right The right operand of the operation.
      */
     BinOpNode(UExprNode left, SToken op, UExprNode right);
 
     /**
-     * Getter for the left expression of the operation
-     *
-     * @return the left expression
+     * @brief Retrieves the left child of the node.
+     * @return The left child node, or nullptr if it does not exist.
      */
     ExprNode* getLeft();
 
     /**
-     * Getter for the right expression of the operation
-     *
-     * @return the right expression
+     * @brief Retrieves the right child of the node.
+     * @return The right child node, or nullptr if it does not exist.
      */
     ExprNode* getRight();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

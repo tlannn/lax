@@ -9,26 +9,21 @@
 #include "utils/Logger.h"
 #include "values/PrimitiveType.h"
 
-/// Class constructor
 Parser::Parser(Lexer& lex) :
     m_lex(lex),
     m_previous(nullptr),
     m_lookahead(nullptr),
     m_errors(false) {}
 
-/// Parse the source code until the end of file is reached. The resulting
-/// program is represented by an Abstract Syntax Tree
 std::unique_ptr<AST> Parser::parse() {
     move();
     return std::make_unique<AST>(std::move(program()));
 }
 
-/// Return whether errors occurred during parsing
 bool Parser::hadErrors() const {
     return m_errors;
 }
 
-/// Read the next token in the source code
 Token* Parser::move() {
     m_previous = std::move(m_lookahead);
     m_lookahead = m_lex.nextToken();
@@ -36,22 +31,18 @@ Token* Parser::move() {
     return m_lookahead.get();
 }
 
-/// Getter for the last token read in the source code
 Token* Parser::previous() {
     return m_previous.get();
 }
 
-/// Getter for the next token to be read in the source code
 Token* Parser::peek() {
     return m_lookahead.get();
 }
 
-/// Raise an error on the next token to be read
 void Parser::error(const std::string& error, ErrorMode mode) {
     this->error(error, peek(), mode);
 }
 
-/// Raise an error on a specific token
 void Parser::error(const std::string& error, Token* token, ErrorMode mode) {
     m_errors = true;
 
@@ -75,24 +66,19 @@ void Parser::error(const std::string& error, Token* token, ErrorMode mode) {
     }
 }
 
-/// Report an error to inform the user
 void Parser::report(const ParseError& error) {
     Logger::error(error.what());
 }
 
-/// Return whether the end of file has been reached
 bool Parser::isAtEnd() {
     return peek()->getType() == TokenType::END;
 }
 
-/// Check if the type of the current token is the same as the type expected
 bool Parser::check(TokenType tokenType) {
     if (isAtEnd()) return false;
     return peek()->getType() == tokenType;
 }
 
-/// Check the type of the current token, and if it is the same as the type
-/// expected, read the next token
 bool Parser::match(TokenType tokenType) {
     if (check(tokenType)) {
         move();
@@ -102,8 +88,6 @@ bool Parser::match(TokenType tokenType) {
     return false;
 }
 
-/// Read the next token in file if it matches the expected token type, or throw
-/// an error if the types mismatch
 void Parser::consume(TokenType type, ErrorMode mode) {
     std::string lexeme = Token::lexeme(type);
     std::string errorMessage;
@@ -119,8 +103,6 @@ void Parser::consume(TokenType type, ErrorMode mode) {
     consume(type, errorMessage, mode);
 }
 
-/// Read the next token in file if it matches the expected token type, or throw
-/// an error with the given error message if the types mismatch
 void Parser::consume(TokenType type, const std::string& errorMessage,
     ErrorMode mode)
 {
@@ -129,8 +111,6 @@ void Parser::consume(TokenType type, const std::string& errorMessage,
     else error(errorMessage, mode);
 }
 
-/// Synchronize the parser when an error occurred and move until a delimiter
-/// token - a semicolon or a keyword
 void Parser::synchronize() {
     while (!isAtEnd()) {
         if (previous()->getType() == TokenType::SEMICOL) return;
@@ -152,7 +132,6 @@ ObjString* Parser::identifier(const std::string& name) {
     return ObjString::copyString(name);
 }
 
-/// Build a node representing the program
 UStmtNode Parser::program() {
     std::vector<UStmtNode> stmts;
 
@@ -162,7 +141,6 @@ UStmtNode Parser::program() {
     return std::make_unique<SeqNode>(std::move(stmts));
 }
 
-/// Build a node representing a block of statements
 UBlockNode Parser::block() {
     consume(TokenType::LBRACE, ErrorMode::REPAIR);
     std::vector<UStmtNode> stmts;
@@ -177,14 +155,12 @@ UBlockNode Parser::block() {
     );
 }
 
-/// Build a node representing a scoped block of statements
 UBlockNode Parser::scopedBlock() {
     auto block = this->block();
 
     return std::move(block);
 }
 
-/// Build a node representing a statement
 UStmtNode Parser::stmt() {
     try {
         if (match(TokenType::VAR) || match(TokenType::TYPE))
@@ -211,7 +187,6 @@ UStmtNode Parser::stmt() {
     }
 }
 
-/// Build a node representing an include statement
 UStmtNode Parser::includeStmt() {
     consume(TokenType::STR, "Expected string");
     std::string filename = previous()->toString();
@@ -232,7 +207,6 @@ UStmtNode Parser::includeStmt() {
     return include;
 }
 
-/// Build a node representing a variable declaration statement
 UDeclNode Parser::declaration() {
     // Determine the variable type based on the keyword
     LaxType* type = nullptr;
@@ -254,25 +228,6 @@ UDeclNode Parser::declaration() {
     return std::move(node);
 }
 
-/// Build a node representing a variable assignment statement
-UExprNode Parser::varAssignStmt() {
-    UExprNode node = logic();
-
-    if (match(TokenType::SIMEQ)) {
-        UToken equals = std::move(m_previous);
-        UExprNode value = varAssignStmt();
-
-        if (auto* id = dynamic_cast<IdNode*>(node.get())) {
-            return std::make_unique<AssignNode>(
-                id->getName(), std::move(equals), std::move(value)
-            );
-        }
-    }
-
-    return node;
-}
-
-/// Build a node representing a function declaration statement
 UFunNode Parser::function() {
     // Read the function identifier
     consume(TokenType::ID);
@@ -324,7 +279,6 @@ UFunNode Parser::function() {
     );
 }
 
-/// Build a node representing a return statement
 UReturnNode Parser::returnStmt() {
     auto token = std::move(m_previous);
     UExprNode value;
@@ -336,7 +290,6 @@ UReturnNode Parser::returnStmt() {
     return std::make_unique<ReturnNode>(std::move(token), std::move(value));
 }
 
-/// Build a node representing an if/else statement
 UConditionalNode Parser::conditionalStmt() {
     consume(TokenType::LPAREN, ErrorMode::REPAIR);
     UExprNode condition = Parser::expr();
@@ -363,7 +316,6 @@ UConditionalNode Parser::conditionalStmt() {
     );
 }
 
-/// Build a node representing an expression statement
 UStmtExpressionNode Parser::expressionStmt() {
     UExprNode expr = Parser::expr();
     consume(TokenType::SEMICOL);
@@ -371,12 +323,27 @@ UStmtExpressionNode Parser::expressionStmt() {
     return std::make_unique<StmtExpressionNode>(std::move(expr));
 }
 
-/// Build a node representing an expression
 UExprNode Parser::expr() {
-    return varAssignStmt();
+    return assignment();
 }
 
-/// Build a node representing a logical OR expression
+UExprNode Parser::assignment() {
+    UExprNode node = logic();
+
+    if (match(TokenType::SIMEQ)) {
+        UToken equals = std::move(m_previous);
+        UExprNode value = assignment();
+
+        if (auto* id = dynamic_cast<IdNode*>(node.get())) {
+            return std::make_unique<AssignNode>(
+                id->getName(), std::move(equals), std::move(value)
+            );
+        }
+    }
+
+    return node;
+}
+
 UExprNode Parser::logic() {
     UExprNode expr = join();
 
@@ -390,7 +357,6 @@ UExprNode Parser::logic() {
     return expr;
 }
 
-/// Build a node representing a logical AND expression
 UExprNode Parser::join() {
     UExprNode expr = rel();
 
@@ -404,9 +370,8 @@ UExprNode Parser::join() {
     return expr;
 }
 
-/// Build a node representing an equality or inequality expression
 UExprNode Parser::rel() {
-    UExprNode expr = binop();
+    UExprNode expr = arithmeticBinOp();
 
     while (match(TokenType::EQ) || match(TokenType::NEQ) ||
            match(TokenType::SL) || match(TokenType::LE) ||
@@ -414,29 +379,27 @@ UExprNode Parser::rel() {
     {
         UToken op = std::move(m_previous);
         expr = std::make_unique<RelationalNode>(
-            std::move(expr), std::move(op), binop()
+            std::move(expr), std::move(op), arithmeticBinOp()
         );
     }
 
     return expr;
 }
 
-/// Build a node representing a binary operation
-UExprNode Parser::binop() {
-    UExprNode expr = term();
+UExprNode Parser::arithmeticBinOp() {
+    UExprNode expr = multiplicativeBinOp();
 
     while (match(TokenType::PLUS) || match(TokenType::MINUS)) {
         UToken op = std::move(m_previous);
         expr = std::make_unique<BinOpNode>(
-            std::move(expr), std::move(op), term()
+            std::move(expr), std::move(op), multiplicativeBinOp()
         );
     }
 
     return expr;
 }
 
-/// Build a node representing a term
-UExprNode Parser::term() {
+UExprNode Parser::multiplicativeBinOp() {
     UExprNode expr = unary();
 
     while (match(TokenType::STAR) || match(TokenType::SLASH)) {
@@ -449,7 +412,6 @@ UExprNode Parser::term() {
     return expr;
 }
 
-/// Build a node representing an unary
 UExprNode Parser::unary() {
     if (match(TokenType::PLUS) ||
         match(TokenType::MINUS) ||
@@ -463,7 +425,7 @@ UExprNode Parser::unary() {
 }
 
 UExprNode Parser::call() {
-    UExprNode expr = factor();
+    UExprNode expr = primary();
 
     // While in a function call chain
     while (match(TokenType::LPAREN))
@@ -472,8 +434,29 @@ UExprNode Parser::call() {
     return expr;
 }
 
-/// Build a node representing a factor
-UExprNode Parser::factor() {
+UExprNode Parser::arguments(UExprNode callee) {
+    std::vector<UExprNode> args;
+    UToken paren = std::move(m_previous);
+
+    if (!check(TokenType::RPAREN)) {
+        do {
+            if (args.size() >= 255)
+                error("Arguments count can't exceed 255", peek());
+
+            args.push_back(expr());
+        } while (match(TokenType::COMMA));
+    }
+
+    consume(TokenType::RPAREN, ErrorMode::NON_PANIC);
+
+    return std::make_unique<CallNode>(
+        std::move(callee),
+        std::move(paren),
+        std::move(args)
+    );
+}
+
+UExprNode Parser::primary() {
     UExprNode expr = nullptr;
 
     // Read the next token
@@ -524,26 +507,4 @@ UExprNode Parser::factor() {
     }
 
     return expr;
-}
-
-UExprNode Parser::arguments(UExprNode callee) {
-    std::vector<UExprNode> args;
-    UToken paren = std::move(m_previous);
-
-    if (!check(TokenType::RPAREN)) {
-        do {
-            if (args.size() >= 255)
-                error("Arguments count can't exceed 255", peek());
-
-            args.push_back(expr());
-        } while (match(TokenType::COMMA));
-    }
-
-    consume(TokenType::RPAREN, ErrorMode::NON_PANIC);
-
-    return std::make_unique<CallNode>(
-        std::move(callee),
-        std::move(paren),
-        std::move(args)
-    );
 }

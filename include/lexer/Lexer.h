@@ -14,175 +14,257 @@
 class Token;
 
 /**
- * Lexical analyzer for the Lax language
+ * @class Lexer
+ * @brief A lexical analyzer for a source code file.
+ *
+ * The Lexer class is responsible for analyzing a source code file and
+ * extracting tokens for further processing. It provides methods for reading
+ * characters from the file, matching expected characters, and creating
+ * tokens based on the scanned lexemes.
+ *
+ * The class also supports nested files, where multiple files can be pushed
+ * onto a stack and popped out when finished. This allows for handling
+ * include statements and nested source code files.
+ *
+ * The Lexer class uses an internal stack to keep track of the current file
+ * being processed and its state is saved as a Memento object. This allows
+ * for restoring the state of the previous file when the current file is
+ * finished being processed.
+ *
+ * The Lexer class uses a set of reserved words to identify keywords in
+ * the source code. These reserved words cannot be used as identifiers.
+ *
+ * @see Memento
  */
 class Lexer {
 public:
     static std::string currentFile; // The name of the current file being read
 
     /**
-     * Class constructor
-     *
-     * @param filename the source code to analyze
+     * @brief Class constructor.
+     * @param filename The file containing the source code to analyze.
      */
     explicit Lexer(const std::string& filename);
 
     /**
-     * Return the part containing the path to a file
+     * @brief Returns the directory name of a filepath.
      *
-     * @param filepath the file name with its path
-     * @return the file path
+     * This function trims the basename from a filepath, resulting in the
+     * directory name.
+     *
+     * The filepath doesn't need to be an absolute path.
+     *
+     * The function returns an empty string if the filepath doesn't contain
+     * any directory.
+     *
+     * Example:
+     *
+     *    getPath("path/to/file.txt") -> "path/to/"
+     *    getPath("file.txt") -> ""
+     *    getPath("../file.txt") -> "../"
+     *
+     * @note This function assumes that the filepath is a valid path.
+     *
+     * @param filepath The path to a file.
+     * @return The directory name of the file.
      */
     static std::string getPath(const std::string& filepath);
 
     /**
-     * Open a stream to read a file and place the cursor at the beginning
+     * @brief Opens a file to analyze.
      *
-     * @param filename the name of the file to open
+     * This function opens a file to analyze and places the cursor at the
+     * beginning of the file.
+     *
+     * @param filename The name of the file to open.
      */
     void openFile(const std::string& filename);
 
     /**
-     * Open a file and push it on top of the stack of files opened
+     * @brief Pushes a file to analyze on top of the stack of files opened.
      *
-     * @param filename the name of the file to open
+     * This function creates a memento of the file currently being analyzed,
+     * then opens the next file to analyze.
+     *
+     * @param filename The name of the file to open.
      */
     void pushFile(const std::string& filename);
 
     /**
-     * Pop the last file opened and restore the state of the previous file
+     * @brief Pops the last file opened and restores the state of the previous
+     * file.
      */
     void popFile();
 
     /**
-     * Continue the reading of the source code and return the next token analyzed
+     * @brief Returns the next token in the source code.
      *
-     * @return the token analyzed
+     * This function analyzes the source code starting at the current cursor
+     * and returns the next token encountered.
+     *
+     * @return The token analyzed.
      */
     std::unique_ptr<Token> nextToken();
 
 private:
     /**
-     * Reserve a word, meaning it cannot be used as an identifier (for
-     * variables, functions, classes, etc.)
+     * @brief Reserves a word.
      *
-     * @param word the word to reserve
+     * A reserved word cannot be used as an identifier (for variables,
+     * functions, classes, etc.).
+     *
+     * @param word The word to reserve.
+     * @param type The type of token associated with the word being reserved.
      */
     void reserve(const std::string& word, TokenType type = TokenType::ID);
 
     /**
-     * Create a token of a specific type. The lexeme is deduced from the token
-     * type
+     * @brief Creates a token.
      *
-     * @param type the type of the token
-     * @return the token created
+     * Create a token of specific type, and associate the token to a lexeme
+     * based on the given type.
+     *
+     * @param type The type of the token to create.
+     * @return The token created.
      */
     std::unique_ptr<Token> createToken(TokenType type);
 
     /**
-     * Create a token of specific type and lexeme
+     * @brief Creates a token.
      *
-     * @param type the type of the token
-     * @param lexeme the lexeme represented by the token
-     * @return the token created
+     * Create a token of specific type, and associate the token to the given
+     * lexeme.
+     *
+     * @param type The type of the token.
+     * @param lexeme The lexeme associated with the token.
+     * @return The token created.
      */
     std::unique_ptr<Token> createToken(TokenType type,
         const std::string& lexeme) const;
 
     /**
-     * Throw an error
+     * @brief Throws a lexical error.
      *
-     * @param message the message of the error
+     * This function throws a lexical error with the given message and the
+     * current line and column in the file.
+     *
+     * @param message The message to display.
      */
     void error(const std::string& message) const;
 
     /**
-     * Return whether the cursor is at the end of the current file
-     *
-     * @return true if the end of the current file has been reached
+     * @brief Checks if the end of the file is reached.
+     * @return `true` if the end of the file has been reached, `false` otherwise.
      */
     bool isAtEnd();
 
     /**
-     * Read a character in the source code and return it
+     * @brief Reads the next character in the file.
      *
-     * @return the ascii code of the character read, or EOF if the end of file
-	 * is reached
+     * Read and return the next character in the file being analyzed. The
+     * character returned is also consumed, thus marked as read.
+     *
+     * @return The ASCII value of the character read, or EOF if the end of file
+	 * is reached.
      */
     int advance();
 
     /**
-     * Check if the next character in the source code is the expected one, and
-     * if it is the case, consume it
+     * @brief Checks if the next character in the file was expected.
      *
-     * @param expected the expected character
-     * @return true if the character read was expected
+     * Check if the next character in the source code is the expected one.
+     * If the next character matches the character expected, it is consumed,
+     * thus marked as read.
+     *
+     * @param expected The expected character.
+     * @return `true` if the character read was expected, `false` otherwise.
      */
     bool match(char expected);
 
     /**
-     * Look at the next character in the source code, but does not move the
-     * cursor
+     * @brief Peeks at the next character in the file.
      *
-     * @return the ascii code of the next character, or EOF if the end of file
-     * is reached
+     * Look at the next character in the current file, but does not move the
+     * cursor in the file.
+     *
+     * @return The ASCII value of the next character, or EOF if the end of file
+     * is reached.
      */
     int peek();
 
     /**
-     * Read a string in the source code
-     *
-     * @return the token representing the string
+     * @brief Reads a string in the file and returns it as a token.
+     * @return The token representing the string.
      */
     std::unique_ptr<Token> string();
 
     /**
-     * Read a number in the source code
-     *
-     * @param d the first digit of the number
-     * @return the token representing the number
+     * @brief Reads a number in the file and returns it as a token.
+     * @param d The first digit of the number read.
+     * @return The token representing the number.
      */
     std::unique_ptr<Token> number(int d);
 
     /**
-     * Read an identifier in the source code
-     *
-     * @param d the first letter of the identifier
-     * @return the token representing the identifier
+     * @brief Reads an identifier in the file and returns it as a token.
+     * @param d The first letter of the identifier read.
+     * @return The token representing the identifier.
      */
     std::unique_ptr<Token> identifier(int c);
 
     /**
-     * Skip an inline comment
+     * @brief Skips an inline comment in code.
+     *
+     * This function is used to skip characters in the current file until the
+     * end of the line or the end of the file.
      */
     void inlineComment();
 
     /**
-     * Skip a block comment, with nested block comments
+     * @brief Skips a block comment in code.
+     *
+     * This function is used to skip a block comment in the file analyzed by
+     * moving the cursor in the file.
+     * Nested block comments are also processed in this function.
      */
     void blockComment();
 
     /**
-     * Check if the character is a letter or an underscore
+     * @brief Checks whether the given character is an alphabetic character.
      *
-     * @param c the character to check
-     * @return true if the character is a letter or an underscore
+     * This function takes an ASCII numeral representation of a character and
+     * checks whether it is an alphabetic character. Both uppercase and lowercase
+     * alphabetic characters are considered valid, as well as the underscore
+     * character.
+     *
+     * @param c The ASCII value of the character to be checked.
+     * @return `true` if `c` is an alphabetic character, `false` otherwise.
      */
     static bool isAlpha(int c);
 
     /**
-     * Check if the character is a letter, an underscore or a digit
+     * @brief Checks if the given character is alphanumeric.
      *
-     * @param c the character to check
-     * @return true if the character is a letter, an underscore or a digit
+     * This function checks whether the ASCII value of the given character falls
+     * within the range of alphanumeric characters. In short, it checks if the
+     * character is either an alphabetic character or a digit.
+     *
+     * @param c The ASCII value of the character to be checked.
+     * @return `true` if the character is alphanumeric, `false` otherwise.
+     *
+     * @see isAlpha
+     * @see isDigit
      */
     static bool isAlphaNum(int c);
 
     /**
-     * Check if the character is a digit
+     * @brief Determines whether a given character is a digit or not.
      *
-     * @param c the character to check
-     * @return true if the character is a digit
+     * This function checks whether the ASCII value of thr given character is
+     * in the range of '0' to '9', indicating that it is a numeral digit.
+     *
+     * @param c The ASCII value of the character to be checked.
+     * @return `true` if the character is a digit, `false` otherwise.
      */
     static bool isDigit(int c);
 

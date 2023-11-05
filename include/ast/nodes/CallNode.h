@@ -15,52 +15,66 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for a function call
+ * @class CallNode
+ * @brief Represents a function or method call expression node.
  *
- * Call a function and execute the statements in its body. If the function
- * expects parameters, then values specified during the call are passed to the
- * function in the same order as they appear.
- * The function must be declared and defined before it can be called.
+ * The CallNode class holds information about a function or method call, such as
+ * the callee (the entity being called), and the arguments passed to the call.
  */
 class CallNode : public ExprNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param callee the expression that is called
-     * @param token the closing parenthesis token
-     * @param args the list of arguments
+     * @brief Class constructor.
+     * @param callee The callee expression.
+     * @param token The token representing the call.
+     * @param args The arguments passed to the call.
      */
     CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args);
 
     /**
-     * Getter for the callee
+     * @brief Returns the name of the callee of the current function.
      *
-     * @return the callee
+     * This function retrieves the expression node that represents the name
+     * of the function that is being called.
+     *
+     * @return The callee expression of the current function.
      */
     ExprNode* getCallee();
 
     /**
-     * Getter for the arguments of the call
+     * @brief Returns the arguments passed to the current function.
      *
-     * @return the arguments
+     * This function retrieves the arguments that were passed to the current
+     * function and returns them as a vector of expression nodes.
+     *
+     * @return The arguments passed to the current function.
      */
     const std::vector<UExprNode>& getArgs();
 
     /**
-     * Getter for the symbol representing the function called
-     * @return a pointer to the symbol
+     * @brief Returns the symbol associated with the current object.
+     *
+     * This function retrieves the symbol that represents the function that is
+     * associated with the current object.
+     * The symbol provides information about the function, such as its name,
+     * parameters and return type. The symbol is used to identify the function.
+     *
+     * @return The symbol associated with the current object.
+     *
+     * @see setSymbol()
      */
     Symbol* getSymbol() const;
 
     /**
-     * Setter for the symbol representing the function called
-     * @param symbol a pointer to the symbol
+     * @brief Sets the symbol of the variable associated with this node.
+     * @param symbol The symbol to set.
+     *
+     * @see getSymbol()
      */
     void setSymbol(Symbol* symbol);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

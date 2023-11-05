@@ -2,18 +2,15 @@
 
 #include <utility>
 
-/// Class constructor
 Token::Token(std::string lexeme, TokenType type, const int line, const int col) :
     m_text(std::move(lexeme)),
     m_type(type),
     m_line(line),
     m_col(col) {}
 
-/// Class constructor
 Token::Token(const std::string& lexeme, TokenType type) :
     Token(lexeme, type, -1, -1) {}
 
-/// Return the lexeme associated to a token type
 std::string Token::lexeme(TokenType type) {
     switch (type) {
         // Single character tokens
@@ -49,22 +46,18 @@ std::string Token::lexeme(TokenType type) {
     }
 }
 
-/// Getter for the token type
 TokenType Token::getType() const {
     return m_type;
 }
 
-/// Getter for the token line
 int Token::getLine() const {
     return m_line;
 }
 
-/// Getter for the token column
 int Token::getColumn() const {
     return m_col;
 }
 
-/// Stringify the token
 std::string Token::toString() const {
     return m_text;
 }

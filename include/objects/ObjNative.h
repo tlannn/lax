@@ -6,32 +6,41 @@
 #include "objects/Object.h"
 #include "values/Value.h"
 
-/// Type for native functions.
+/**
+ * @typedef NativeFn
+ * @brief Native function type in Lax.
+ */
 typedef Value (*NativeFn)(int argCount, Value* args);
 
 /**
- * Native function object in Lax.
+ * @class ObjNative
+ * @brief Native function object in Lax.
  *
  * Native functions are functions implemented natively, as opposed to
  * user-defined functions.
+ *
+ * @see ObjFunction
  */
 class ObjNative : public Object {
 public:
     /**
-     * Class constructor.
+     * @brief Class constructor.
      *
-     * @param function the pointer to the native function that the object wraps.
+     * Constructs a native function object that wraps a native function.
+     *
+     * @param function The native function to wrap.
      */
     explicit ObjNative(NativeFn function);
 
     /**
-     * Getter for the pointer to the native function.
-     *
-     * @return the pointer to the native function.
+     * @brief Returns the native function wrapped.
+     * @return The native function.
      */
     NativeFn getFunction();
 
-    /// Return a string representation of the object.
+    /**
+     * @copydoc Object::toString()
+     */
     std::string toString() override;
 
 private:

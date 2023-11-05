@@ -8,13 +8,20 @@ class LaxType;
 class ObjString;
 
 /**
- * Represent an identifier (aka symbol) and carries information with it,
- * that may be its type, its scope, etc.
- * Symbols are used during the semantic analysis of programs.
+ * @class Symbol
+ * @brief Represents a symbol in Lax.
+ *
+ * A symbol is a representation of an identifier in Lax. It is used to store
+ * information about the identifier, such as its name and type.
  */
 class Symbol {
 public:
-    /// Enumeration for the type of symbols.
+    /**
+     * @brief Represents the type of symbol.
+     *
+     * This enum is used distinguish between different types of symbols, such as
+     * built-in functions, variables, etc.
+     */
     enum Type {
         BUILTIN,
         VARIABLE,
@@ -22,27 +29,37 @@ public:
     };
 
     /**
-     * Class constructor.
-     * @param name the name of the identifier represented by the symbol.
-     * @param type the type of the symbol
+     * @brief Class constructor.
+     * @param name The name of the identifier represented by the symbol.
+     * @param type The type of the symbol.
      */
     Symbol(ObjString* name, LaxType* type);
 
     /**
-     * Getter for the name of the identifier represented by the symbol.
-     * @return the name of the identifier.
+     * @brief Returns the name of the identifier represented by the symbol.
+     * @return The name of the identifier represented by the symbol.
      */
     ObjString* getName();
 
     /**
-     * Getter for the runtime type of the symbol.
-     * @return the runtime type.
+     * @brief Returns the type of value represented by the symbol.
+     *
+     * This function returns the type of value represented by the symbol, which
+     * is represented as a Lax type object.
+     *
+     * @return The type of value represented by the symbol.
      */
     LaxType* getType();
 
+
     /**
-     * Getter for the type of the symbol.
-     * @return the type of the symbol.
+     * @brief Returns the type of symbol.
+     *
+     * This function returns the type of symbol, which can be used to
+     * distinguish between different types of symbols, such as built-in
+     * functions, variables, etc.
+     *
+     * @return The type of symbol.
      */
     virtual Type getSymbolType() = 0;
 

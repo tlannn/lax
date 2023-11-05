@@ -1,17 +1,14 @@
 #include "vm/Table.h"
 
-/// Class constructor.
 Table::Table() :
     m_count(0),
     m_capacity(0),
     m_entries(nullptr) {}
 
-/// Class destructor.
 Table::~Table() {
     delete[] m_entries;
 }
 
-/// Get a value stored in the table.
 bool Table::get(ObjString* key, Value* value) {
     if (m_count == 0) return false;
 
@@ -22,7 +19,6 @@ bool Table::get(ObjString* key, Value* value) {
     return true;
 }
 
-/// Store a value in the table with the given key.
 bool Table::set(ObjString* key, Value value) {
     // Expand the table capacity if the table max load is reached
     if (m_count + 1 > m_capacity * TABLE_MAX_LOAD) {
@@ -43,7 +39,6 @@ bool Table::set(ObjString* key, Value value) {
     return isNewKey;
 }
 
-/// Remove from the table the value associated to the given key.
 bool Table::remove(ObjString* key) {
     if (m_count == 0) return false;
 
@@ -88,7 +83,6 @@ ObjString* Table::findString(const std::string& chars, int length, uint32_t hash
     }
 }
 
-/// Resize the table to accept a new amount of entries.
 void Table::adjustCapacity(int capacity) {
     auto* entries = new Entry[capacity];
 
@@ -119,7 +113,6 @@ void Table::adjustCapacity(int capacity) {
     m_capacity = capacity;
 }
 
-/// Find the entry corresponding to a key in an array of entries.
 Table::Entry* Table::find(Entry* entries, int capacity, ObjString* key) {
     uint32_t index = key->getHash() % capacity;
     Entry* tombstone = nullptr;

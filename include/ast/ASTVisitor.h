@@ -4,109 +4,114 @@
 #include "ast/ASTFwdDecl.h"
 
 /**
- * Visitor interface.
+ * @class ASTVisitor
+ * @brief Interface for visiting nodes in an Abstract Syntax Tree (AST).
+ *
+ * The ASTVisitor class is an interface for visiting nodes in an AST. It
+ * provides a visit method for each type of node in the AST. The visitor is used
+ * to traverse the AST and perform operations on each node.
  */
 class ASTVisitor {
 public:
     /**
-     * Visit an ExprNode.
-     * @param node the node to visit.
+     * @brief Visits an ExprNode.
+     * @param node The node to visit.
      */
     virtual void visit(ExprNode& node) = 0;
 
     /**
-     * Visit an AssignNode.
-     * @param node the node to visit.
+     * @brief Visits an AssignNode.
+     * @param node The node to visit.
      */
     virtual void visit(AssignNode& node) = 0;
 
     /**
-     * Visit a LogicalNode.
-     * @param node the node to visit.
+     * @brief Visits a LogicalNode.
+     * @param node The node to visit.
      */
     virtual void visit(LogicalNode& node) = 0;
 
     /**
-     * Visit a RelationalNode.
-     * @param node the node to visit.
+     * @brief Visits a RelationalNode.
+     * @param node The node to visit.
      */
     virtual void visit(RelationalNode& node) = 0;
 
     /**
-     * Visit a BinOpNode.
-     * @param node the node to visit.
+     * @brief Visits a BinOpNode.
+     * @param node The node to visit.
      */
     virtual void visit(BinOpNode& node) = 0;
 
     /**
-     * Visit an UnaryNode.
-     * @param node the node to visit.
+     * @brief Visits an UnaryNode.
+     * @param node The node to visit.
      */
     virtual void visit(UnaryNode& node) = 0;
 
     /**
-     * Visit a CallNode.
-     * @param node the node to visit.
+     * @brief Visits a CallNode.
+     * @param node The node to visit.
      */
     virtual void visit(CallNode& node) = 0;
 
     /**
-     * Visit a LiteralNode.
-     * @param node the node to visit.
+     * @brief Visits a LiteralNode.
+     * @param node The node to visit.
      */
     virtual void visit(LiteralNode& node) = 0;
 
     /**
-     * Visit an IdNode.
-     * @param node the node to visit.
+     * @brief Visits an IdNode.
+     * @param node The node to visit.
      */
     virtual void visit(IdNode& node) = 0;
 
     /**
-     * Visit a StmtNode.
-     * @param the node to visit.
+     * @brief Visits a StmtNode.
+     * @param The node to visit.
      */
     virtual void visit(StmtNode& node) = 0;
 
     /**
-     * Visit a BlockNode.
-     * @param node the node to visit.
+     * @brief Visits a BlockNode.
+     * @param node The node to visit.
      */
     virtual void visit(BlockNode& node) = 0;
 
     /**
-     * Visit a SeqNode.
-     * @param node the node to visit.
+     * @brief Visits a SeqNode.
+     * @param node The node to visit.
      */
     virtual void visit(SeqNode& node) = 0;
 
     /**
-     * Visit a DeclNode.
-     * @param node the node to visit.
+     * @brief Visits a DeclNode.
+     * @param node The node to visit.
      */
     virtual void visit(DeclNode& node) = 0;
 
     /**
-     * Visit an ConditionalNode.
-     * @param node the node to visit.
+     * @brief Visits a ConditionalNode.
+     * @param node The node to visit.
      */
     virtual void visit(ConditionalNode& node) = 0;
 
     /**
-     * Visit a FunNode.
-     * @param node the node to visit.
+     * @brief Visits a FunNode.
+     * @param node The node to visit.
      */
     virtual void visit(FunNode& node) = 0;
 
     /**
-     * Visit a ReturnNode.
-     * @param node the node to visit.
+     * @brief Visits a ReturnNode.
+     * @param node The node to visit.
      */
     virtual void visit(ReturnNode& node) = 0;
 
     /**
-     * Visit a StmtExpressionNode.
-     * @param node the node to visit.
+     * @brief Visits a StmtExpressionNode.
+     * @param node The node to visit.
      */
     virtual void visit(StmtExpressionNode& node) = 0;
 };

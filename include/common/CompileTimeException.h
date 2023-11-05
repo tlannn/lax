@@ -6,24 +6,36 @@
 #include "Exception.h"
 
 /**
- * Class for exceptions raised during compile time
+ * @class CompileTimeException
+ * @brief Exception thrown when a compile-time error is encountered.
+ *
+ * This class represents a compile-time exception. It is thrown when a
+ * compile-time error is encountered during the compilation of the program.
+ *
+ * Compile-time exceptions are aware of the location in the source code where
+ * the error occurred.
+ *
+ * @note This class is abstract and should not be instantiated directly.
+ *       Instead, use one of its subclasses.
  */
 class CompileTimeException : public Exception {
 public:
     /**
-     * Class constructor
-     * @param file the file where the exception occurred
-     * @param line the line where the exception occurred
-     * @param col the column where the exception occurred
-     * @param message the exception message
-     * @param type the type of exception
+     * @brief Class constructor.
+     *
+     * Create a compile-time exception given a file and a position and this file.
+     *
+     * @param file The file where the exception occurred.
+     * @param line The line where the exception occurred.
+     * @param col The column where the exception occurred.
+     * @param message The exception message.
+     * @param type The type of exception.
      */
     CompileTimeException(std::string file, int line, int col,
         std::string message, std::string type);
 
     /**
-     * Get string identifying exception
-     * @return the string
+     * @copydoc Exception::what()
      */
     const char* what() const noexcept override;
 

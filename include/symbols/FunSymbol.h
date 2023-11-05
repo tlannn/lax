@@ -15,24 +15,36 @@ class LaxType;
 class ObjString;
 
 /**
- * Symbol representing a function
+ * @class FunSymbol
+ * @brief Represents a function symbol in Lax.
+ *
+ * A function symbol is a representation of a function identifier in Lax. It is
+ * used to store information about the function, such as its name, arguments and
+ * return type.
  */
 class FunSymbol : public Symbol {
 public:
     /**
-     * Class constructor
-     * @param name the function name
-     * @param args the arguments expected by the function
-     * @param returnType the value type returned
+     * @brief Class constructor.
+     * @param name The name of the function.
+     * @param args The arguments expected by the function.
+     * @param returnType The type of the value returned by the function.
      */
     FunSymbol(ObjString* name, ARGS_TYPE& args, LaxType* returnType);
 
     /**
-     * Getter for the function arguments
-     * @return the arguments expected
+     * @brief Returns the arguments expected by the function.
+     *
+     * This function returns the arguments expected by the function, which is
+     * represented as a vector of variable symbols.
+     *
+     * @return The arguments expected by the function.
      */
     const ARGS_TYPE& getArgs();
 
+    /**
+     * @copydoc Symbol::getSymbolType()
+     */
     Type getSymbolType() override;
 
 private:

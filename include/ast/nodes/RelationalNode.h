@@ -13,24 +13,32 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for an equality or inequality expression
+ * @class RelationalNode
+ * @brief Represents a relational expression in the Abstract Syntax Tree (AST).
  *
- * The node compares two expressions with compares two expressions with an logical AND operator,
- * or a logical OR operator
+ * The RelationalNode class is used to store information about a relational
+ * expression, which is an expression that compares two values using mathematical
+ * operators. The expression evaluates to a boolean value.
+ *
+ * The node stores the left and right expressions, as well as the token
+ * representing the relational operator.
+ *
+ * @note The relational operators supported are EQUAL (==), NOT EQUAL (!=),
+ * LESS THAN (<), LESS THAN OR EQUAL (<=), GREATER THAN (>), and GREATER THAN
+ * OR EQUAL (>=).
  */
 class RelationalNode : public LogicalNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param left the expression to the left of the boolean operator
-     * @param op the token representing the boolean operator
-     * @param right the expression to the right of the boolean operator
+     * @brief Class constructor.
+     * @param left The left expression.
+     * @param op The token representing the relational operator.
+     * @param right The right expression.
      */
     RelationalNode(UExprNode left, SToken op, UExprNode right);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 };

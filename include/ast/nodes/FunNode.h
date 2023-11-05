@@ -20,75 +20,78 @@ typedef std::unique_ptr<Token> UToken;
 typedef std::unique_ptr<Variable> UVariable;
 
 /**
- * Node for a function definition
+ * @class FunNode
+ * @brief Represents a function declaration in the Abstract Syntax Tree (AST).
  *
- * Declare a function and its definition. A function can take parameters that
- * can be used in its body. A value return type can be specified.
+ * The FunNode class is used to store information about a function. A function
+ * is a block of code that can be called from anywhere in the program.
+ * It can take arguments and return a value.
+ *
+ * The function is represented by a symbol in the symbol table. The symbol
+ * represents the function name, return type, and parameters.
  */
 class FunNode : public StmtNode {
 public:
+
     /**
-     * Class constructor
-     *
-     * @param name the function name
-     * @param type the function return type
-     * @param params the function parameters
-     * @param body the function body
+     * @brief Class constructor.
+     * @param token The token representing the function.
+     * @param name The name of the function.
+     * @param returnType The return type of the function.
+     * @param params The list of parameters of the function.
+     * @param body The body of the function.
      */
     FunNode(UToken token, ObjString* name, LaxType* returnType,
         std::vector<UVariable> params, UBlockNode body);
 
     /**
-	 * Getter for the function token
-	 *
-	 * @return the token
+	 * @brief Retrieves the token representing the function.
+	 * @return The token representing the function.
 	 */
     Token* getToken();
 
     /**
-	 * Getter for the function name
-	 *
-	 * @return the function name
+	 * @brief Retrieves the name of the function.
+	 * @return The function name.
 	 */
     ObjString* getName();
 
     /**
-     * Getter for the return type of the function
-     *
-     * @return the function return type
+     * @brief Retrieves the return type of the function.
+     * @return The function return type.
      */
     LaxType* getReturnType();
 
     /**
-     * Getter for the function body
-     *
-     * @return the function body
+     * @brief Retrieves the body of the function.
+     * @return The function body.
      */
     BlockNode* getBody();
 
     /**
-     * Getter for the list of parameters
-     *
-     * @return the function parameters
+     * @brief Retrieves the parameters of the function.
+     * @return The function parameters.
      */
     const std::vector<UVariable>& getParams();
 
     /**
-	 * Getter for the symbol representing the function
-	 *
-	 * @return a pointer to the symbol
+	 * @brief Retrieves the symbol representing the function.
+	 * @return The symbol representing the function.
+     *
+     * @see setSymbol()
 	 */
     FunSymbol* getSymbol();
 
     /**
-     * Setter for the symbol representing the function
+     * @brief Associates a symbol with this node.
+     * @param symbol The symbol to associate with this node.
      *
-     * @param symbol a pointer to the symbol
+     * @see getSymbol()
      */
     void setSymbol(FunSymbol* symbol);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

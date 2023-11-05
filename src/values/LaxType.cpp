@@ -2,6 +2,7 @@
 #include "values/FunctionType.h"
 #include "values/ObjectType.h"
 #include "values/PrimitiveType.h"
+#include <typeinfo>
 
 LaxType::LaxType(Kind kind) :
     m_kind(kind) {}

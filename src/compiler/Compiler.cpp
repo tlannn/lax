@@ -500,10 +500,10 @@ void Compiler::visit(DeclNode& node) {
 /// Compile an AssignNode to bytecode
 void Compiler::visit(AssignNode& node) {
 #ifdef DEBUG_PRINT_COMPILATION_ASSIGNNODE
-    Logger::warning("AssignNode " + node->getName());
+    Logger::warning("AssignNode " + node->getVariableName());
 #endif
 
-    ObjString* identifier = node.getName();
+    ObjString* identifier = node.getVariableName();
 
     // Search the identifier among declared local variables
     int arg = resolveLocal(m_currentScope, identifier);

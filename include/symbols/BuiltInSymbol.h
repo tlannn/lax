@@ -14,18 +14,26 @@ class LaxType;
 class ObjString;
 
 /**
- * Symbol representing a built-in type.
+ * @class BuiltInSymbol
+ * @brief Represents a built-in function symbol in Lax.
+ *
+ * A built-in function symbol is a representation of a built-in function
+ * identifier in Lax. It is used to store information about the function, such
+ * as its name, arguments and return type.
  */
 class BuiltInSymbol : public Symbol {
 public:
     /**
-     * Class constructor
-     * @param name the function name
-     * @param args the arguments expected by the function
-     * @param returnType the value type returned
+     * @brief Class constructor.
+     * @param name The name of the function.
+     * @param args The arguments expected by the function.
+     * @param returnType The value type returned by the function.
      */
     BuiltInSymbol(ObjString* name, LaxType* type);
 
+    /**
+     * @copydoc Symbol::getSymbolType()
+     */
     Type getSymbolType() override;
 };
 

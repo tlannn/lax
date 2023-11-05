@@ -14,7 +14,9 @@ class ObjectType;
 class Object;
 class ObjFunction;
 
-/// Enumeration of the types of values that can be represented as a Value object.
+/**
+ * @brief Enumeration of all types of values in Lax.
+ */
 enum ValueType {
     NUL,
     INTEGER,
@@ -33,7 +35,11 @@ enum ValueType {
 #define IS_NULL(value)       ((value).type == ValueType::NUL)
 
 /**
- * Value in Lax, be it of a primitive type or an object.
+ * @class Value
+ * @brief Class representing a value in Lax.
+ *
+ * This class is used to represent a value in Lax. It is used to distinguish
+ * values from other types of objects, and to perform type checking.
  */
 struct Value {
     ValueType type;
@@ -43,84 +49,95 @@ struct Value {
         Object* obj;
     } as;
 
-    /// Class constructor.
+    /**
+     * @brief Class constructor.
+     *
+     * Constructs a null value.
+     */
     Value();
 
     /**
-     * Construct a null value.
-     * @return a null value.
+     * @brief Constructs a null value.
+     * @return A null value.
      */
     static Value null();
 
     /**
-     * Construct a function value.
-     * @param function a pointer to the object representing the function.
-     * @return the function as a value.
+     * @brief Constructs a function value.
+     * @param function The function to treat as a value.
+     * @return The function as a value.
      */
     static Value function(ObjFunction* function);
 
     /**
-     * Construct an object value.
-     * @param object a pointer to the object.
-     * @return the object as a value.
+     * @brief Constructs an object value.
+     * @param object The object to treat as a value.
+     * @return The object as a value.
      */
     static Value object(Object* object);
 
     /**
-     * Construct a boolean value.
-     * @param b the boolean value.
-     * @return the boolean as a value.
+     * @brief Constructs a boolean value.
+     * @param b The boolean to treat as a value.
+     * @return The boolean as a value.
      */
     static Value boolean(bool b);
 
     /**
-     * Construct an integer value.
-     * @param i the integer.
-     * @return
+     * @brief Constructs an integer value.
+     * @param i The integer to treat as a value.
+     * @return The integer as a value.
      */
     static Value integer(int i);
 
     /**
-     * Check if a value is considered false in Lax.
-     * @param value the value to check.
-     * @return true if the value is considered false.
+     * @brief Checks whether a value is considered false in Lax.
+     * @param value The value to check.
+     * @return `true` if the value is considered false, `false` otherwise.
      */
     static bool isFalsy(Value value);
 
     /**
-     * Check if two values are considered equal in Lax.
-     * @param a the first value to check.
-     * @param b the second value to check.
-     * @return true if the two values are considered equal.
+     * @brief Checks if two values are considered equal in Lax.
+     * @param a The first value to check.
+     * @param b The second value to check.
+     * @return `true` if both values are considered equal, `false` otherwise.
      */
     static bool equals(Value a, Value b);
 
     /**
-     * Return the string representation of a value.
-     * @param value the value to represent as a string.
-     * @return the string representation.
+     * @brief Returns the string representation of a value.
+     * @param value The value to represent as a string.
+     * @return The string representation of the value.
      */
     static std::string toString(Value& value);
 
     /**
-     * Overload the behavior of the assign operator.
-     * @param value the value to assign to this object.
-     * @return the assigned object.
+     * @brief Assigns a value to this object.
+     * @param value The value to assign.
+     * @return A reference to this object.
      */
     Value& operator=(const Value& value);
 
 private:
     /**
-     * Class constructor.
-     * @param type the type of value.
-     * @param v the actual value representation.
+     * @brief Class constructor.
+     *
+     * Constructs a value given its type and representation.
+     *
+     * @param type The type of value.
+     * @param v The actual value representation.
      */
     Value(ValueType type, union value v);
 
     /**
-     * Class constructor.
-     * @param type the type of value.
-     * @param object a pointer to the object to treat as a value.
+     * @brief Class constructor.
+     *
+     * Constructs a value given its type and a pointer to the object to treat as
+     * a value.
+     *
+     * @param type The type of value.
+     * @param object The object to treat as a value.
      */
     Value(ValueType type, Object* object);
 };

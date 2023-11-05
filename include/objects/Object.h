@@ -13,7 +13,10 @@
 #define IS_CLOSURE(value)       Object::isObjType(value, OBJ_CLOSURE)
 #define IS_NATIVE(value)        Object::isObjType(value, OBJ_NATIVE)
 
-/// Enumeration of the types of objects.
+/**
+ * @enum ObjType
+ * @brief Enumeration of the possible types of objects in Lax.
+ */
 enum ObjType {
     OBJ_STRING,
     OBJ_UPVALUE,
@@ -23,36 +26,51 @@ enum ObjType {
 };
 
 /**
- * Represent an object in Lax as in the OOP paradigm.
+ * @class Object
+ * @brief Base class for all objects in Lax.
+ *
+ * All objects in Lax inherit from this class. It is used to store the type of
+ * the object.
+ *
+ * @see ObjType
  */
 class Object {
 public:
-    /// Class constructor.
+    /**
+     * @brief Class constructor.
+     * @param type The type of the object.
+     */
     explicit Object(ObjType type);
 
-    /// Class destructor.
+    /**
+     * @brief Class destructor.
+     *
+     * This destructor is pure virtual, which means that this class cannot be
+     * instantiated.
+     */
     virtual ~Object() = 0;
 
     /**
-     * Return the type of the object.
-     *
-     * @return the object type.
+     * @brief Returns the type of the object.
+     * @return The object type.
      */
     ObjType getType();
 
     /**
-     * Return a string representation of the object.
-     *
-     * @return the string representation.
+     * @brief Returns a string representation of the object.
+     * @return The string representation of the object.
      */
     virtual std::string toString();
 
     /**
-     * Check if a value is of a specific object type.
+     * @brief Checks if a value is of a given type.
      *
-     * @param value the value to check.
-     * @param type the expected type.
-     * @return true if the value match the type.
+     * This function is implemented as a static function, so that it can be used
+     * without instantiating an object.
+     *
+     * @param value The value to check.
+     * @param type The expected type.
+     * @return `true` if the value matches the type, `false` otherwise.
      */
     static inline bool isObjType(Value value, ObjType type) {
         return IS_OBJ(value) && OBJ_TYPE(value) == type;

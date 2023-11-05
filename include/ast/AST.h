@@ -9,29 +9,51 @@
 class ASTVisitor;
 
 /**
- * Abstract Syntax Tree (AST) representation. Controls the root node
- * and provides methods of traversal and access to the root node.
+ * @class AST
+ * @brief Represents an Abstract Syntax Tree (AST).
+ *
+ * This class encapsulates information about an Abstract Syntax Tree (AST).
+ * It is used to store the root node of the AST and provides methods of
+ * traversal and access to the root node.
+ *
+ * The AST is a tree representation of the source code. It is used to store
+ * information about the program and is used by the interpreter to execute
+ * the program.
+ *
+ * The AST is constructed by the parser. The parser traverses the source code
+ * and constructs the AST by creating nodes for each statement, expression,
+ * and declaration.
  */
 class AST {
 public:
     /**
-     * Class constructor.
-     * @param root the root node of the AST.
+     * @brief Class constructor.
+     *
+     * Constructs an AST with the provided root node.
+     *
+     * @param root The root node of the AST.
      */
     explicit AST(std::unique_ptr<ASTNode> root);
 
-    /// Class destructor.
+    /**
+     * @brief Class destructor.
+     *
+     * Default destructor.
+     */
     ~AST() = default;
 
     /**
-     * Traverses the AST starting from root node using the provided visitor.
-     * @param visitor Reference to ASTVisitor object.
+     * @brief Traverses the AST.
+     *
+     * Traverses the AST using the provided visitor, starting at the root node.
+     *
+     * @param visitor The visitor used to traverse the AST.
      */
     void traverse(ASTVisitor& visitor);
 
     /**
-     * Provides a reference to root node.
-     * @return Reference to root ASTNode.
+     * @brief Retrieves the root node of the AST.
+     * @return The root node.
      */
     ASTNode& getRoot() const;
 

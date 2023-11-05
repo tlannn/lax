@@ -6,11 +6,15 @@
 #include "values/Value.h"
 
 /**
- * Native function that prints a Lax value followed by an newline in the
- * standard output stream.
+ * @brief Prints a value to the standard output.
  *
- * @param argCount the number of arguments passed to the function call.
- * @param args the arguments of the function.
+ * This function is used as a native function in Lax.
+ *
+ * It prints a value to the standard output and appends a newline character to
+ * the end of the output. The value is converted to a string before being printed.
+ *
+ * @param argCount the number of arguments passed to the function.
+ * @param args the arguments passed to the function.
  * @return the null value.
  */
 Value printNative(int argCount, Value* args);

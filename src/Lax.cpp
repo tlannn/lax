@@ -5,7 +5,6 @@
 #include "utils/Logger.h"
 #include "vm/VM.h"
 
-/// Interpret a source file with the Lax interpreter
 void Lax::interpret(const std::string& filepath) {
     try {
         // Create the lexical analyser for the file

@@ -4,23 +4,19 @@
 #include "objects/Variable.h"
 #include "symbols/SymbolTable.h"
 
-/// Class constructor
 SemanticAnalyzer::SemanticAnalyzer(AST& ast) :
     m_ast(ast),
     m_errors(false),
     m_symtable(SymbolTable::instance()) {}
 
-/// Analyze semantically the code parsed by the parser
 void SemanticAnalyzer::analyze() {
     m_ast.traverse(*this);
 }
 
-/// Return whether errors occurred during semantic analysis
 bool SemanticAnalyzer::hadErrors() const {
     return m_errors;
 }
 
-/// Return an exception on a specific token
 SemanticError SemanticAnalyzer::error(
     Token* token, const std::string& message, const std::string& type) {
     m_errors = true;
@@ -29,7 +25,6 @@ SemanticError SemanticAnalyzer::error(
     );
 }
 
-/// Report an error to inform the user
 void SemanticAnalyzer::report(const SemanticError& err) {
     Logger::error(err.what());
 }

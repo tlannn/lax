@@ -14,28 +14,31 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for a literal value.
+ * @class LiteralNode
+ * @brief Represents a literal in the Abstract Syntax Tree (AST).
  *
- * Literals can be numbers, booleans, or any atomic value.
+ * The LiteralNode class is used to store information about a literal, which is
+ * a value that is not identified by a name.
+ *
+ * The value of the literal is stored as a Lax value object.
  */
 class LiteralNode : public ExprNode {
 public:
     /**
-     * Class constructor
-     * @param token the token representing to literal
-     * @param value the value corresponding to the literal
+     * @brief Class constructor.
+     * @param token The token representing the literal.
+     * @param value The value of the literal.
      */
     LiteralNode(SToken token, Value value);
 
     /**
-     * Getter for the value of the literal
-     *
-     * @return the value
+     * @brief Retrieves the value associated with this node.
+     * @return The value associated with this node.
      */
     Value getValue();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

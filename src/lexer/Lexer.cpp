@@ -4,7 +4,6 @@
 
 std::string Lexer::currentFile;
 
-/// Class constructor
 Lexer::Lexer(const std::string& filename) :
     m_source(std::make_unique<std::ifstream>()),
     m_startIndex(-1),
@@ -32,13 +31,13 @@ Lexer::Lexer(const std::string& filename) :
     openFile(filename);
 }
 
-/// Return the part containing the path to a file
 std::string Lexer::getPath(const std::string& filepath) {
+    // TODO: handle case where npos is returned
+    // TODO: handle case where filepath is a directory
     size_t index = filepath.find_last_of('/');
     return filepath.substr(0, index + 1);
 }
 
-/// Open a stream to read a file and place the cursor at the beginning
 void Lexer::openFile(const std::string& filename) {
     std::string filepath;
 
@@ -47,6 +46,7 @@ void Lexer::openFile(const std::string& filename) {
     if (!m_mementos.empty()) {
         Memento* memento = &m_mementos.top();
 
+        // TODO: Refactor this to avoid .. in the path
         while (memento) {
             filepath.insert(0, getPath(memento->getSource()));
             memento = memento->getPrevious();
@@ -70,7 +70,6 @@ void Lexer::openFile(const std::string& filename) {
     m_index = -1;
 }
 
-/// Open a file and push it on top of the stack of files opened
 void Lexer::pushFile(const std::string& filename) {
     m_mementos.emplace(
         !m_mementos.empty() ? &m_mementos.top() : nullptr,
@@ -80,7 +79,6 @@ void Lexer::pushFile(const std::string& filename) {
     openFile(filename);
 }
 
-/// Pop the last file opened and restore the state of the previous file
 void Lexer::popFile() {
     Memento memento = m_mementos.top();
     openFile(memento.getSource());
@@ -96,7 +94,6 @@ void Lexer::popFile() {
     m_mementos.pop();
 }
 
-/// Continue the reading of the source code and return the next token analyzed
 std::unique_ptr<Token> Lexer::nextToken() {
     int c = advance();
 
@@ -160,55 +157,44 @@ std::unique_ptr<Token> Lexer::nextToken() {
     return createToken(TokenType::UNKNOWN, std::string(1, static_cast<char>(c)));
 }
 
-/// Reserve a word, meaning it cannot be used as an identifier (for variables,
-/// functions, classes, etc.)
 void Lexer::reserve(const std::string& word, TokenType type) {
     m_words[word] = type;
 }
 
-/// Create a token of a specific type. The lexeme is deduced from the token type
 UToken Lexer::createToken(TokenType type) {
     return createToken(type, Token::lexeme(type));
 }
 
-/// Create a token of specific type and lexeme
 UToken Lexer::createToken(TokenType type, const std::string& lexeme) const {
     return std::make_unique<Token>(lexeme, type, m_startLine, m_startCol);
 }
 
-/// Throw an error
 void Lexer::error(const std::string& message) const {
     throw LexError(
         Lexer::currentFile, m_startLine, m_startCol, message, "LexerError"
     );
 }
 
-/// Return whether the cursor is at the end of the current file
 bool Lexer::isAtEnd() {
     return m_source->peek() == EOF;
 }
 
-/// Read a character in the source code and return it
 int Lexer::advance() {
     ++m_index;
     ++m_col;
     return m_source->get();
 }
 
-/// Check if the next character in the source code is the expected one, and
-/// if it is the case, consume it
 bool Lexer::match(char expected) {
     if (isAtEnd() || peek() != expected) return false;
     advance();
     return true;
 }
 
-/// Look at the next character in the source code, but does not move the cursor
 int Lexer::peek() {
     return m_source->peek();
 }
 
-/// Read a string in the source code
 std::unique_ptr<Token> Lexer::string() {
     std::string buffer;
     int c;
@@ -231,7 +217,6 @@ std::unique_ptr<Token> Lexer::string() {
     return createToken(TokenType::STR, buffer);
 }
 
-/// Read a number in the source code
 std::unique_ptr<Token> Lexer::number(int d) {
     int n = d - '0';
 
@@ -243,7 +228,6 @@ std::unique_ptr<Token> Lexer::number(int d) {
     return createToken(TokenType::NUM, std::to_string(n));
 }
 
-/// Read an identifier in the source code
 std::unique_ptr<Token> Lexer::identifier(int c) {
     // Read in a buffer all following letters
     std::string buffer;
@@ -268,12 +252,10 @@ std::unique_ptr<Token> Lexer::identifier(int c) {
     }
 }
 
-/// Skip an inline comment
 void Lexer::inlineComment() {
     while (peek() != '\n' && !isAtEnd()) advance();
 }
 
-/// Skip a block comment, with nested block comments
 void Lexer::blockComment() {
     short int count = 0;
 
@@ -295,7 +277,7 @@ void Lexer::blockComment() {
             count = 0; // Reset counter
         }
 
-            // Check for closing comments
+        // Check for closing comments
         else if (peek() == '*') {
             while (match('*')) ++count;
 
@@ -309,17 +291,14 @@ void Lexer::blockComment() {
     }
 }
 
-/// Check if the character is a letter or an underscore
 bool Lexer::isAlpha(const int c) {
     return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c == '_';
 }
 
-/// Check if the character is a letter, an underscore or a digit
 bool Lexer::isAlphaNum(const int c) {
     return isAlpha(c) || isDigit(c);
 }
 
-/// Check if the character is a digit
 bool Lexer::isDigit(const int c) {
     return c >= '0' && c <= '9';
 }

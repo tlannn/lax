@@ -6,32 +6,53 @@
 #include "LaxType.h"
 
 /**
- * Function type in Lax. As functions can be considered as values to store in
- * variables, function types can help distinguish different functions.
+ * @class FunctionType
+ * @brief Class representing the type of a function.
+ *
+ * This class is used to represent the type of a function in Lax. It is used to
+ * distinguish functions from other types of values, and to perform type checking.
+ *
+ * A function type is defined by the type of data returned by the function, and
+ * the type of data expected for each parameter of the function.
  */
 class FunctionType : public LaxType {
 public:
     /**
-     * Class constructor.
-     * @param returnType a reference to the type of value returned by the
-     * function.
-     * @param paramTypes a vector of pointers to types, each nth type being the
-     * type of the nth parameter of the function.
+     * @brief Class constructor.
+     *
+     * Creates a function type given the type of data returned by the function,
+     * and the type of data expected for each parameter of the function.
+     *
+     * @param returnType The type of value returned by the function.
+     * @param paramTypes A vector of pointers to types, corresponding to the
+     * ordered parameter types of the function.
      */
     FunctionType(const LaxType& returnType, std::vector<LaxType*>&& paramTypes);
 
+    /**
+     * @brief Class constructor.
+     *
+     * Creates a function type given the type of data returned by the function,
+     * and the type of data expected for each parameter of the function.
+     *
+     * @param returnType The type of value returned by
+     * the function.
+     * @param paramTypes A vector of pointers to types, corresponding to the
+     * ordered parameter types of the function.
+     */
     FunctionType(const LaxType& returnType, const std::vector<LaxType*>& paramTypes);
 
     /**
-     * Getter for the type of data expected for each parameter of the function.
-     * @return a reference to a vector of pointers to types, corresponding to
-     * the ordered parameter types of the function.
+     * @brief Retrieves the type of data expected for each parameter of the
+     * function.
+     * @return A constant reference to a vector of pointers to types,
+     * corresponding to the ordered parameter types of the function.
      */
     const std::vector<LaxType*>& getParamTypes() const;
 
     /**
-     * Getter for the type of data returned by the function.
-     * @return a reference to the type of value returned.
+     * @brief Retrieves the type of data returned by the function.
+     * @return The type of data returned.
      */
     const LaxType& getReturnType() const;
 

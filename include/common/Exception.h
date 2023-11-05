@@ -5,20 +5,21 @@
 #include <string>
 
 /**
- * Base exception class
+ * @class Exception
+ * @brief Base class for all exceptions in Lax.
  */
 class Exception : public std::exception {
 public:
     /**
-     * Class constructor
-     * @param message the exception message
-     * @param type the type of exception
+     * @brief Class constructor.
+     * @param message The exception message.
+     * @param type The type of exception.
      */
     explicit Exception(std::string message, std::string type = "");
 
     /**
-     * Get string identifying exception
-     * @return the string
+     * @brief Gets the exception message.
+     * @return The exception message.
      */
     const char* what() const noexcept override;
 

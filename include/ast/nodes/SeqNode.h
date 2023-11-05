@@ -11,26 +11,28 @@
 class ASTVisitor;
 
 /**
- * Node for a sequence of statements to execute one after the other
+ * @class SeqNode
+ * @brief Represents a sequence of statements in the Abstract Syntax Tree (AST).
+ *
+ * The SeqNode class is used to store information about a sequence of statements.
+ * A sequence of statements is used to execute multiple statements in a row.
  */
 class SeqNode : public StmtNode {
 public:
     /**
-     * SeqNode constructor
-     *
-     * @param stmts the statements to execute
+     * @brief Class constructor.
+     * @param stmts The statements to execute.
      */
     explicit SeqNode(std::vector<UStmtNode> stmts);
 
     /**
-     * Getter for the statements to execute
-     *
-     * @return the statements
+     * @brief Retrieves the statements to execute.
+     * @return The statements to execute.
      */
     const std::vector<UStmtNode>& getStatements();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

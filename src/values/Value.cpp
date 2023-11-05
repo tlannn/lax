@@ -34,14 +34,12 @@ Value Value::integer(int i) {
     return Value(ValueType::INTEGER, { .i = i });
 }
 
-/// Check if a value is considered false in Lax.
 bool Value::isFalsy(Value value) {
     return IS_NULL(value) ||
            (IS_INT(value) && AS_INT(value) == 0) ||
            (IS_BOOL(value) && !AS_BOOL(value));
 }
 
-/// Check if two values are considered equal in Lax.
 bool Value::equals(Value a, Value b) {
     if (a.type != b.type) return false;
     ValueType type = a.type;
@@ -58,7 +56,6 @@ bool Value::equals(Value a, Value b) {
     }
 }
 
-/// Return the string representation of a value.
 std::string Value::toString(Value& value) {
     if (IS_NULL(value))
         return "null";

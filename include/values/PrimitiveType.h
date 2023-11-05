@@ -9,8 +9,12 @@
 class Token;
 
 /**
- * Primitive type in Lax. These types are types natively supported by the
- * language.
+ * @class PrimitiveType
+ * @brief Class representing the type of a primitive value.
+ *
+ * This class is used to represent the type of a primitive value in Lax. It is
+ * used to distinguish primitive values from other types of values, and to
+ * perform type checking.
  */
 class PrimitiveType : public LaxType {
 public:
@@ -21,28 +25,33 @@ public:
     static PrimitiveType STRING;
 
     /**
-     * Determine the type corresponding to a type keyword.
-     * @param token the token representing the type keyword.
-     * @return a pointer to the primitive type, or a null pointer if the token
+     * @brief Determines the type corresponding to a type keyword.
+     * @param token The token representing the type keyword.
+     * @return A pointer to the primitive type, or nullptr if the token
      * doesn't correspond to any type.
      */
     static PrimitiveType* getType(Token* token);
 
     /**
-     * Return the string representation of a primitive type.
-     * @param type the type to convert to string.
-     * @return the string representation.
+     * @brief Returns the string representation of a primitive type.
+     * @param type The primitive type to convert.
+     * @return The string representation of the primitive type.
      */
     static std::string toString(const PrimitiveType& type);
 
     /**
-     * Return the string representation of the primitive type.
-     * @return the string representation.
+     * @copydoc LaxType::toString()
      */
     std::string toString() const override;
 
 private:
-    /// Class constructor.
+    /**
+     * @brief Class constructor.
+     *
+     * Creates a primitive type. This constructor is private to prevent
+     * instantiation of primitive types other than the ones defined as static
+     * members of this class.
+     */
     PrimitiveType();
 };
 

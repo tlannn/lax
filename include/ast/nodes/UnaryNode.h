@@ -13,30 +13,31 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for unary expressions
+ * @class UnaryNode
+ * @brief Represents a unary expression in the Abstract Syntax Tree (AST).
  *
- * An unary expression is an operation with a single operand. Only three prefix operators are supported,
- * the negation, the plus and minus sign.
+ * The UnaryNode class is used to store information about a unary expression,
+ * which is an expression that has a single operand. It is used to represent
+ * unary operators, such as the logical negation operator and the unary minus
+ * operator.
  */
 class UnaryNode : public ExprNode {
 public:
 	/**
-	 * Class constructor
-	 *
-	 * @param op the prefix operator
-	 * @param expr the expression associated (the operand)
-	 */
+     * @brief Class constructor.
+     * @param op The token representing the operator.
+     * @param expr The expression representing the operand.
+     */
 	UnaryNode(SToken op, UExprNode expr);
 
 	/**
-	 * Getter for the expression of the operation
-	 *
-	 * @return the expression
-	 */
+     * @brief Retrieves the operator associated with this node.
+     * @return The operator associated with this node.
+     */
 	ExprNode* getExpr() const;
 
 	/**
-	 * Accept method for the visitor pattern
+	 * @copydoc ASTNode::accept()
 	 */
 	void accept(ASTVisitor &visitor) override;
 

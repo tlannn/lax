@@ -13,24 +13,29 @@ class Token;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for a logical expression
+ * @class LogicalNode
+ * @brief Represents a logical expression in the Abstract Syntax Tree (AST).
  *
- * The logical expression compares two expressions with an logical AND operator,
- * or a logical OR operator
+ * The LogicalNode class is used to store information about a logical expression,
+ * which is an expression that evaluates to a boolean value.
+ *
+ * The node stores the left and right expressions, as well as the token
+ * representing the boolean operator.
+ *
+ * @note The boolean operators supported are AND (&&) and OR (||).
  */
 class LogicalNode : public BinOpNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param left the expression to the left of the boolean operator
-     * @param op the token representing the boolean operator
-     * @param right the expression to the right of the boolean operator
+     * @brief Class constructor.
+     * @param left The left expression.
+     * @param op The token representing the boolean operator.
+     * @param right The right expression.
      */
     LogicalNode(UExprNode left, SToken op, UExprNode right);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 };

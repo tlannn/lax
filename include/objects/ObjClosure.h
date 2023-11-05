@@ -8,44 +8,64 @@ class ObjFunction;
 class ObjUpvalue;
 
 /**
- * Closure object in Lax.
+ * @class ObjClosure
+ * @brief Closure object in Lax.
  *
- * A closure is an overlay to function objects. It tracks non-local variables
- * called upvalues used in the function, but that belong to surrounding scopes.
- * Thus these variables can always be used in the function, even if they go
- * out of scope.
+ * A closure is an overlay to function objects. It bundles a function with its
+ * lexical environment, which is the set of variables in the surrounding scopes
+ * that are used in the function. These variables are called upvalues.
+ *
+ * By keeping track of the upvalues, the closure allows the function to access
+ * variables that are not in its scope, even when the said variables go out of
+ * scope.
+ *
+ * The closure is implemented as a linked list of upvalues. The upvalues are
+ * ordered by stack index, which makes it easy to close all upvalues above a
+ * certain index when a function returns.
+ *
+ * When a function is called, a new closure is created. When the function
+ * returns, the closure is destroyed.
+ *
+ * The closure is stored in the stack frame of the function. When the function
+ * returns, the closure is popped from the stack frame.
+ *
+ * @see ObjFunction
  */
 class ObjClosure : public Object {
 public:
     /**
-     * Class constructor.
+     * @brief Class constructor.
      *
-     * @param function the function object that the closure references.
+     * Construct a closure object that references a function.
+     *
+     * @param function The function referenced.
      */
     explicit ObjClosure(ObjFunction* function);
 
     /**
-     * Getter for the function referenced.
-     *
-     * @return the function referenced.
+     * @brief Retrieves the function referenced.
+     * @return The function referenced.
      */
     ObjFunction* getFunction();
 
     /**
-     * Getter for the upvalues captured by the closure.
+     * @brief Returns the upvalues captured by the closure.
      *
-     * @return the upvalues used in the function.
+     * The upvalues are provided as a linked list.
+     *
+     * @return The upvalues used in the function.
      */
     ObjUpvalue** getUpvalues() const;
 
     /**
-     * Return the number of upvalues captured by the closure.
-     *
-     * @return the number of upvalues captured.
+     * @brief Returns the number of upvalues captured by the closure.
+     * @return The number of upvalues captured.
      */
     int getUpvalueCount() const;
 
-    /// Return a string representation of the closure.
+    /**
+     * @copydoc Object::toString()
+     */
     std::string toString() override;
 
 private:

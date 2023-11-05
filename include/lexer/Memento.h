@@ -5,54 +5,67 @@
 #include <string>
 
 /**
- * Memento to remind to state of the previous file being analyzed by the lexer
+ * @class Memento
+ * @brief A memento of a file's current state of lexical analysis.
  *
  * During lexical analysis, another source file can be reached and so the
  * current file being processed must be put on hold. In that case, the new file
  * is put on top of the stack of file processed.
+ *
  * The memento keeps information about one file in the stack, like the last
  * position in the file, as well as a pointer to the memento of the previous
- * file in the stack
+ * file in the stack.
  */
 class Memento {
 public:
     /**
-     * Class constructor
-     * @param previous the previous memento
-     * @param source the name of the source file
-     * @param index the current index in the file
-     * @param line the current line in the file
-     * @param col the current column in the file
+     * @Brief Class constructor.
+     * @param previous The previous memento.
+     * @param source The filename of the source file.
+     * @param index The current index in the file.
+     * @param line The current line in the file.
+     * @param col The current column in the file.
      */
     Memento(Memento* previous, std::string source, int index, int line, int col);
 
     /**
-     * Getter for the previous memento
-     * @return the previous memento
+     * @brief Retrieves the previous element in the data structure.
+     *
+     * This method returns the previous element relative to the current element
+     * in the data structure.
+     * It does not modify the data structure in any way.
+     *
+     * @return The previous element in the data structure.
      */
     Memento* getPrevious() const;
 
+
     /**
-     * Getter for the source file name
-     * @return the source file
+     * @brief Returns the filename of the source code.
+     *
+     * This function provides access to the filename of the source code in a
+     * read-only manner. It returns a constant reference to prevent any
+     * modifications to the filename.
+     *
+     * @return A constant reference to the filename.
      */
     const std::string& getSource() const;
 
     /**
-     * Getter for the current index in the source code
-     * @return the index
+     * @brief Returns the current index in the source code.
+     * @return The current index in the source code.
      */
     int getIndex() const;
 
     /**
-     * Getter for the current line in the source code
-     * @return the line
+     * @brief Returns the current line in the source code.
+     * @return The current line in the source code.
      */
     int getLine() const;
 
     /**
-     * Getter for the current column in the source code
-     * @return the column
+     * @brief Returns the current column in the source code.
+     * @return The current column in the source code.
      */
     int getCol() const;
 

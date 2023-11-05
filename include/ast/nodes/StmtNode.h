@@ -9,20 +9,30 @@
 class ASTVisitor;
 
 /**
- * Node for statements in the program
+ * @class StmtNode
+ * @brief Represents a statement in the Abstract Syntax Tree (AST).
  *
- * Statements express an action to execute. This can be an expression, an assignment, etc.
- * Statements can't be reduced to a value, since their purpose is only to execute actions.
+ * This class serves as a base class for statement nodes in the AST.
+ *
+ * Statements are used to represent statements in the source code, such as
+ * variable declarations, function definitions, and control flow statements.
+ *
+ * These statements are executed for their side effects. They do not evaluate to
+ * a value, in contrast to expressions.
+ *
+ * @see ExprNode
  */
 class StmtNode : public ASTNode {
 public:
     /**
-     * Class constructor
+     * @brief Class constructor.
+     *
+     * Default constructor.
      */
     StmtNode() = default;
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 };

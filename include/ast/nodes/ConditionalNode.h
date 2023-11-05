@@ -9,48 +9,68 @@ class ASTVisitor;
 class ExprNode;
 
 /**
- * Node for if/else statements in the program
+ * @class ConditionalNode
+ * @brief Represents a conditional statement node in the Abstract Syntax
+ * Tree (AST).
  *
- * If/else statements first visit a condition (represented by a boolean expression),
- * and then execute the 'then' statement referenced by the node if the condition
- * is evaluated to true. Otherwise, the 'else' statement referenced is executed if
- * there is one.
+ * The ConditionalNode class is used to store information about a conditional
+ * statement, which is a statement that executes a statement if a condition is
+ * evaluated to true, or another statement if the condition is evaluated to
+ * false.
+ *
+ * Conditional statements are used to control the flow of execution of a program.
+ * They are also known as if-else statements, because they usually take the form
+ * of an if statement followed by an else statement.
  */
 class ConditionalNode : public StmtNode {
 public:
     /**
-     * Class constructor
+     * @brief Class constructor.
      *
-     * @param expr the expression that conditions whether the 'then' statement
-     * will be executed or not
-     * @param thenSmt the statement executed if the condition is evaluated to true
-     * @param elseStmt the statement executed if the condition is evaluated to false
+     * Constructs a new ConditionalNode object with the provided expression,
+     * then statement, and else statement.
+     *
+     * @param expr The expression used as a condition.
+     * @param thenSmt The statement executed if the condition is evaluated to
+     * true.
+     * @param elseStmt The statement executed if the condition is evaluated to
+     * false.
      */
     ConditionalNode(UExprNode expr, UStmtNode thenStmt, UStmtNode elseStmt);
 
     /**
-     * Getter for the condition expression
+     * @brief Returns the conditional expression.
      *
-     * @return the conditional expression
+     * This function returns the expression used as a condition to determine
+     * which statement to execute.
+     *
+     * @return The conditional expression.
      */
     ExprNode* getConditionExpression();
 
     /**
-     * Getter for the 'then' statement
+     * @brief Returns the statement node for the then branch.
      *
-     * @return the 'then' statement
+     * This functions returns the statement node that is executed if the
+     * condition is evaluated to true.
+     *
+     * @return The statement node for the then branch.
      */
     StmtNode* getThenStatement();
 
+
     /**
-     * Getter for the 'else' statement
+     * @brief Returns the statement node for the else branch.
      *
-     * @return the 'else' statement
+     * This functions returns the statement node that is executed if the
+     * condition is evaluated to false.
+     *
+     * @return The statement node for the else branch.
      */
     StmtNode* getElseStatement();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

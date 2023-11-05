@@ -10,28 +10,30 @@
 class ASTVisitor;
 
 /**
- * Node for expression statements in the program
+ * @class StmtExpressionNode
+ * @brief Represents an expression statement in the Abstract Syntax Tree (AST).
  *
- * Expression statements are statements that contains an expression that can be evaluated.
+ * The StmtExpressionNode class is used to store information about an expression
+ * statement. An expression statement is used to evaluate an expression.
+ *
+ * The node stores the expression to visit.
  */
 class StmtExpressionNode : public StmtNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param expr the expression to visit
+     * @brief Class constructor.
+     * @param expr The expression to visit.
      */
     explicit StmtExpressionNode(UExprNode expr);
 
     /**
-     * Getter for the expression to visit
-     *
-     * @return the expression
+     * @brief Retrieves the expression to visit.
+     * @return The expression to visit.
      */
     ExprNode* getExpr();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

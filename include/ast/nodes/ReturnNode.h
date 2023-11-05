@@ -12,29 +12,39 @@ class Token;
 
 typedef std::unique_ptr<Token> UToken;
 
+/**
+ * @class ReturnNode
+ * @brief Represents a return statement in the Abstract Syntax Tree (AST).
+ *
+ * The ReturnNode class is used to store information about a return statement.
+ * A return statement is used to return a value from a function.
+ *
+ * The node stores the token representing the return keyword, as well as the
+ * expression returned.
+ */
 class ReturnNode : public StmtNode {
 public:
     /**
-     * Class constructor
-     * @param returnToken the token of the return keyword
-     * @param value the expression returned
+     * @brief Class constructor.
+     * @param returnToken The token representing the return keyword.
+     * @param value The expression returned.
      */
     ReturnNode(UToken returnToken, UExprNode value);
 
     /**
-     * Getter for the return keyword token
-     * @return the return token
+     * @brief Retrieves the token representing the return keyword.
+     * @return The token representing the return keyword.
      */
     Token* getToken();
 
     /**
-     * Getter for the expression returned
-     * @return the expression
+     * @brief Retrieves the expression returned.
+     * @return The expression returned.
      */
     ExprNode* getValue();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

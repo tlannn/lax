@@ -6,7 +6,6 @@
 #include "objects/ObjUpvalue.h"
 #include "utils/Logger.h"
 
-/// Class constructor.
 VM::VM() :
     m_frameCount(0),
     m_openUpvalues(nullptr),
@@ -17,8 +16,6 @@ VM::VM() :
     defineNative("print", printNative);
 }
 
-/// Compile an Abstract Syntax Tree to bytecode and then run the bytecode
-/// generated.
 InterpretResult VM::interpret(AST& ast) {
     // Compile the AST to bytecode
     Compiler compiler;
@@ -36,7 +33,6 @@ InterpretResult VM::interpret(AST& ast) {
     return run();
 }
 
-/// Execute the bytecode.
 InterpretResult VM::run() {
     CallFrame* frame = &m_frames[m_frameCount - 1];
 
@@ -282,32 +278,27 @@ InterpretResult VM::run() {
     return INTERPRET_RUNTIME_ERROR; // Unreachable
 }
 
-/// Report an error.
 void VM::runtimeError(const std::string& message) {
     Logger::error(message);
 }
 
-/// Push a value onto the runtime stack.
 void VM::push(Value value) {
     *m_stackTop = value;
     ++m_stackTop;
 }
 
-/// Pop the topmost value of the runtime stack.
 Value VM::pop() {
     --m_stackTop;
     return *m_stackTop;
 }
 
-/// Peek a value at some distance in the runtime stack.
 Value VM::peek(int distance) {
-    return m_stackTop[-1 - distance];
+    if (m_stackTop - m_stack <= distance)
+        throw std::out_of_range("Stack underflow");
+
+    return *(m_stackTop - distance - 1);
 }
 
-/// Create an upvalue for a value in the stack, if it doesn't already exist.
-///
-/// The upvalue created is added to the list of opened upvalues, ordered by
-/// stack index.
 ObjUpvalue* VM::captureUpvalue(Value* local) {
     ObjUpvalue* previous = nullptr;
     ObjUpvalue* upvalue = m_openUpvalues;
@@ -334,12 +325,6 @@ ObjUpvalue* VM::captureUpvalue(Value* local) {
     return createdUpvalue;
 }
 
-/// Close upvalues in the list of opened upvalues that are above a value in
-/// the stack.
-///
-/// When leaving a scope, all upvalues used in that scope are closed. Closed
-/// upvalues are moved off the stack and saved in the upvalue object itself,
-/// so the value can still be accessed outside of its scope.
 void VM::closeUpvalues(Value* last) {
     // Close upvalues whose index are greater than the index of the value
     // referenced in the stack
@@ -353,7 +338,6 @@ void VM::closeUpvalues(Value* last) {
     }
 }
 
-/// Perform a call on a value.
 bool VM::callValue(Value callee, int argCount) {
     // Only some objects are callable
     if (IS_OBJ(callee)) {
@@ -380,7 +364,6 @@ bool VM::callValue(Value callee, int argCount) {
     return false;
 }
 
-/// Call a function and execute its body.
 bool VM::call(ObjClosure* closure, int argCount) {
     ObjFunction* function = closure->getFunction();
 
@@ -408,7 +391,6 @@ bool VM::call(ObjClosure* closure, int argCount) {
     return true;
 }
 
-/// Register a native function in the global scope.
 void VM::defineNative(const char* name, NativeFn function) {
     push(Value::object(ObjString::copyString(name)));
     push(Value::object(new ObjNative(function)));

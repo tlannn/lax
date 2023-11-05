@@ -9,26 +9,34 @@
 class LaxType;
 
 /**
- * Represent a variable
+ * @class Variable
+ * @brief Information on a variable in Lax.
+ *
+ * This class represents a variable in Lax. It is used to store information
+ * about the variable, such as its name and type.
  */
 class Variable {
 public:
     /**
-     * Class constructor
-     * @param varName the name of the variable
-     * @param type the type of the variable
+     * @brief Class constructor.
+     *
+     * Constructs a variable given its name and type. The name is stored as a
+     * unique_ptr to a token object.
+     *
+     * @param varName The name of the variable.
+     * @param type The type of the variable.
      */
     Variable(std::unique_ptr<Token> varName, LaxType* type);
 
     /**
-     * Getter for the variable name
-     * @return the variable name
+     * @brief Returns the name of the variable.
+     * @return The variable name.
      */
     Token* getVarName() const;
 
     /**
-     * Getter for the variable type
-     * @return the variable type
+     * @brief Returns the type of the variable.
+     * @return The variable type.
      */
     LaxType* getType() const;
 

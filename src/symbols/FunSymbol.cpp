@@ -2,7 +2,6 @@
 #include "objects/ObjString.h"
 #include "values/FunctionType.h"
 
-/// Class constructor
 FunSymbol::FunSymbol(ObjString* name, std::vector<VarSymbol>& args,
     LaxType* returnType) : Symbol(name, nullptr)
 {
@@ -15,7 +14,6 @@ FunSymbol::FunSymbol(ObjString* name, std::vector<VarSymbol>& args,
     m_type = new FunctionType(*returnType, paramsTypes);
 }
 
-/// Getter for the function arguments
 const std::vector<VarSymbol>& FunSymbol::getArgs() {
     return m_args;
 }

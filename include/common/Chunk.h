@@ -6,7 +6,12 @@
 #include "values/Value.h"
 #include "values/ValueArray.h"
 
-/// Enumeration of the operation codes in bytecode
+/**
+ * @brief Enumeration of opcodes.
+ *
+ * This enumeration represents the opcodes that can be used in the bytecode.
+ * Each opcode represents an action to perform at runtime.
+ */
 enum OpCode {
     OP_EXTENDED_ARG,
     OP_CONSTANT,
@@ -42,10 +47,15 @@ enum OpCode {
 };
 
 /**
- * Chunk of bytecode.
+ * @class Chunk
+ * @brief Chunk of bytecode.
  *
- * The bytecode chunk is composed of instructions, represented as a sequence of
- * codes. An instruction is composed of an OpCode that describes the action to
+ * This class represents a chunk of bytecode. A chunk is a sequence of codes that
+ * can be executed by the virtual machine. The virtual machine interprets the
+ * bytecode and executes the instructions.
+ *
+ * The bytecode is composed of instructions, represented as a sequence of codes.
+ * An instruction is composed of an OpCode that specifies the action to
  * perform at runtime. An OpCode may be followed by an optional OpArg if needed.
  * OpArgs can be expanded to be encoded on multiple bytes using the
  * OP_EXTENDED_ARG OpCode.
@@ -56,58 +66,63 @@ enum OpCode {
  */
 class Chunk {
 public:
-    /// Class constructor.
+    /**
+     * @brief Class constructor.
+     *
+     * Creates a new bytecode chunk.
+     */
     Chunk();
 
-    /// Class destructor.
+    /**
+     * @brief Class destructor.
+     *
+     * Frees the memory allocated for the bytecode.
+     */
     ~Chunk();
 
     /**
-     * Write a byte in the bytecode of the chunk.
-     *
-     * @param byte the byte to write.
+     * @brief Writes an instruction in the bytecode of the chunk.
+     * @param byte The instruction to write, represented as a byte.
      */
     void writeByte(uint8_t byte);
 
     /**
-     * Getter for a code in the bytecode.
+     * @brief Retrieves the opcode with the given offset.
      *
-     * Return the first code of the bytecode if no offset is provided.
+     * This function retrieves the opcode stored at the given offset. If no
+     * offset is specified, the default offset of 0 is used.
      *
-     * @param offset the offset of the code in the bytecode.
-     * @return a pointer to the code.
+     * @param offset (optional) The offset value to lookup the opcode.
+     * @return The opcode at the given offset.
      */
     uint8_t* getCode(int offset = 0);
 
     /**
-     * Add a constant value in the constant pool of the chunk.
-     *
-     * @param value the constant value to add.
-     * @return the index of the constant in the constant pool.
+     * @brief Adds a constant value in the constant pool of the chunk.
+     * @param value The constant value to add.
+     * @return The index of the new constant in the constant pool.
      */
     uint16_t addConstant(Value value);
 
     /**
-     * Getter for a constant in the constant pool.
+     * @brief Retrieves a constant value from the constant pool.
      *
-     * Return the first constant if no offset is provided.
+     * If no offset is provided, the default offset of 0 is used.
      *
-     * @param offset the offset of the constant in the constant pool.
-     * @return a reference to the constant value in the constant pool.
+     * @param offset (optional) The offset of the constant in the constant pool.
+     * @return The constant value at the given offset.
      */
     const Value& getConstant(int offset = 0);
 
     /**
-     * Getter for the number of codes written in the bytecode.
-     *
-     * @return the number of codes.
+     * @brief Retrieves the number of codes in the chunk.
+     * @return The number of codes.
      */
     uint16_t getCount() const;
 
     /**
-     * Return the number of constants in the constant pool.
-     *
-     * @return the number of constants.
+     * @brief Retrieves the number of constants in the chunk.
+     * @return The number of constants.
      */
     int getConstantCount() const;
 

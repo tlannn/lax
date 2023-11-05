@@ -5,11 +5,10 @@
 #include "values/Value.h"
 
 /**
- * Disassemble a simple instruction containing only one byte.
- *
- * @param name the name of the instruction.
- * @param offset the offset of the instruction in the chunk.
- * @return the offset of the next instruction.
+ * @brief Disassembles a simple instruction containing only one byte.
+ * @param name The name of the instruction.
+ * @param offset The offset of the instruction in the chunk.
+ * @return The offset of the next instruction.
  */
 static int simpleInstruction(const char* name, int offset) {
     std::cout << name << std::endl;
@@ -17,12 +16,11 @@ static int simpleInstruction(const char* name, int offset) {
 }
 
 /**
- * Disassemble a constant instruction.
- *
- * @param name the name of the instruction.
- * @param chunk the chunk containing the instruction.
- * @param offset the offset of the instruction in the chunk.
- * @return the offset of the next instruction.
+ * @brief Disassembles a constant instruction.
+ * @param name The name of the instruction.
+ * @param chunk The chunk containing the instruction.
+ * @param offset The offset of the instruction in the chunk.
+ * @return The offset of the next instruction.
  */
 static int constantInstruction(const std::string& name, Chunk* chunk, int offset) {
     uint8_t constant = *chunk->getCode(offset + 1);
@@ -34,12 +32,11 @@ static int constantInstruction(const std::string& name, Chunk* chunk, int offset
 }
 
 /**
- * Disassemble an instruction containing only two bytes.
- *
- * @param name the name of the instruction.
- * @param chunk the chunk containing the instruction.
- * @param offset the offset of the instruction in the chunk.
- * @return the offset of the next instruction.
+ * @brief Disassembles an instruction containing only two bytes.
+ * @param name The name of the instruction.
+ * @param chunk The chunk containing the instruction.
+ * @param offset The offset of the instruction in the chunk.
+ * @return The offset of the next instruction.
  */
 static int byteInstruction(const char* name, Chunk* chunk, int offset) {
     uint8_t slot = *chunk->getCode(offset + 1);
@@ -49,14 +46,13 @@ static int byteInstruction(const char* name, Chunk* chunk, int offset) {
 }
 
 /**
- * Disassemble a jump instruction.
- *
- * @param name the name of the instruction.
- * @param sign the sign of the jump ; true means forward jump in the bytecode,
- * and false backward jump.
- * @param chunk the chunk containing the instruction.
- * @param offset the offset of the instruction in the bytecode.
- * @return the offset of the next instruction in the bytecode.
+ * @brief Disassembles a jump instruction.
+ * @param name The name of the instruction.
+ * @param sign The sign of the jump ; `true` means forward jump in the bytecode,
+ * and `false` backward jump.
+ * @param chunk The chunk containing the instruction.
+ * @param offset The offset of the instruction in the bytecode.
+ * @return The offset of the next instruction in the bytecode.
  */
 static int jumpInstruction(const char* name, bool sign, Chunk* chunk, int offset) {
     uint16_t jump = static_cast<uint16_t>(*chunk->getCode(offset + 1) << 8);
@@ -70,12 +66,11 @@ static int jumpInstruction(const char* name, bool sign, Chunk* chunk, int offset
 }
 
 /**
- * Disassemble a closure instruction.
- *
- * @param name the name of the instruction.
- * @param chunk the chunk containing the instruction.
- * @param offset the offset of the instruction in the chunk.
- * @return the offset of the next instruction.
+ * @brief Disassembles a closure instruction.
+ * @param name The name of the instruction.
+ * @param chunk The chunk containing the instruction.
+ * @param offset The offset of the instruction in the chunk.
+ * @return The offset of the next instruction.
  */
 static int closureInstruction(const char* name, Chunk* chunk, int offset) {
     ++offset;
@@ -98,7 +93,6 @@ static int closureInstruction(const char* name, Chunk* chunk, int offset) {
     return offset;
 }
 
-/// Print a human readable representation of the bytecode of a chunk.
 void disassembleChunk(Chunk* chunk, const std::string& name) {
     std::cout << "== " << name << " ==" << std::endl;
 
@@ -108,7 +102,6 @@ void disassembleChunk(Chunk* chunk, const std::string& name) {
     }
 }
 
-/// Disassemble a bytecode instruction in a chunk.
 int disassembleInstruction(Chunk* chunk, int offset) {
     std::cout << std::setw(4) << std::setfill('0') << offset << " ";
 

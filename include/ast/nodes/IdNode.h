@@ -14,42 +14,44 @@ class ObjString;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for an identifier
+ * @class IdNode
+ * @brief Represents an identifier in the Abstract Syntax Tree (AST).
  *
- * An identifier represents a variable name. Whenever it appears in the code,
- * it is replaced by the current value of the variable defined by this
- * identifier.
+ * The IdNode class is used to store information about an identifier, which is
+ * a name that refers to a variable, function, or class.
  */
 class IdNode : public ExprNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param id the identifier name token
+     * @brief Class constructor.
+     * @param id The token representing the identifier.
      */
     explicit IdNode(SToken id);
 
     /**
-     * Getter for the name of the identifier
-     *
-     * @return the name
+     * @brief Retrieves the identifier associated with this node.
+     * @return The identifier associated with this node.
      */
     ObjString* getName();
 
     /**
-     * Getter for the symbol representing the variable referred to
-     * @return a pointer to the symbol
+     * @brief Retrieves the symbol associated with this node.
+     * @return The symbol associated with this node.
+     *
+     * @see setSymbol()
      */
     Symbol* getSymbol() const;
 
     /**
-     * Setter for the symbol representing the variable referred to
-     * @param symbol a pointer to the symbol
+     * @brief Associates a symbol with this node.
+     * @param symbol The symbol to associate with this node.
+     *
+     * @see getSymbol()
      */
     void setSymbol(Symbol* symbol);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

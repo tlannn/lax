@@ -10,73 +10,105 @@
 #define TABLE_MAX_LOAD 0.75
 
 /**
- * A hash table that can contain Lax values
+ * @class Table
+ * @brief A hash table to store Lax values.
  *
- * The table stories elements in key-value pairs, with keys being represented as
- * Lax string objects. Key collisions are resolved using open addressing. The
- * next slot is computed via linear probing.
+ * The table is implemented as a closed hash table. The array of key-value pairs
+ * is allocated on the heap, and the array is resized when the load primary
+ * exceeds the maximum load primary.
+ *
+ * Keys are represented as Lax string objects. Key collisions are resolved using
+ * open addressing. The next slot is computed via linear probing.
  *
  * The hash function used is defined in the ObjString class.
  */
 class Table {
 public:
-    /// Class constructor.
+    /**
+     * @brief Class constructor.
+     *
+     * Initializes the table with a null array of entries.
+     */
     Table();
 
-    /// Class destructor.
+    /**
+     * @brief Class destructor.
+     *
+     * Frees the memory allocated for the table.
+     */
     ~Table();
 
     /**
-     * Get a value stored in the table.
-     *
-     * @param key the key associated with the value.
-     * @param value the value object where the value copy must be stored.
-     * @return true if the key exists, or false otherwise.
+     * @brief Retrieves the value associated to a key in the table.
+     * @param key The key associated with the value.
+     * @param value The value object where the value copy must be stored.
+     * @return `true` if the key exists, `false` otherwise.
      */
     bool get(ObjString* key, Value* value);
 
     /**
-     * Store a value in the table with the given key.
-     *
-     * @param key the key to which the value must be associated.
-     * @param value the value to store.
-     * @return true if no value was already associated to the key, false otherwise.
+     * @brief Stores a value in the table.
+     * @param key The key associated with the value.
+     * @param value The value to store.
+     * @return `true` if no value was already associated to the key, `false`
+     * otherwise.
      */
     bool set(ObjString* key, Value value);
 
     /**
-     * Remove from the table the value associated to the given key.
-     *
-     * @param key the key associated with the value.
-     * @return true if a value has effectively been removed, false otherwise.
+     * @brief Removes a value from the table.
+     * @param key The key associated with the value.
+     * @return `true` if a value has effectively been removed, `false` otherwise.
      */
     bool remove(ObjString* key);
 
+    /**
+     * @brief Copies the content of a table into another.
+     * @param to The table to copy into.
+     */
     void copyTable(Table* to);
 
+    /**
+     * @brief Searches for a string in the table.
+     * @param chars The string to look up.
+     * @param length The length of the string.
+     * @param hash The hash of the string.
+     * @return The string object if it exists, or nullptr otherwise.
+     */
     ObjString* findString(const std::string& chars, int length, uint32_t hash);
 
 private:
-    /// Structure representing a key-value pair in the table.
+    /**
+     * @struct Entry
+     * @brief A key-value pair stored in the table.
+     *
+     * The key is a Lax string object, and the value is a Lax value object.
+     */
     typedef struct Entry {
         ObjString* key = nullptr;
         Value value = Value::null();
     } Entry;
 
     /**
-     * Resize the table to accept a new amount of entries.
+     * @brief Adjusts the capacity of the table.
      *
-     * @param capacity the new capacity of the table.
+     * This function is called when the load primary of the table exceeds the
+     * maximum load primary.
+     *
+     * @param capacity The new capacity of the table.
      */
     void adjustCapacity(int capacity);
 
     /**
-     * Find the entry corresponding to a key in an array of entries.
+     * @brief Finds an entry in an array of entries.
      *
-     * @param entries the array of entries to look up.
-     * @param capacity the capacity of the array.
-     * @param key the key to look up.
-     * @return the entry corresponding to the key.
+     * This function uses linear probing to find the entry corresponding to the
+     * given key.
+     *
+     * @param entries The array of entries to look up.
+     * @param capacity The capacity of the array.
+     * @param key The key to look up.
+     * @return The entry corresponding to the key.
      */
     static Entry* find(Entry* entries, int capacity, ObjString* key);
 

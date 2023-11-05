@@ -11,29 +11,30 @@ class ASTVisitor;
 class SeqNode;
 
 /**
- * Node for blocks of statements
+ * @class BlockNode
+ * @brief Represents a block of statements in an Abstract Syntax Tree (AST).
  *
- * A block is delimited by braces, inside which one or multiple statements are
- * present. The statements are represented by a sequence of statements.
+ * A BlockNode is a type of node that contains a sequence of nodes. It acts as a
+ * container for other nodes and provides the ability to manipulate and
+ * traverse them. A BlockNode typically defines a new scope for inner variables,
+ * so a new Scope object must be created for each BlockNode.
  */
 class BlockNode : public StmtNode {
 public:
     /**
-     * Class constructor
-     *
-     * @param stmts the statements to execute inside the block
+     * @brief Class constructor.
+     * @param seq The sequence of nodes enclosed in this block.
      */
     explicit BlockNode(USeqNode seq);
 
     /**
-     * Getter for the sequence of statements inside the block
-     *
-     * @return the sequence
+     * @brief Retrieves the sequence of nodes contained in this block.
+     * @return The sequence of nodes.
      */
     SeqNode* getSequence();
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 

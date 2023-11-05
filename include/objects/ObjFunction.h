@@ -12,51 +12,70 @@
 class ObjString;
 
 /**
- * Function object in Lax.
+ * @class ObjFunction
+ * @brief Function object in Lax.
  *
- * A function is a block of reusable code. It can take input data called
- * parameters or arguments, and use them to accomplish a specific task.
- * The task performed is specified by the body of the function ; it is a
- * sequence of instructions.
+ * A function is an object that can be called. It is defined by a sequence of
+ * instructions, called bytecode. The bytecode is stored in a chunk.
  *
- * Finally, a function can return a value. If no value is explicitly returned,
- * then the null value is automatically returned.
+ * A function can be called with a number of arguments. These arguments are
+ * stored in a stack. The function can also access variables defined in the
+ * surrounding scopes. These variables are stored in a stack called the
+ * upvalue stack.
+ *
+ * When a function is called, a new stack frame is created. It contains the
+ * arguments and the upvalues. The stack frame is pushed on the call stack.
+ *
+ * When the function returns, the stack frame is popped from the call stack.
+ *
+ * The function can return a value. This value is stored in the stack of the
+ * calling function.
  */
 class ObjFunction : public Object {
 public:
     /**
-     * Class constructor.
+     * @brief Class constructor.
      *
-     * @param name the name of the function
-     * @param arity the number of parameters that the function takes
+     * Constructs a function object with a name and a number of parameters,
+     * which is called the arity of the function and is used to check the number
+     * of arguments passed to the function.
+     *
+     * @param name The name of the function.
+     * @param arity (optional) The number of parameters of the function.
      */
     explicit ObjFunction(ObjString* name, int arity = 0);
 
     /**
-     * Getter for the number of parameters of the function.
+     * @brief Returns the arity of the function.
      *
-     * @return the number of parameters.
+     * The arity of a function is the number of parameters it takes.
+     *
+     * @return The arity of the function.
      */
     int arity() const;
 
-    /// Increment the number of upvalues used in the function.
+    /**
+     * @brief Increments the number of upvalues used in the function.
+     *
+     * This function is used when a new upvalue is created in the function.
+     */
     void incrementUpvalueCount();
 
     /**
-     * Return the number of upvalues used in the function.
-     *
-     * @return the number of upvalues used.
+     * @brief Returns the number of upvalues used in the function.
+     * @return The number of upvalues used.
      */
     int getUpvalueCount() const;
 
     /**
-     * Return a pointer to the chunk of bytecode that depicts the function.
-     *
-     * @return a pointer to the function bytecode chunk.
+     * @brief Retrieves the chunk of bytecode of the function.
+     * @return The chunk of bytecode of the function.
      */
     Chunk* getChunk();
 
-    /// Return a string representation of the function.
+    /**
+     * @copydoc Object::toString()
+     */
     std::string toString() override;
 
 private:

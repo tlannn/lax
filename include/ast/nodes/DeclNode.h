@@ -16,61 +16,73 @@ class VarSymbol;
 typedef std::shared_ptr<Token> SToken;
 
 /**
- * Node for variable declaration statements
+ * @class DeclNode
+ * @brief Represents a declaration node in the Abstract Syntax Tree (AST).
  *
- * When declaring a variable, its name and type must be specified. The variable
- * can be initialized at declaration ; in that case, an expression is
- * associated to the node
+ * This class encapsulates information about a variable declaration, including
+ * the name of the variable, its type, and an optional expression associated
+ * with the declaration.
  */
 class DeclNode : public StmtNode {
 public:
     /**
-     * Class constructor
+     * @brief Class constructor.
      *
-     * @param id the name of the variable declared
-     * @param type the type of the variable
-     * @param expr the expression associated to the variable (if any)
+     * Constructs a new DeclNode object with the provided token, variable name
+     * and type, and an optional expression associated with the declaration.
+     * A nullptr value can be passed as the expression if no expression is
+     * associated with the declaration.
+     *
+     * @param token The token representing the declaration.
+     * @param name The name of the variable being declared.
+     * @param type The type of the variable being declared.
+     * @param expr The expression associated with the declaration.
      */
     DeclNode(SToken token, ObjString* name, LaxType* type, UExprNode expr);
 
+    /**
+     * @brief Retrieves the token associated with this node.
+     * @return The token representing the declaration.
+     */
     Token* getToken();
 
     /**
-     * Getter for the name of the variable declared
-     *
-     * @return the name of the variable
+     * @brief Retrieves the name of the variable being declared.
+     * @return The variable name.
      */
     ObjString* getName();
 
     /**
-     * Getter for the type of the variable declared
-     *
-     * @return the type of the variable
+     * @brief Retrieves the type of the variable being declared.
+     * @return The variable type.
      */
     LaxType* getType();
 
     /**
-     * Getter for the expression associated to the variable at declaration
-     *
-     * @return the expression associated, or nullptr if the variable is not
-     * initialized at declaration
+     * @brief Retrieves the expression associated with the declaration.
+     * @return The expression associated, or nullptr if no expression is
+     * associated.
      */
     ExprNode* getRValue();
 
     /**
-     * Getter for the symbol representing the variable
-     * @return a pointer to the symbol
+     * @brief Retrieves the symbol associated with the current object.
+     * @return The symbol associated with the current object.
+     *
+     * @see setSymbol()
      */
     VarSymbol* getSymbol();
 
     /**
-     * Setter for the symbol representing the variable
-     * @param symbol a pointer to the symbol
+     * @brief Sets the symbol associated with the current object.
+     * @param symbol The symbol to associate with the current object.
+     *
+     * @see getSymbol()
      */
     void setSymbol(VarSymbol* symbol);
 
     /**
-     * Accept method for the visitor pattern
+     * @copydoc ASTNode::accept()
      */
     void accept(ASTVisitor& visitor) override;
 
