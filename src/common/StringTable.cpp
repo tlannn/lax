@@ -91,10 +91,12 @@ std::unique_ptr<ObjString>& StringTable::find(std::unique_ptr<ObjString>* entrie
 
     for (;;) {
         auto& entry = entries[index];
+        if (entry == nullptr) return entry;
+
         bool isSameHash = entry->getHash() == hash;
         bool isSameLength = entry->getLength() == length;
 
-        if (entry == nullptr || isSameHash && isSameLength &&
+        if (isSameHash && isSameLength &&
             memcmp(entry->getChars(), chars.c_str(), length) == 0) {
             return entry;
         }
