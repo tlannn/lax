@@ -1,7 +1,5 @@
 #include "lexer/Memento.h"
 
-#include <utility>
-
 Memento::Memento(Memento* previous, std::string source, int index,
     int line, int col) :
     m_previous(previous),

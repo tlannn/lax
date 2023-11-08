@@ -1,7 +1,5 @@
 #include "tokens/Token.h"
 
-#include <utility>
-
 Token::Token(std::string lexeme, TokenType type, const int line, const int col) :
     m_text(std::move(lexeme)),
     m_type(type),

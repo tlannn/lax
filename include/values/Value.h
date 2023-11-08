@@ -2,7 +2,6 @@
 #define LAX_VALUE_H
 
 #include <memory>
-#include <utility>
 #include <vector>
 
 #include "common/Memory.h"
