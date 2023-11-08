@@ -101,7 +101,7 @@ std::unique_ptr<Token> Lexer::nextToken() {
     for (;; c = advance()) {
         if (c == ' ' || c == '\t')
             continue;
-        else if (c == '\n') {
+        else if (c == '\n' || c == '\r' && match('\n')) {
             // Place cursor to the beginning of next line
             ++m_line;
             m_col = 0;
