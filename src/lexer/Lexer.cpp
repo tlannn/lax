@@ -97,23 +97,21 @@ void Lexer::popFile() {
 std::unique_ptr<Token> Lexer::nextToken() {
     int c = advance();
 
-    // Set the start position of the next token to the cursor current position
-    m_startIndex = m_index;
-    m_startCol = m_col;
-    m_startLine = m_line;
-
     // Skip whitespaces, tabulations and newlines
     for (;; c = advance()) {
-        if (c == ' ' || c == '\t') {
-            // Anticipate advance()
-            m_startCol = m_col + 1;
-            m_startIndex = m_index + 1;
-        } else if (c == '\n') {
+        if (c == ' ' || c == '\t')
+            continue;
+        else if (c == '\n') {
             // Place cursor to the beginning of next line
             ++m_line;
             m_col = 0;
         } else break;
     }
+
+    // Set the start position of the next token to the cursor current position
+    m_startIndex = m_index;
+    m_startCol = m_col;
+    m_startLine = m_line;
 
     // Recognize other tokens
     switch (c) {
