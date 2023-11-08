@@ -10,10 +10,7 @@
 // Forward declarations
 class ASTVisitor;
 class ObjString;
-class Token;
 class VarSymbol;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class AssignNode
@@ -31,7 +28,7 @@ public:
      * @param assignToken The token representing the assignment operator.
      * @param expr The expression being assigned.
      */
-    AssignNode(ObjString* identifier, SToken assignToken, UExprNode expr);
+    AssignNode(ObjString* identifier, UToken assignToken, UExprNode expr);
 
     /**
      * @brief Retrieves the identifier associated with this node.

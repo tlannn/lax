@@ -2,7 +2,7 @@
 #include "ast/nodes/ExprNode.h"
 #include "ast/ASTVisitor.h"
 
-UnaryNode::UnaryNode(SToken op, UExprNode expr) : ExprNode(std::move(op)),
+UnaryNode::UnaryNode(UToken op, UExprNode expr) : ExprNode(std::move(op)),
     m_expr(std::move(expr)) {}
 
 ExprNode* UnaryNode::getExpr() const {

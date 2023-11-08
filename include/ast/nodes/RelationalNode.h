@@ -8,9 +8,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class RelationalNode
@@ -35,7 +32,7 @@ public:
      * @param op The token representing the relational operator.
      * @param right The right expression.
      */
-    RelationalNode(UExprNode left, SToken op, UExprNode right);
+    RelationalNode(UExprNode left, UToken op, UExprNode right);
 
     /**
      * @copydoc ASTNode::accept()

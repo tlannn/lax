@@ -8,10 +8,7 @@
 // Forward declarations
 class ASTVisitor;
 class Symbol;
-class Token;
 class ObjString;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class IdNode
@@ -26,7 +23,7 @@ public:
      * @brief Class constructor.
      * @param id The token representing the identifier.
      */
-    explicit IdNode(SToken id);
+    explicit IdNode(UToken id);
 
     /**
      * @brief Retrieves the identifier associated with this node.

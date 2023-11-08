@@ -1,7 +1,7 @@
 #include "ast/nodes/AssignNode.h"
 #include "ast/ASTVisitor.h"
 
-AssignNode::AssignNode(ObjString* identifier, SToken assignToken,
+AssignNode::AssignNode(ObjString* identifier, UToken assignToken,
     UExprNode expr) :
     ExprNode(std::move(assignToken)),
     m_identifier(identifier),

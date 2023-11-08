@@ -8,9 +8,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class UnaryNode
@@ -28,7 +25,7 @@ public:
      * @param op The token representing the operator.
      * @param expr The expression representing the operand.
      */
-	UnaryNode(SToken op, UExprNode expr);
+	UnaryNode(UToken op, UExprNode expr);
 
 	/**
      * @brief Retrieves the operator associated with this node.

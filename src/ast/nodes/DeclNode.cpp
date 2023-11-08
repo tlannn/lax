@@ -2,7 +2,7 @@
 #include "ast/nodes/ExprNode.h"
 #include "ast/ASTVisitor.h"
 
-DeclNode::DeclNode(std::shared_ptr<Token> token, ObjString* name, LaxType* type,
+DeclNode::DeclNode(SToken token, ObjString* name, LaxType* type,
     UExprNode expr) :
     m_id(std::move(token)),
     m_name(name),

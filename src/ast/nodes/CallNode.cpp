@@ -1,7 +1,7 @@
 #include "ast/nodes/CallNode.h"
 #include "ast/ASTVisitor.h"
 
-CallNode::CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args) :
+CallNode::CallNode(UExprNode callee, UToken token, std::vector<UExprNode> args) :
     ExprNode(std::move(token)),
     m_callee(std::move(callee)),
     m_args(std::move(args)),

@@ -8,9 +8,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class LogicalNode
@@ -32,7 +29,7 @@ public:
      * @param op The token representing the boolean operator.
      * @param right The right expression.
      */
-    LogicalNode(UExprNode left, SToken op, UExprNode right);
+    LogicalNode(UExprNode left, UToken op, UExprNode right);
 
     /**
      * @copydoc ASTNode::accept()

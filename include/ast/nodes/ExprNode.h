@@ -8,9 +8,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class ExprNode
@@ -46,7 +43,7 @@ public:
      * @brief Class constructor.
      * @param token The token representing the expression.
      */
-    explicit ExprNode(SToken token);
+    explicit ExprNode(UToken token);
 
     /**
      * @brief Retrieves the token associated with this node.
@@ -60,7 +57,7 @@ public:
     void accept(ASTVisitor& visitor) override;
 
 protected:
-    SToken m_token;
+    UToken m_token;
 };
 
 #endif // LAX_EXPRNODE_H

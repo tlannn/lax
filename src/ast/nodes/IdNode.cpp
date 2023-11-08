@@ -2,7 +2,7 @@
 #include "ast/ASTVisitor.h"
 #include "objects/ObjString.h"
 
-IdNode::IdNode(SToken name) : ExprNode(std::move(name)),
+IdNode::IdNode(UToken name) : ExprNode(std::move(name)),
     m_name(ObjString::copyString(ExprNode::getToken()->toString())),
     m_symbol(nullptr) {}
 

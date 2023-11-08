@@ -9,9 +9,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class LiteralNode
@@ -29,7 +26,7 @@ public:
      * @param token The token representing the literal.
      * @param value The value of the literal.
      */
-    LiteralNode(SToken token, Value value);
+    LiteralNode(UToken token, Value value);
 
     /**
      * @brief Retrieves the value associated with this node.

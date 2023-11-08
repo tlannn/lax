@@ -10,9 +10,6 @@
 // Forward declarations
 class ASTVisitor;
 class Symbol;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class CallNode
@@ -29,7 +26,7 @@ public:
      * @param token The token representing the call.
      * @param args The arguments passed to the call.
      */
-    CallNode(UExprNode callee, SToken token, std::vector<UExprNode> args);
+    CallNode(UExprNode callee, UToken token, std::vector<UExprNode> args);
 
     /**
      * @brief Returns the name of the callee of the current function.

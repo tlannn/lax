@@ -3,7 +3,7 @@
 #include <utility>
 #include "ast/ASTVisitor.h"
 
-ExprNode::ExprNode(SToken token) :
+ExprNode::ExprNode(UToken token) :
     m_token(std::move(token)) {}
 
 Token* ExprNode::getToken() {

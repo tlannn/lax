@@ -8,9 +8,6 @@
 
 // Forward declarations
 class ASTVisitor;
-class Token;
-
-typedef std::shared_ptr<Token> SToken;
 
 /**
  * @class BinOpNode
@@ -39,7 +36,7 @@ public:
      * @param op The token representing the operator.
      * @param right The right operand of the operation.
      */
-    BinOpNode(UExprNode left, SToken op, UExprNode right);
+    BinOpNode(UExprNode left, UToken op, UExprNode right);
 
     /**
      * @brief Retrieves the left child of the node.
