@@ -35,6 +35,10 @@ public:
      */
     explicit LaxType(Kind kind);
 
+    LaxType(const LaxType& type) {
+        m_kind = type.m_kind;
+    }
+
     /**
      * @brief Checks whether a type is primitive.
      * @param type The type to check.
@@ -141,6 +145,8 @@ public:
      * @return `true` if both types are not equal, `false` otherwise.
      */
     friend bool operator!=(const LaxType& t1, const LaxType& t2);
+
+    LaxType& operator=(const LaxType& t);
 
 protected:
     /**

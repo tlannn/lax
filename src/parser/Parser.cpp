@@ -133,7 +133,7 @@ ObjString* Parser::identifier(const std::string& name) {
 }
 
 UStmtNode Parser::program() {
-    std::vector<UStmtNode> stmts;
+    std::list<UStmtNode> stmts;
 
     while (!isAtEnd())
         stmts.push_back(stmt());
@@ -143,7 +143,7 @@ UStmtNode Parser::program() {
 
 UBlockNode Parser::block() {
     consume(TokenType::LBRACE, ErrorMode::REPAIR);
-    std::vector<UStmtNode> stmts;
+    std::list<UStmtNode> stmts;
 
     while (!check(TokenType::RBRACE) && !isAtEnd())
         stmts.push_back(stmt());

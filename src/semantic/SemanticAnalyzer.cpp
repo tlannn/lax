@@ -79,12 +79,15 @@ void SemanticAnalyzer::visit(BlockNode& node) {
 void SemanticAnalyzer::visit(SeqNode& node) {
     auto& stmts = node.getStatements();
 
-    for (const auto& stmt : stmts)
-        visit(*stmt);
+    for (const auto& stmt : stmts) {
+        StmtNode &n = *stmt;
+        visit(n);
+    }
 }
 
 void SemanticAnalyzer::visit(DeclNode& node) {
-    visit(*node.getRValue());
+    if (node.getRValue())
+        visit(*node.getRValue());
 }
 
 void SemanticAnalyzer::visit(ConditionalNode& node) {

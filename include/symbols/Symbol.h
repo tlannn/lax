@@ -36,6 +36,11 @@ public:
     Symbol(ObjString* name, LaxType* type);
 
     /**
+     * @brief Class destructor.
+     */
+    virtual ~Symbol() = default;
+
+    /**
      * @brief Returns the name of the identifier represented by the symbol.
      * @return The name of the identifier represented by the symbol.
      */

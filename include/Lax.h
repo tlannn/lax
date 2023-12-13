@@ -1,8 +1,6 @@
 #ifndef LAX_LAX_H
 #define LAX_LAX_H
 
-#include <iterator>
-#include <memory>
 #include <string>
 
 /**
@@ -22,6 +20,13 @@ public:
      * @param filepath The path to the source file.
      */
     static void interpret(const std::string& filepath);
+
+private:
+    template<typename T>
+    static bool pass(T&& t);
+
+    template<typename T, typename... Ts>
+    static bool pass(T&& first, Ts&&... rest);
 };
 
 #endif // LAX_LAX_H

@@ -2,7 +2,7 @@
 #define LAX_SEQNODE_H
 
 #include <memory>
-#include <vector>
+#include <list>
 
 #include "StmtNode.h"
 #include "ast/ASTFwdDecl.h"
@@ -23,13 +23,15 @@ public:
      * @brief Class constructor.
      * @param stmts The statements to execute.
      */
-    explicit SeqNode(std::vector<UStmtNode> stmts);
+    explicit SeqNode(std::list<UStmtNode> stmts);
 
     /**
      * @brief Retrieves the statements to execute.
      * @return The statements to execute.
      */
-    const std::vector<UStmtNode>& getStatements();
+    const std::list<UStmtNode>& getStatements();
+
+    void moveToFront(std::list<UStmtNode>::const_iterator it);
 
     /**
      * @copydoc ASTNode::accept()
@@ -37,7 +39,7 @@ public:
     void accept(ASTVisitor& visitor) override;
 
 private:
-    std::vector<UStmtNode> m_stmts;
+    std::list<UStmtNode> m_stmts;
 };
 
 #endif // LAX_SEQNODE_H

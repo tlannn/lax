@@ -58,13 +58,13 @@ InterpretResult VM::run() {
     for (;;) {
 #ifdef DEBUG_TRACE_EXECUTION
         std::cout << "Stack trace: ";
-        for (Value *slot = _stack; slot < _stackTop; ++slot) {
+        for (Value *slot = m_stack; slot < m_stackTop; ++slot) {
             std::cout << "[ " << Value::toString(*slot) << " ]";
         }
         std::cout << std::endl;
 
-        disassembleInstruction(CHUNK(frame),
-                               (int)(frame->ip - CHUNK(frame)->getCode()));
+        disassembleInstruction(CHUNK(),
+                               (int)(frame->ip - CHUNK()->getCode()));
         std::cout << std::endl;
 #endif
 

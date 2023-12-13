@@ -5,7 +5,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <list>
 
 #include "ast/ASTFwdDecl.h"
 #include "tokens/Token.h"

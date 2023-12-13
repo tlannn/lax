@@ -4,8 +4,6 @@
 #include <memory>
 #include <unordered_map>
 
-#define MAP(type) std::unordered_map<ObjString*, std::unique_ptr<type>>
-
 // Forward declarations
 class ObjFunction;
 class ObjString;
@@ -22,7 +20,9 @@ class Variable;
  * information about the scope, such as its symbols and enclosing scope.
  *
  * A scope is represented as a map object, where the key is the name of the
- * symbol and the value is a unique_ptr to the symbol.
+ * symbol and the value is an entry that holds a pointer to the symbol. The
+ * benefit on wrapping the symbol in an entry is that it allows us to keep track
+ * of the order of insertion of the symbols in the scope.
  */
 class Scope {
 public:
@@ -38,7 +38,6 @@ public:
      */
     explicit Scope(Scope* previous = nullptr);
 
-
     /**
      * @brief Inserts a symbol in the scope.
      *
@@ -49,7 +48,7 @@ public:
      * @param symbol A unique_ptr to the symbol to be inserted.
      * @return `true` if the insertion was successful, `false` otherwise.
      */
-    bool insert(ObjString* name, std::unique_ptr<Symbol> symbol);
+    bool insert(const ObjString* name, std::unique_ptr<Symbol> symbol);
 
     /**
      * @brief Searches for a given object name in the scope.
@@ -62,7 +61,7 @@ public:
      * @return A pointer to the found object if it exists, otherwise returns
      * nullptr.
      */
-    Symbol* lookup(ObjString* name);
+    Symbol* lookup(const ObjString* name) const;
 
     /**
      * @brief Checks if the current scope is a global scope.
@@ -97,45 +96,27 @@ public:
 
 private:
     /**
-     * @brief Searches for a given object name in a map object.
+     * @struct Entry
+     * @brief Represents an entry in the scope.
      *
-     * This function performs a lookup operation to find the given object name
-     * in a map object. It searches for a matching object in the map and returns
-     * it if found.
-     *
-     * @tparam Type The type of object to search for.
-     * @param map The map object to search in.
-     * @param name The name of the object to be searched for.
-     * @return A pointer to the found object if it exists, otherwise returns
-     * nullptr.
+     * An entry in the scope is a representation of a symbol in the scope. It
+     * contains a pointer to the symbol, and pointers to the previous and next
+     * entries in the scope.
      */
-    template<typename Type>
-    Type* lookup(MAP(Type)& map, ObjString* name);
-
-    /**
-     * @brief Inserts an object in a map object.
-     *
-     * This function inserts an object in a map object. If the object already
-     * exists in the map, the insertion fails and the function returns `false`.
-     *
-     * @tparam Type The type of object to insert.
-     * @param map The map object to insert the object in.
-     * @param name The name of the object to be inserted.
-     * @param value A unique_ptr to the object to insert.
-     * @return `true` if the insertion was successful, `false` otherwise.
-     */
-    template<typename Type>
-    bool insert(MAP(Type)& map, ObjString* name, std::unique_ptr<Type>
-    value);
+    struct Entry {
+        std::unique_ptr<Symbol> symbol;
+        Entry* previous;
+        Entry* next;
+    };
 
     /*
      * Private members
      */
 
+    std::unordered_map<const ObjString*, std::unique_ptr<Entry>> m_symbols;
     Scope* m_previous;
-    MAP(Symbol) m_symbols;
+    Entry* m_firstEntry;
+    Entry* m_lastEntry;
 };
-
-#undef MAP_TYPE
 
 #endif //LAX_SCOPE_H

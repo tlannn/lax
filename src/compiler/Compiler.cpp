@@ -367,7 +367,7 @@ ObjFunction* Compiler::endCurrentScope() {
     ObjFunction* function = m_currentScope->function;
 
 #ifdef DEBUG_PRINT_CODE
-    if (!_errors) {
+    if (!m_errors) {
         disassembleChunk(currentChunk(), function->toString());
         std::cout << std::endl;
     } else {

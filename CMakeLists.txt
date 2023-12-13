@@ -50,8 +50,15 @@ set(SOURCE_FILES
         src/objects/Variable.cpp
         src/parser/ParseError.cpp
         src/parser/Parser.cpp
+        src/semantic/Resolver.cpp
         src/semantic/SemanticAnalyzer.cpp
         src/semantic/SemanticError.cpp
+        src/symbols/BuiltInSymbol.cpp
+        src/semantic/Definer.cpp
+        src/semantic/TopLevelDefiner.cpp
+        src/semantic/TopLevelResolver.cpp
+        src/semantic/TopLevelSemanticAnalyzer.cpp
+        src/semantic/TypeChecker.cpp
         src/symbols/BuiltInSymbol.cpp
         src/symbols/FunSymbol.cpp
         src/symbols/Scope.cpp
@@ -68,6 +75,8 @@ set(SOURCE_FILES
         src/values/PrimitiveType.cpp
         src/values/Value.cpp
         src/values/ValueArray.cpp
+        include/semantic/HoistingPass.h
+        src/semantic/HoistingPass.cpp
 )
 
 # Add executable target with source files listed in SOURCE_FILES variable

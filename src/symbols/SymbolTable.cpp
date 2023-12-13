@@ -76,7 +76,7 @@ VarSymbol* SymbolTable::lookupVariable(Scope& scope, ObjString* name,
     bool lookupEnclosingScopes) {
     auto* s = lookup<Symbol>(&Scope::lookup, scope, name, lookupEnclosingScopes);
 
-    return s->getSymbolType() == Symbol::Type::VARIABLE
+    return s && s->getSymbolType() == Symbol::Type::VARIABLE
            ? static_cast<VarSymbol*>(s)
            : nullptr;
 }
@@ -87,7 +87,7 @@ FunSymbol* SymbolTable::lookupFunction(Scope& scope, ObjString* name,
         &Scope::lookup, scope, name, lookupEnclosingScopes
     );
 
-    return s->getSymbolType() == Symbol::Type::FUNCTION
+    return s && s->getSymbolType() == Symbol::Type::FUNCTION
            ? static_cast<FunSymbol*>(s)
            : nullptr;
 }

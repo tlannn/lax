@@ -2,7 +2,6 @@
 #define LAX_SYMBOLTABLE_H
 
 #include <memory>
-#include <unordered_map>
 #include <stack>
 #include <vector>
 
@@ -140,11 +139,11 @@ public:
 private:
     /// Alias for functions used to lookup a symbol in a Scope object.
     template<typename T>
-    using LookupFn = T* (Scope::*)(ObjString*);
+    using LookupFn = T* (Scope::*)(const ObjString*) const;
 
     /// Alias for functions used to insert a symbol in a Scope object.
     template<typename T>
-    using InsertFn = bool (Scope::*)(ObjString*, std::unique_ptr<T>);
+    using InsertFn = bool (Scope::*)(const ObjString*, std::unique_ptr<T>);
 
     /**
      * @brief Class constructor.

@@ -43,6 +43,11 @@ bool operator!=(const LaxType& t1, const LaxType& t2) {
     return !(t1 == t2);
 }
 
+LaxType& LaxType::operator=(const LaxType& t) {
+    m_kind = t.m_kind;
+    return *this;
+}
+
 bool LaxType::equals(const LaxType& type) const {
     return m_kind == type.m_kind;
 }
